@@ -71,12 +71,6 @@
                         <artifactId>asciidoclet</artifactId>
                         <version>${project.version}</version>
                     </docletArtifact>
-                    <!--<doclet>ch.raffael.doclets.pegdown.PegdownDoclet</doclet>-->
-                    <!--<docletArtifact>-->
-                        <!--<groupId>ch.raffael.pegdown-doclet</groupId>-->
-                        <!--<artifactId>pegdown-doclet</artifactId>-->
-                        <!--<version>1.1-SNAPSHOT</version>-->
-                    <!--</docletArtifact>-->
                     <linksource>true</linksource>
                 </configuration>
             </plugin>
