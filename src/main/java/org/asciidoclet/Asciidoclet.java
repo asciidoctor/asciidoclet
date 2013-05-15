@@ -314,7 +314,6 @@ public class Asciidoclet extends Doclet {
         // Replace "\n " to remove default Javadoc space.
         String cleanedInput = input.trim().replaceAll("\n ", "\n")
             .replaceAll("\\{@literal (.*?)}", "$1");
-        System.out.println(cleanedInput);
         Map<String, Object> options = optionsBuilder.attributes(attributesBuilder.asMap()).asMap();
         return asciidoctor.render(cleanedInput, options);
     }
