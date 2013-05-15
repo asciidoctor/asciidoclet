@@ -77,11 +77,10 @@ import java.util.Set;
  *
  * IMPORTANT: Important.
  *
- * @author John Ericksen
  * @version 0.1
  * @see org.asciidoclet.Asciidoclet
  * @since 0.1
- * @serial (or @serialField or @serialData)
+ * @serial serial data
  * @author John Ericksen
  */
 public class Asciidoclet extends Doclet  {
