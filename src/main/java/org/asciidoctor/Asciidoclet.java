@@ -1,27 +1,13 @@
-package org.asciidoclet;
+package org.asciidoctor;
+
+import com.sun.javadoc.*;
+import com.sun.tools.doclets.standard.Standard;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.asciidoctor.Asciidoctor;
-import org.asciidoctor.AttributesBuilder;
-import org.asciidoctor.OptionsBuilder;
-import org.asciidoctor.SafeMode;
-
-import com.sun.javadoc.AnnotationTypeDoc;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.Doc;
-import com.sun.javadoc.DocErrorReporter;
-import com.sun.javadoc.Doclet;
-import com.sun.javadoc.LanguageVersion;
-import com.sun.javadoc.MemberDoc;
-import com.sun.javadoc.PackageDoc;
-import com.sun.javadoc.RootDoc;
-import com.sun.javadoc.Tag;
-import com.sun.tools.doclets.standard.Standard;
 
 /**
  * = Asciidoclet
@@ -33,7 +19,7 @@ import com.sun.tools.doclets.standard.Standard;
  *
  * == Usage
  * 
- * AsciiDoclet may be used via a custom doclet in the maven-javadoc-plugin:
+ * Asciidoclet may be used via a custom doclet in the maven-javadoc-plugin:
  *
  * [source,xml]
  * <plugin>
@@ -42,7 +28,7 @@ import com.sun.tools.doclets.standard.Standard;
  *   <version>2.9</version>
  *   <configuration>
  *     <source>1.7</source>
- *     <doclet>org.asciidoclet.Asciidoclet</doclet>
+ *     <doclet>org.asciidoctor.Asciidoclet</doclet>
  *     <docletArtifact>
  *       <groupId>org.asciidoclet</groupId>
  *       <artifactId>asciidoclet</artifactId>
@@ -178,7 +164,7 @@ import com.sun.tools.doclets.standard.Standard;
  *
  * @author https://github.com/johncarl81[John Ericksen]
  * @version 0.1.0
- * @see org.asciidoclet.Asciidoclet
+ * @see org.asciidoctor.Asciidoclet
  * @since 0.1.0
  * @serial (or @serialField or @serialData)
  */
