@@ -1,33 +1,24 @@
 package org.asciidoctor;
 
+import com.sun.javadoc.*;
+import com.sun.tools.doclets.standard.Standard;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sun.javadoc.AnnotationTypeDoc;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.Doc;
-import com.sun.javadoc.DocErrorReporter;
-import com.sun.javadoc.Doclet;
-import com.sun.javadoc.LanguageVersion;
-import com.sun.javadoc.MemberDoc;
-import com.sun.javadoc.PackageDoc;
-import com.sun.javadoc.RootDoc;
-import com.sun.javadoc.Tag;
-import com.sun.tools.doclets.standard.Standard;
-
 /**
  * = Asciidoclet
- *
+ * 
  * https://github.com/asciidoctor/asciidoclet[Asciidoclet] is a Javadoc Doclet
  * that uses http://asciidoctor.org[Asciidoctor] (via the
  * https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration])
  * to render http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
  *
  * == Usage
- *
+ * 
  * Asciidoclet may be used via a custom doclet in the maven-javadoc-plugin:
  *
  * [source,xml]
@@ -39,7 +30,7 @@ import com.sun.tools.doclets.standard.Standard;
  * source inclusions within javadocs, relative to the specified directory.
  *
  * == Examples
- *
+ * 
  * Code block (with syntax highlighting added by CodeRay)::
  * +
  * [source,java]
@@ -50,11 +41,12 @@ import com.sun.tools.doclets.standard.Standard;
  *  * A Javadoc Doclet that uses http://asciidoctor.org[Asciidoctor]
  *  * to render http://asciidoc.org[AsciiDoc] markup in Javadoc comments.
  *  *
- *  * {@literal @}author https://github.com/johncarl81[John Ericksen]
- *  *{@literal /}
+ *  * @author https://github.com/johncarl81[John Ericksen]
+ *  *\/
  * public class Asciidoclet extends Doclet {
  *     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create(); // <1>
  *
+ *     @SuppressWarnings("UnusedDeclaration")
  *     public static boolean start(RootDoc rootDoc) {
  *         new Asciidoclet().render(rootDoc); // <2>
  *         return Standard.start(rootDoc);
@@ -136,15 +128,15 @@ import com.sun.tools.doclets.standard.Standard;
  * |Column 1
  * |Column 2
  * |Column 3
- *
+ * 
  * |1
  * |Item 1
  * |a
- *
+ * 
  * |2
  * |Item 2
  * |b
- *
+ * 
  * |3
  * |Item 3
  * |c
@@ -174,6 +166,8 @@ public class Asciidoclet extends Doclet {
     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
 
     private final AttributesBuilder attributesBuilder = AttributesBuilder.attributes()
+        .attribute("at", "&#64;")
+        .attribute("slash", "/")
         .attribute("icons", null)
         .attribute("idprefix", "")
         .attribute("notitle", null)
@@ -325,6 +319,11 @@ public class Asciidoclet extends Doclet {
      * @param doc input
      */
     private void renderDoc(Doc doc) {
+        // hide text that looks like tags (such as annotations in source code) from Javadoc
+        // replacing the PackageDoc raw comment text issues a warning, perhaps in the case it's empty
+        if (!(doc instanceof PackageDoc)) {
+            doc.setRawCommentText(doc.getRawCommentText().replaceAll("@([A-Z])", "{@literal @}$1"));
+        }
         StringBuilder buffer = new StringBuilder();
         buffer.append(render(doc.commentText()));
         buffer.append('\n');
@@ -368,8 +367,8 @@ public class Asciidoclet extends Doclet {
      */
     private String render(String input) {
         // Replace "\n " to remove default Javadoc space.
-        String cleanedInput = input.trim().replaceAll("\n ", "\n")
-            .replaceAll("\\{@literal (.*?)}", "$1");
+        String cleanedInput = input.trim().replaceAll("\n ", "\n").replaceAll("\\{at}", "&#64;").replaceAll("\\{slash}", "/")
+                .replaceAll("(?m)^( *)\\*\\\\/$", "$1*/").replaceAll("\\{@literal (.*?)}", "$1");
         Map<String, Object> options = optionsBuilder.attributes(attributesBuilder.asMap())
                 .option("base_dir", this.baseDir).asMap();
         return asciidoctor.render(cleanedInput, options);
