@@ -49,11 +49,12 @@ import java.util.regex.Pattern;
  *  * A Javadoc Doclet that uses http://asciidoctor.org[Asciidoctor]
  *  * to render http://asciidoc.org[AsciiDoc] markup in Javadoc comments.
  *  *
- *  * {@literal @}author https://github.com/johncarl81[John Ericksen]
- *  *{@literal /}
+ *  * @author https://github.com/johncarl81[John Ericksen]
+ *  *\/
  * public class Asciidoclet extends Doclet {
  *     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create(); // <1>
  *
+ *     @SuppressWarnings("UnusedDeclaration")
  *     public static boolean start(RootDoc rootDoc) {
  *         new Asciidoclet().render(rootDoc); // <2>
  *         return Standard.start(rootDoc);
@@ -173,6 +174,8 @@ public class Asciidoclet extends Doclet {
     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
 
     private final AttributesBuilder attributesBuilder = AttributesBuilder.attributes()
+        .attribute("at", "&#64;")
+        .attribute("slash", "/")
         .attribute("icons", null)
         .attribute("idprefix", "")
         .attribute("notitle", null)
@@ -299,6 +302,11 @@ public class Asciidoclet extends Doclet {
      * @param doc input
      */
     private void renderDoc(Doc doc) {
+        // hide text that looks like tags (such as annotations in source code) from Javadoc
+        // replacing the PackageDoc raw comment text issues a warning, perhaps in the case it's empty
+        if (!(doc instanceof PackageDoc)) {
+            doc.setRawCommentText(doc.getRawCommentText().replaceAll("@([A-Z])", "{@literal @}$1"));
+        }
         StringBuilder buffer = new StringBuilder();
         buffer.append(render(doc.commentText()));
         buffer.append('\n');
@@ -342,8 +350,8 @@ public class Asciidoclet extends Doclet {
      */
     private String render(String input) {
         // Replace "\n " to remove default Javadoc space.
-        String cleanedInput = input.trim().replaceAll("\n ", "\n")
-            .replaceAll("\\{@literal (.*?)}", "$1");
+        String cleanedInput = input.trim().replaceAll("\n ", "\n").replaceAll("\\{at}", "&#64;").replaceAll("\\{slash}", "/")
+            .replaceAll("(?m)^( *)\\*\\\\/$", "$1*/").replaceAll("\\{@literal (.*?)}", "$1");
         Map<String, Object> options = optionsBuilder.attributes(attributesBuilder.asMap()).asMap();
         return asciidoctor.render(cleanedInput, options);
     }
