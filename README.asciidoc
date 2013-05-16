@@ -11,7 +11,7 @@ Traditionally, Javadocs have mixed minor markup with HTML which, if you're writi
 unreadable and hard to write over time. This is where lightweight markup languages like AsciiDoc thrive. AsciiDoc
 straddles the line between readable markup and beautifully rendered content.
 
-Asciidoclet encorporates an AsciiDoc renderer
+Asciidoclet incorporates an AsciiDoc renderer
 (https://github.com/asciidoctor/asciidoctor[Asciidoctor] via the
 https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration])
 into a simple Doclet that enables AsciiDoc formatting within Javadoc comments and tags.
@@ -81,7 +81,7 @@ Asciidoclet may be used via a maven-javadoc-plugin doclet:
     <version>2.9</version>
     <configuration>
         <source>1.7</source>
-        <doclet>org.asciidoclet.Asciidoclet</doclet>
+        <doclet>org.asciidoctor.Asciidoclet</doclet>
         <docletArtifact>
             <groupId>org.asciidoclet</groupId>
             <artifactId>asciidoclet</artifactId>
