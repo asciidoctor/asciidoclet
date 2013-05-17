@@ -93,6 +93,7 @@
                         <artifactId>asciidoclet</artifactId>
                         <version>${project.version}</version>
                     </docletArtifact>
+                    <additionalparam>-include-basedir ${project.basedir}</additionalparam>  <!-- <1> -->
                     <linksource>true</linksource>
                 </configuration>
             </plugin>
