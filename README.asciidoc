@@ -13,7 +13,7 @@ straddles the line between readable markup and beautifully rendered content.
 
 Asciidoclet incorporates an AsciiDoc renderer
 (https://github.com/asciidoctor/asciidoctor[Asciidoctor] via the
-https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration])
+https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration] library)
 into a simple Doclet that enables AsciiDoc formatting within Javadoc comments and tags.
 
 == Example
@@ -31,11 +31,15 @@ Here's an example of a class with traditional Javadoc:
  * public class Asciidoclet extends Doclet {
  *     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
  *
+ *     {@literal @}SuppressWarnings("UnusedDeclaration")
  *     public static boolean start(RootDoc rootDoc) {
  *         new Asciidoclet().render(rootDoc);
  *         return Standard.start(rootDoc);
  *     }
+ * }
  * }</pre>
+ *
+ * @author <a href="https://github.com/johncarl81">John Ericksen</a>
  */
 public class Asciidoclet extends Doclet {
 }
@@ -55,6 +59,7 @@ and here's the same class with Asciidoclet:
  * public class Asciidoclet extends Doclet {
  *     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
  *
+ *     @SuppressWarnings("UnusedDeclaration")
  *     public static boolean start(RootDoc rootDoc) {
  *         new Asciidoclet().render(rootDoc);
  *         return Standard.start(rootDoc);
