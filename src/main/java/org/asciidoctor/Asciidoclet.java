@@ -32,7 +32,7 @@ import com.sun.tools.doclets.standard.Standard;
  *
  * [source,xml]
  * ----
- * include::pom.xml[lines=76..99]
+ * include::pom.xml[tags=pom_include]
  * ----
  *
  * <1> The -includes-basedir option must be set, typically this is the project root. It allows
@@ -258,9 +258,8 @@ public class Asciidoclet extends Doclet {
     @SuppressWarnings("UnusedDeclaration")
     public static boolean validOptions(String[][] options, DocErrorReporter errorReporter) {
         boolean hasBaseDir = false;
-        for (int i = 0; i < options.length; i++) {
-            final String[] opts = options[i];
-            if ("-include-basedir".equals(opts[0])) {
+        for (final String option[] : options) {
+            if ("-include-basedir".equals(option[0])) {
                 hasBaseDir = true;
             }
         }
@@ -272,10 +271,9 @@ public class Asciidoclet extends Doclet {
     }
 
     private static String getBaseDir(String[][] options) {
-        for (int i = 0; i < options.length; i++) {
-            final String[] opts = options[i];
-            if ("-include-basedir".equals(opts[0])) {
-                return opts[1];
+        for (final String option[] : options) {
+            if ("-include-basedir".equals(option[0])) {
+                return option[1];
             }
         }
         return null;
