@@ -1,44 +1,45 @@
 package org.asciidoctor;
 
-import com.sun.javadoc.*;
-import com.sun.tools.doclets.standard.Standard;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sun.javadoc.AnnotationTypeDoc;
+import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.Doc;
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.Doclet;
+import com.sun.javadoc.LanguageVersion;
+import com.sun.javadoc.MemberDoc;
+import com.sun.javadoc.PackageDoc;
+import com.sun.javadoc.RootDoc;
+import com.sun.javadoc.Tag;
+import com.sun.tools.doclets.standard.Standard;
+
 /**
  * = Asciidoclet
- * 
+ *
  * https://github.com/asciidoctor/asciidoclet[Asciidoclet] is a Javadoc Doclet
  * that uses http://asciidoctor.org[Asciidoctor] (via the
  * https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration])
  * to render http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
  *
  * == Usage
- * 
+ *
  * Asciidoclet may be used via a custom doclet in the maven-javadoc-plugin:
  *
  * [source,xml]
- * <plugin>
- *   <groupId>org.apache.maven.plugins</groupId>
- *   <artifactId>maven-javadoc-plugin</artifactId>
- *   <version>2.9</version>
- *   <configuration>
- *     <source>1.7</source>
- *     <doclet>org.asciidoctor.Asciidoclet</doclet>
- *     <docletArtifact>
- *       <groupId>org.asciidoclet</groupId>
- *       <artifactId>asciidoclet</artifactId>
- *       <version>${asciidoclet.version}</version>
- *     </docletArtifact>
- *   </configuration>
- * </plugin>
+ * ----
+ * include::pom.xml[tags=pom_include]
+ * ----
+ *
+ * <1> The -includes-basedir option must be set, typically this is the project root. It allows
+ * source inclusions within javadocs, relative to the specified directory.
  *
  * == Examples
- * 
+ *
  * Code block (with syntax highlighting added by CodeRay)::
  * +
  * [source,java]
@@ -135,15 +136,15 @@ import java.util.regex.Pattern;
  * |Column 1
  * |Column 2
  * |Column 3
- * 
+ *
  * |1
  * |Item 1
  * |a
- * 
+ *
  * |2
  * |Item 2
  * |b
- * 
+ *
  * |3
  * |Item 3
  * |c
@@ -183,7 +184,9 @@ public class Asciidoclet extends Doclet {
         .safe(SafeMode.SAFE).backend("html5").eruby("erubis");
 
     private final Pattern inlineContentRe = Pattern.compile("(?s).*?<p>\\s*(.*?)\\s*</p>.*");
-    
+
+    private String baseDir;
+
     /**
      * .Example usage
      * [source,java]
@@ -221,6 +224,9 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static int optionLength(String option) {
+        if ("-include-basedir".equals(option)) {
+            return 2;
+        }
         return Standard.optionLength(option);
     }
 
@@ -234,8 +240,9 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static boolean start(RootDoc rootDoc) {
-        new Asciidoclet().render(rootDoc);
-
+        final Asciidoclet doclet = new Asciidoclet();
+        doclet.baseDir = getBaseDir(rootDoc.options());
+        doclet.render(rootDoc);
         return Standard.start(rootDoc);
     }
 
@@ -250,7 +257,26 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static boolean validOptions(String[][] options, DocErrorReporter errorReporter) {
-        return Standard.validOptions(options, errorReporter);
+        boolean hasBaseDir = false;
+        for (final String option[] : options) {
+            if ("-include-basedir".equals(option[0])) {
+                hasBaseDir = true;
+            }
+        }
+        if (!hasBaseDir) {
+            errorReporter.printError("-include-basedir must be present");
+        }
+
+        return hasBaseDir;
+    }
+
+    private static String getBaseDir(String[][] options) {
+        for (final String option[] : options) {
+            if ("-include-basedir".equals(option[0])) {
+                return option[1];
+            }
+        }
+        return null;
     }
 
     /**
@@ -344,7 +370,8 @@ public class Asciidoclet extends Doclet {
         // Replace "\n " to remove default Javadoc space.
         String cleanedInput = input.trim().replaceAll("\n ", "\n")
             .replaceAll("\\{@literal (.*?)}", "$1");
-        Map<String, Object> options = optionsBuilder.attributes(attributesBuilder.asMap()).asMap();
+        Map<String, Object> options = optionsBuilder.attributes(attributesBuilder.asMap())
+                .option("base_dir", this.baseDir).asMap();
         return asciidoctor.render(cleanedInput, options);
     }
 }
