@@ -320,10 +320,8 @@ public class Asciidoclet extends Doclet {
      */
     private void renderDoc(Doc doc) {
         // hide text that looks like tags (such as annotations in source code) from Javadoc
-        // replacing the PackageDoc raw comment text issues a warning, perhaps in the case it's empty
-        if (!(doc instanceof PackageDoc)) {
-            doc.setRawCommentText(doc.getRawCommentText().replaceAll("@([A-Z])", "{@literal @}$1"));
-        }
+        doc.setRawCommentText(doc.getRawCommentText().replaceAll("@([A-Z])", "{@literal @}$1"));
+
         StringBuilder buffer = new StringBuilder();
         buffer.append(render(doc.commentText()));
         buffer.append('\n');
