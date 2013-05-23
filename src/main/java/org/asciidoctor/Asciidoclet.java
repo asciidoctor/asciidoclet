@@ -258,10 +258,10 @@ public class Asciidoclet extends Doclet {
             }
         }
         if (!hasBaseDir) {
-            errorReporter.printError("-include-basedir must be present");
+            errorReporter.printWarning("-include-basedir must be present for includes or file reference features.");
         }
 
-        return hasBaseDir;
+        return Standard.validOptions(options, errorReporter);
     }
 
     private static String getBaseDir(String[][] options) {
@@ -367,8 +367,11 @@ public class Asciidoclet extends Doclet {
         // Replace "\n " to remove default Javadoc space.
         String cleanedInput = input.trim().replaceAll("\n ", "\n").replaceAll("\\{at}", "&#64;").replaceAll("\\{slash}", "/")
                 .replaceAll("(?m)^( *)\\*\\\\/$", "$1*/").replaceAll("\\{@literal (.*?)}", "$1");
-        Map<String, Object> options = optionsBuilder.attributes(attributesBuilder.asMap())
-                .option("base_dir", this.baseDir).asMap();
+        optionsBuilder.attributes(attributesBuilder.asMap());
+        if(this.baseDir != null){
+            optionsBuilder.option("base_dir", this.baseDir);
+        }
+        Map<String, Object> options = optionsBuilder.asMap();
         return asciidoctor.render(cleanedInput, options);
     }
 }
