@@ -148,9 +148,6 @@
  * Usage: Notes in a sidebar, naturally.
  * ****
  *
- * {at}
- * {slash}
- *
  * Admonitions::
  * +
  * IMPORTANT: Check this out!
