@@ -175,11 +175,6 @@ public class Asciidoclet extends Doclet {
         .attribute("source-highlighter", "coderay")
         .attribute("coderay-css", "style");
 
-    private final OptionsBuilder optionsBuilder = OptionsBuilder.options()
-        .safe(SafeMode.SAFE).backend("html5").eruby("erubis");
-
-    private final Pattern inlineContentRe = Pattern.compile("(?s).*?<p>\\s*(.*?)\\s*</p>.*");
-
     private String baseDir;
 
     /**
@@ -364,6 +359,9 @@ public class Asciidoclet extends Doclet {
                 .replaceAll("\\{slash}", "/") // {slash} is translated into /.
                 .replaceAll("(?m)^( *)\\*\\\\/$", "$1*/") // Multi-line comment end tag is translated into */.
                 .replaceAll("\\{@literal (.*?)}", "$1"); // {@literal _} is translated into _ (standard javadoc).
+
+        OptionsBuilder optionsBuilder = OptionsBuilder.options()
+                .safe(SafeMode.SAFE).backend("html5").eruby("erubis");
 
         optionsBuilder.attributes(attributesBuilder.asMap());
 
