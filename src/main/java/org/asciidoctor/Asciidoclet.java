@@ -3,6 +3,7 @@ package org.asciidoctor;
 import com.sun.javadoc.*;
 import com.sun.tools.doclets.standard.Standard;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -323,7 +324,7 @@ public class Asciidoclet extends Doclet {
         doc.setRawCommentText(doc.getRawCommentText().replaceAll("@([A-Z])", "{@literal @}$1"));
 
         StringBuilder buffer = new StringBuilder();
-        buffer.append(render(doc.commentText()));
+        buffer.append(render(doc.commentText(), false));
         buffer.append('\n');
         for ( Tag tag : doc.tags() ) {
             renderTag(tag, buffer);
@@ -342,15 +343,7 @@ public class Asciidoclet extends Doclet {
         //print out directly
         buffer.append(tag.name());
         buffer.append(" ");
-        // switch to doctype=inline to render tag text once Asciidoctor #328 is resolved
-        String renderedText = render(tag.text());
-        Matcher inlineContentMatcher = inlineContentRe.matcher(renderedText);
-        if (inlineContentMatcher.matches()) {
-        	buffer.append(inlineContentMatcher.group(1));
-        }
-        else {
-        	buffer.append(tag.text());
-        }
+        buffer.append(render(tag.text(), true));
     }
 
     /**
@@ -363,14 +356,24 @@ public class Asciidoclet extends Doclet {
      * @param input AsciiDoc source
      * @return content rendered by Asciidoctor
      */
-    private String render(String input) {
+    private String render(String input, boolean inline) {
         // Replace "\n " to remove default Javadoc space.
-        String cleanedInput = input.trim().replaceAll("\n ", "\n").replaceAll("\\{at}", "&#64;").replaceAll("\\{slash}", "/")
-                .replaceAll("(?m)^( *)\\*\\\\/$", "$1*/").replaceAll("\\{@literal (.*?)}", "$1");
+        String cleanedInput = input.trim()
+                .replaceAll("\n ", "\n") // Newline space to accommodate javadoc newlines.
+                .replaceAll("\\{at}", "&#64;") // {at} is translated into @.
+                .replaceAll("\\{slash}", "/") // {slash} is translated into /.
+                .replaceAll("(?m)^( *)\\*\\\\/$", "$1*/") // Multi-line comment end tag is translated into */.
+                .replaceAll("\\{@literal (.*?)}", "$1"); // {@literal _} is translated into _ (standard javadoc).
+
         optionsBuilder.attributes(attributesBuilder.asMap());
+
         if(this.baseDir != null){
-            optionsBuilder.option("base_dir", this.baseDir);
+            optionsBuilder.baseDir(new File(this.baseDir));
         }
+        if(inline){
+            optionsBuilder.docType("inline");
+        }
+
         Map<String, Object> options = optionsBuilder.asMap();
         return asciidoctor.render(cleanedInput, options);
     }
