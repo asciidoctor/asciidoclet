@@ -7,8 +7,6 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * = Asciidoclet
@@ -164,6 +162,8 @@ import java.util.regex.Pattern;
  */
 public class Asciidoclet extends Doclet {
 
+    protected static final String INCLUDE_BASEDIR_OPTION = "-include-basedir";
+
     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
 
     private final AttributesBuilder attributesBuilder = AttributesBuilder.attributes()
@@ -214,7 +214,7 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static int optionLength(String option) {
-        if ("-include-basedir".equals(option)) {
+        if (INCLUDE_BASEDIR_OPTION.equals(option)) {
             return 2;
         }
         return Standard.optionLength(option);
