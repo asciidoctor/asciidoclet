@@ -1,12 +1,13 @@
 package org.asciidoctor;
 
-import com.sun.javadoc.*;
-import com.sun.tools.doclets.standard.Standard;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.Doclet;
+import com.sun.javadoc.LanguageVersion;
+import com.sun.javadoc.RootDoc;
+import org.asciidoctor.asciidoclet.AsciidoctorRenderer;
+import org.asciidoctor.asciidoclet.DocletIterator;
+import org.asciidoctor.asciidoclet.DocletRenderer;
+import org.asciidoctor.asciidoclet.StandardAdapter;
 
 /**
  * = Asciidoclet
@@ -164,18 +165,8 @@ public class Asciidoclet extends Doclet {
 
     protected static final String INCLUDE_BASEDIR_OPTION = "-include-basedir";
 
-    private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
-
-    private final AttributesBuilder attributesBuilder = AttributesBuilder.attributes()
-        .attribute("at", "&#64;")
-        .attribute("slash", "/")
-        .attribute("icons", null)
-        .attribute("idprefix", "")
-        .attribute("notitle", null)
-        .attribute("source-highlighter", "coderay")
-        .attribute("coderay-css", "style");
-
-    private String baseDir;
+    private static StandardAdapter standardAdapter = new StandardAdapter();
+    private static DocletIterator iterator = new DocletIterator();
 
     /**
      * .Example usage
@@ -217,7 +208,7 @@ public class Asciidoclet extends Doclet {
         if (INCLUDE_BASEDIR_OPTION.equals(option)) {
             return 2;
         }
-        return Standard.optionLength(option);
+        return standardAdapter.optionLength(option);
     }
 
     /**
@@ -230,10 +221,11 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static boolean start(RootDoc rootDoc) {
-        final Asciidoclet doclet = new Asciidoclet();
-        doclet.baseDir = getBaseDir(rootDoc.options());
-        doclet.render(rootDoc);
-        return Standard.start(rootDoc);
+        String baseDir = getBaseDir(rootDoc.options());
+        DocletRenderer renderer = new AsciidoctorRenderer(baseDir);
+        iterator.render(rootDoc, renderer);
+
+        return standardAdapter.start(rootDoc);
     }
 
     /**
@@ -248,21 +240,21 @@ public class Asciidoclet extends Doclet {
     @SuppressWarnings("UnusedDeclaration")
     public static boolean validOptions(String[][] options, DocErrorReporter errorReporter) {
         boolean hasBaseDir = false;
-        for (final String option[] : options) {
-            if ("-include-basedir".equals(option[0])) {
+        for (String option[] : options) {
+            if (option.length > 0 && INCLUDE_BASEDIR_OPTION.equals(option[0])) {
                 hasBaseDir = true;
             }
         }
         if (!hasBaseDir) {
-            errorReporter.printWarning("-include-basedir must be present for includes or file reference features.");
+            errorReporter.printWarning(INCLUDE_BASEDIR_OPTION + " must be present for includes or file reference features.");
         }
 
-        return Standard.validOptions(options, errorReporter);
+        return standardAdapter.validOptions(options, errorReporter);
     }
 
-    private static String getBaseDir(String[][] options) {
-        for (final String option[] : options) {
-            if ("-include-basedir".equals(option[0])) {
+    protected static String getBaseDir(String[][] options) {
+        for (String option[] : options) {
+            if (INCLUDE_BASEDIR_OPTION.equals(option[0])) {
                 return option[1];
             }
         }
@@ -270,109 +262,24 @@ public class Asciidoclet extends Doclet {
     }
 
     /**
-     * Renders the input document.
+     * _For testing purposes._
      *
-     * @param rootDoc input
+     * Allows tests to override the standard adapter.
+     *
+     * @param adapter
      */
-    private void render(RootDoc rootDoc) {
-        Set<PackageDoc> packages = new HashSet<PackageDoc>();
-        for ( ClassDoc doc : rootDoc.classes() ) {
-            packages.add(doc.containingPackage());
-            renderClass(doc);
-        }
-        for ( PackageDoc doc : packages ) {
-            renderDoc(doc);
-        }
+    protected static void setStandardAdapter(StandardAdapter adapter){
+        standardAdapter = adapter;
     }
 
     /**
-     * Renders an individual class.
+     * _For testing purposes._
      *
-     * @param doc input
+     * Allows tests to override the doclet iterator.
+     *
+     * @param iterator
      */
-    private void renderClass(ClassDoc doc) {
-        //handle the various parts of the Class doc
-        renderDoc(doc);
-        for ( MemberDoc member : doc.fields() ) {
-            renderDoc(member);
-        }
-        for ( MemberDoc member : doc.constructors() ) {
-            renderDoc(member);
-        }
-        for ( MemberDoc member : doc.methods() ) {
-            renderDoc(member);
-        }
-        if ( doc instanceof AnnotationTypeDoc ) {
-            for ( MemberDoc member : ((AnnotationTypeDoc)doc).elements() ) {
-                renderDoc(member);
-            }
-        }
-    }
-
-    /**
-     * Renders a generic document (class, field, method, etc)
-     *
-     * @param doc input
-     */
-    private void renderDoc(Doc doc) {
-        // hide text that looks like tags (such as annotations in source code) from Javadoc
-        doc.setRawCommentText(doc.getRawCommentText().replaceAll("@([A-Z])", "{@literal @}$1"));
-
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(render(doc.commentText(), false));
-        buffer.append('\n');
-        for ( Tag tag : doc.tags() ) {
-            renderTag(tag, buffer);
-            buffer.append('\n');
-        }
-        doc.setRawCommentText(buffer.toString());
-    }
-
-    /**
-     * Renders a document tag in the standard way.
-     *
-     * @param tag input
-     * @param buffer output buffer
-     */
-    private void renderTag(Tag tag, StringBuilder buffer) {
-        //print out directly
-        buffer.append(tag.name());
-        buffer.append(" ");
-        buffer.append(render(tag.text(), true));
-    }
-
-    /**
-     * Renders the input using Asciidoctor.
-     *
-     * The source is first cleaned by stripping any trailing space after an
-     * end line (e.g., `"\n "`), which gets left behind by the Javadoc
-     * processor.
-     *
-     * @param input AsciiDoc source
-     * @return content rendered by Asciidoctor
-     */
-    private String render(String input, boolean inline) {
-        // Replace "\n " to remove default Javadoc space.
-        String cleanedInput = input.trim()
-                .replaceAll("\n ", "\n") // Newline space to accommodate javadoc newlines.
-                .replaceAll("\\{at}", "&#64;") // {at} is translated into @.
-                .replaceAll("\\{slash}", "/") // {slash} is translated into /.
-                .replaceAll("(?m)^( *)\\*\\\\/$", "$1*/") // Multi-line comment end tag is translated into */.
-                .replaceAll("\\{@literal (.*?)}", "$1"); // {@literal _} is translated into _ (standard javadoc).
-
-        OptionsBuilder optionsBuilder = OptionsBuilder.options()
-                .safe(SafeMode.SAFE).backend("html5").eruby("erubis");
-
-        optionsBuilder.attributes(attributesBuilder.asMap());
-
-        if(this.baseDir != null){
-            optionsBuilder.baseDir(new File(this.baseDir));
-        }
-        if(inline){
-            optionsBuilder.docType("inline");
-        }
-
-        Map<String, Object> options = optionsBuilder.asMap();
-        return asciidoctor.render(cleanedInput, options);
+    protected static void setIterator(DocletIterator iterator) {
+        Asciidoclet.iterator = iterator;
     }
 }
