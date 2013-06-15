@@ -1,26 +1,43 @@
 = Asciidoclet
 John Ericksen <https://github.com/johncarl81>
-v0.1.0
-:source-highlighter: highlightjs
+v0.1.3
+:description: This is a guide for setting up and using the Asciidoclet project. Asciidoclet is a Javadoc Doclet based on Asciidoctor that lets you write Javadoc in the AsciiDoc syntax.
+:keywords: Asciidoclet, AsciiDoc, Asciidoctor, syntax, Javadoc, Doclet, reference
+:awestruct-layout: base
+:language: java
+ifndef::awestruct[]
+:idprefix:
+:idseparator: -
+:toc:
+:sectanchors:
+:icons: font
+:source-highlighter: highlight.js
+endif::awestruct[]
+// Refs
+:asciidoclet-src-ref: https://github.com/asciidoctor/asciidoclet
+:asciidoc-ref: http://asciidoc.org
+:asciidoctor-java-ref: http://asciidoctor.org/docs/install-and-use-asciidoctor-java-integration/
+:asciidoclet-issues-ref: https://github.com/asciidoctor/asciidoclet/issues
+:asciidoctor-src-ref: https://github.com/asciidoctor/asciidoctor
+:asciidoctor-java-src-ref: https://github.com/asciidoctor/asciidoctor-java-integration
+:discuss-ref: http://discuss.asciidoctor.org/
 
-Asciidoclet is a Javadoc Doclet that allows you to write Javadoc using the AsciiDoc format.
+{asciidoclet-src-ref}[Asciidoclet] is a Javadoc Doclet based on Asciidoctor that lets you write Javadoc in the AsciiDoc syntax.
 
 == Introduction
 
-Traditionally, Javadocs have mixed minor markup with HTML which, if you're writing for HTML Javadoc output, becomes
-unreadable and hard to write over time. This is where lightweight markup languages like AsciiDoc thrive. AsciiDoc
-straddles the line between readable markup and beautifully rendered content.
+Traditionally, Javadocs have mixed minor markup with HTML which, if you're writing for HTML Javadoc output, becomes unreadable and hard to write over time. 
+This is where lightweight markup languages like {asciidoc-ref}[AsciiDoc] thrive. 
+AsciiDoc straddles the line between readable markup and beautifully rendered content.
 
-Asciidoclet incorporates an AsciiDoc renderer
-(https://github.com/asciidoctor/asciidoctor[Asciidoctor] via the
-https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration] library)
-into a simple Doclet that enables AsciiDoc formatting within Javadoc comments and tags.
+Asciidoclet incorporates an AsciiDoc renderer (Asciidoctor via the {asciidoctor-java-ref}[Asciidoctor Java integration] library) into a simple Doclet that enables AsciiDoc formatting within Javadoc comments and tags.
 
 == Example
 
-Here's an example of a class with traditional Javadoc:
+Here's an example of a class with traditional Javadoc.
 
-[source,java]
+[source]
+.A Java class with traditional Javadoc
 ----
 /**
  * <h1>Asciidoclet</h1>
@@ -45,9 +62,10 @@ public class Asciidoclet extends Doclet {
 }
 ----
 
-and here's the same class with Asciidoclet:
+This is the same class with Asciidoclet.
 
-[source,java]
+[source]
+.A Java class with Asciidoclet Javadoc
 ----
 /**
  * = Asciidoclet
@@ -77,9 +95,12 @@ The result is readable source and beautifully rendered Javadocs, the best of bot
 
 == Usage
 
-Asciidoclet may be used via a maven-javadoc-plugin doclet:
+=== Maven
+
+Asciidoclet may be used via a +maven-javadoc-plugin+ doclet:
 
 [source,xml]
+----
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-javadoc-plugin</artifactId>
@@ -94,6 +115,38 @@ Asciidoclet may be used via a maven-javadoc-plugin doclet:
         </docletArtifact>
     </configuration>
 </plugin>
+----
+
+=== Gradle
+
+Asciidoclet may be used via a doclet in the +Javadoc+ task:
+
+[source,groovy]
+----
+configurations {
+    asciidoclet
+}
+
+dependencies {
+    asciidoclet 'org.asciidoctor:asciidoclet:0.+'
+}
+ 
+javadoc {
+    options.docletpath = configurations.asciidoclet.files.asType(List)
+    options.doclet = 'org.asciidoctor.Asciidoclet'
+}
+----
+
+== Rescources and help
+
+For more information:
+
+* {asciidoclet-src-ref}[Asciidoclet Source Code]
+* {asciidoclet-issues-ref}[Asciidoclet Issue Tracker]
+* {asciidoctor-src-ref}[Asciidoctor Source Code]
+* {asciidoctor-java-src-ref}[Asciidoctor Java Integration Source Code]
+
+If you have questions or would like to help develop this project, please join the {discuss-ref}[Asciidoctor discussion list].
 
 == License
 
