@@ -6,7 +6,7 @@
     <groupId>org.asciidoctor</groupId>
     <artifactId>asciidoclet</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.5-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
 
     <name>Asciidoc Javadoc Doclet</name>
 
@@ -35,8 +35,8 @@
     <dependencies>
         <dependency>
             <groupId>org.asciidoctor</groupId>
-            <artifactId>asciidoctor-java-integration</artifactId>
-            <version>0.1.4</version>
+            <artifactId>asciidoctorj</artifactId>
+            <version>1.5.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.sun.tools</groupId>
