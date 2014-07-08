@@ -1,6 +1,7 @@
 package org.asciidoctor.asciidoclet;
 
 import com.sun.javadoc.Doc;
+import com.sun.javadoc.RootDoc;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.*;
 

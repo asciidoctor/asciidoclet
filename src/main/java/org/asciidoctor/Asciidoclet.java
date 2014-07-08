@@ -4,10 +4,7 @@ import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Doclet;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
-import org.asciidoctor.asciidoclet.AsciidoctorRenderer;
-import org.asciidoctor.asciidoclet.DocletIterator;
-import org.asciidoctor.asciidoclet.DocletRenderer;
-import org.asciidoctor.asciidoclet.StandardAdapter;
+import org.asciidoctor.asciidoclet.*;
 
 /**
  * = Asciidoclet
@@ -28,6 +25,10 @@ import org.asciidoctor.asciidoclet.StandardAdapter;
  *
  * <1> The -includes-basedir option must be set, typically this is the project root. It allows
  * source inclusions within javadocs, relative to the specified directory.
+ *
+ * <2> The -overview option may refer to an Asciidoc file. If the file's extension does not match
+ * one of `.ad`, `.adoc`, `.asciidoc` or `.txt`, then the file is ignored and will be processed
+ * by the standard doclet as an HTML overview.
  *
  * == Examples
  * 
@@ -223,9 +224,8 @@ public class Asciidoclet extends Doclet {
     public static boolean start(RootDoc rootDoc) {
         String baseDir = getBaseDir(rootDoc.options());
         DocletRenderer renderer = new AsciidoctorRenderer(baseDir);
-        iterator.render(rootDoc, renderer);
 
-        return standardAdapter.start(rootDoc);
+        return iterator.render(rootDoc, renderer) && standardAdapter.start(rootDoc);
     }
 
     /**

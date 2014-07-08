@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 
 /**
  * @author John Ericksen
@@ -13,28 +14,40 @@ public class DocletIteratorTest {
 
     private DocletIterator iterator;
     private DocletRenderer mockRenderer;
+    private RootDoc mockDoc;
+    private ClassDoc mockClassDoc;
+    private PackageDoc mockPackageDoc;
+    private FieldDoc mockFieldDoc;
+    private ConstructorDoc mockConstructorDoc;
+    private MethodDoc mockMethodDoc;
 
     @Before
     public void setup(){
         mockRenderer = mock(DocletRenderer.class);
         iterator = new DocletIterator();
+
+        mockDoc = mock(RootDoc.class);
+        mockPackageDoc = mock(PackageDoc.class);
+        mockFieldDoc = mock(FieldDoc.class);
+        mockConstructorDoc = mock(ConstructorDoc.class);
+        mockMethodDoc = mock(MethodDoc.class);
+        mockClassDoc = mockClassDoc(ClassDoc.class, mockPackageDoc, mockFieldDoc, mockConstructorDoc, mockMethodDoc);
+
+        when(mockDoc.classes()).thenReturn(new ClassDoc[]{mockClassDoc});
+        when(mockDoc.options()).thenReturn(new String[][]{});
+    }
+
+    private <T extends ClassDoc> T mockClassDoc(Class<T> type, PackageDoc packageDoc, FieldDoc fieldDoc, ConstructorDoc constructorDoc, MethodDoc methodDoc) {
+        T classDoc = mock(type);
+        when(classDoc.containingPackage()).thenReturn(packageDoc);
+        when(classDoc.fields()).thenReturn(new FieldDoc[]{fieldDoc});
+        when(classDoc.constructors()).thenReturn(new ConstructorDoc[]{constructorDoc});
+        when(classDoc.methods()).thenReturn(new MethodDoc[]{methodDoc});
+        return classDoc;
     }
 
     @Test
     public void testIteration(){
-        RootDoc mockDoc = mock(RootDoc.class);
-        ClassDoc mockClassDoc = mock(ClassDoc.class);
-        PackageDoc mockPackageDoc = mock(PackageDoc.class);
-        FieldDoc mockFieldDoc = mock(FieldDoc.class);
-        ConstructorDoc mockConstructorDoc = mock(ConstructorDoc.class);
-        MethodDoc mockMethodDoc = mock(MethodDoc.class);
-
-        when(mockDoc.classes()).thenReturn(new ClassDoc[]{mockClassDoc});
-        when(mockClassDoc.containingPackage()).thenReturn(mockPackageDoc);
-        when(mockClassDoc.fields()).thenReturn(new FieldDoc[]{mockFieldDoc});
-        when(mockClassDoc.constructors()).thenReturn(new ConstructorDoc[]{mockConstructorDoc});
-        when(mockClassDoc.methods()).thenReturn(new MethodDoc[]{mockMethodDoc});
-
         iterator.render(mockDoc, mockRenderer);
 
         verify(mockRenderer).renderDoc(mockClassDoc);
@@ -46,19 +59,38 @@ public class DocletIteratorTest {
 
     @Test
     public void testAnnotationIteration(){
-        RootDoc mockDoc = mock(RootDoc.class);
-        AnnotationTypeDoc mockClassDoc = mock(AnnotationTypeDoc.class);
+        AnnotationTypeDoc mockClassDoc = mockClassDoc(AnnotationTypeDoc.class, mockPackageDoc, mockFieldDoc, mockConstructorDoc, mockMethodDoc);
         AnnotationTypeElementDoc mockAnnotationElement = mock(AnnotationTypeElementDoc.class);
 
         when(mockDoc.classes()).thenReturn(new ClassDoc[]{mockClassDoc});
-        when(mockClassDoc.fields()).thenReturn(new FieldDoc[]{});
-        when(mockClassDoc.constructors()).thenReturn(new ConstructorDoc[]{});
-        when(mockClassDoc.methods()).thenReturn(new MethodDoc[]{});
         when(mockClassDoc.elements()).thenReturn(new AnnotationTypeElementDoc[]{mockAnnotationElement});
 
         iterator.render(mockDoc, mockRenderer);
 
         verify(mockRenderer).renderDoc(mockClassDoc);
         verify(mockRenderer).renderDoc(mockAnnotationElement);
+    }
+
+    @Test
+    public void testIgnoreNonAsciidocOverview() {
+        when(mockDoc.options()).thenReturn(new String[][] {{"-overview", "foo.html"}});
+
+        assertTrue(iterator.render(mockDoc, mockRenderer));
+        verify(mockDoc, never()).setRawCommentText(any(String.class));
+    }
+
+    @Test
+    public void testFailIfAsciidocOverviewNotFound() {
+        when(mockDoc.options()).thenReturn(new String[][] {{"-overview", "notfound.adoc"}});
+
+        assertFalse(iterator.render(mockDoc, mockRenderer));
+    }
+
+    @Test
+    public void testOverviewFound() {
+        when(mockDoc.options()).thenReturn(new String[][] {{"-overview", "src/main/java/overview.adoc"}});
+
+        assertTrue(iterator.render(mockDoc, mockRenderer));
+        verify(mockRenderer).renderDoc(mockDoc);
     }
 }

@@ -118,6 +118,7 @@
                     </docletArtifact>
                     <additionalparam>-include-basedir ${project.basedir}</additionalparam>  <!-- <1> -->
                     <linksource>true</linksource>
+                    <overview>src/main/java/overview.adoc</overview>  <!-- <2> -->
                 </configuration>
             </plugin>
             <!-- end::pom_include[] -->
