@@ -20,7 +20,7 @@ import org.asciidoctor.asciidoclet.*;
  *
  * [source,xml]
  * ----
- * include::pom.xml[tags=pom_include]
+ * include::pom.xml[tags=pom_include,indent=0]
  * ----
  *
  * <1> The -includes-basedir option must be set, typically this is the project root. It allows
