@@ -4,14 +4,11 @@ import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Doclet;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
-import org.asciidoctor.asciidoclet.AsciidoctorRenderer;
-import org.asciidoctor.asciidoclet.DocletIterator;
-import org.asciidoctor.asciidoclet.DocletRenderer;
-import org.asciidoctor.asciidoclet.StandardAdapter;
+import org.asciidoctor.asciidoclet.*;
 
 /**
  * = Asciidoclet
- * 
+ *
  * https://github.com/asciidoctor/asciidoclet[Asciidoclet] is a Javadoc Doclet
  * that uses http://asciidoctor.org[Asciidoctor] (via the
  * https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration])
@@ -222,10 +219,13 @@ public class Asciidoclet extends Doclet {
     @SuppressWarnings("UnusedDeclaration")
     public static boolean start(RootDoc rootDoc) {
         String baseDir = getBaseDir(rootDoc.options());
-        DocletRenderer renderer = new AsciidoctorRenderer(baseDir);
-        iterator.render(rootDoc, renderer);
-
-        return standardAdapter.start(rootDoc);
+        AsciidoctorRenderer renderer = new AsciidoctorRenderer(baseDir, rootDoc);
+        try {
+            iterator.render(rootDoc, renderer);
+            return standardAdapter.start(rootDoc);
+        } finally {
+            renderer.cleanup();
+        }
     }
 
     /**
