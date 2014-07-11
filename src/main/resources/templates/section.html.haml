@@ -1,0 +1,8 @@
+-# Simplified section code from lib/asciidoctor/converter/html5.rb
+- @htag = %(h#{level + 1})
+- haml_tag @htag, title, :id => id
+- if level == 1
+  .sectionbody
+    = content
+- else    
+  = content
