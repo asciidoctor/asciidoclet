@@ -1,6 +1,7 @@
 package org.asciidoctor.asciidoclet;
 
 import com.sun.javadoc.Doc;
+import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.*;
 
@@ -27,9 +28,10 @@ public class AsciidoctorRenderer implements DocletRenderer {
 
     private final Asciidoctor asciidoctor;
     private final String baseDir;
+    private final OutputTemplates templates;
 
-    public AsciidoctorRenderer(String baseDir) {
-        this(baseDir, create());
+    public AsciidoctorRenderer(String baseDir, DocErrorReporter errorReporter) {
+        this(baseDir, new OutputTemplates(errorReporter), create());
     }
 
     /**
@@ -38,9 +40,10 @@ public class AsciidoctorRenderer implements DocletRenderer {
      * @param baseDir
      * @param asciidoctor
      */
-    protected AsciidoctorRenderer(String baseDir, Asciidoctor asciidoctor) {
+    protected AsciidoctorRenderer(String baseDir, OutputTemplates templates, Asciidoctor asciidoctor) {
         this.baseDir = baseDir;
         this.asciidoctor = asciidoctor;
+        this.templates = templates;
     }
 
     /**
@@ -61,6 +64,10 @@ public class AsciidoctorRenderer implements DocletRenderer {
             buffer.append('\n');
         }
         doc.setRawCommentText(buffer.toString());
+    }
+
+    public void cleanup() {
+        templates.delete();
     }
 
     /**
@@ -100,6 +107,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
         if(inline){
             optionsBuilder.docType(INLINE_DOCTYPE);
         }
+        templates.addToOptions(optionsBuilder);
 
         return asciidoctor.render(cleanJavadocInput(input), optionsBuilder.get());
     }
