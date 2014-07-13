@@ -1,5 +1,7 @@
 package org.asciidoctor.asciidoclet;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import com.sun.javadoc.*;
 
 import java.io.*;
@@ -66,7 +68,8 @@ public class DocletIterator {
         if (overviewFile != null) {
             if (isAsciidocFile(overviewFile.getName())) {
                 try {
-                    String overviewContent = readFile(overviewFile, getEncoding(rootDoc.options()));
+                    Charset encoding = getEncoding(rootDoc.options());
+                    String overviewContent = Files.toString(overviewFile, encoding);
                     rootDoc.setRawCommentText(overviewContent);
                     renderer.renderDoc(rootDoc);
                 } catch (IOException e) {
@@ -96,28 +99,11 @@ public class DocletIterator {
                 return Charset.forName(option[1]);
             }
         }
-        return Charset.forName("UTF-8");
+        return Charsets.UTF_8;
     }
 
     private static boolean isAsciidocFile(String name) {
         return ASCIIDOC_FILE_PATTERN.matcher(name).matches();
-    }
-
-    private static String readFile(File f, Charset charset) throws IOException {
-        char[] buf = new char[1024];
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), charset));
-        try {
-            StringBuilder out = new StringBuilder();
-            int n;
-            while ((n = reader.read(buf)) > 0) {
-                out.append(buf, 0, n);
-            }
-            return out.toString();
-        } finally {
-            try {
-                reader.close();
-            } catch (IOException e) { }
-        }
     }
 
     static final Pattern ASCIIDOC_FILE_PATTERN = Pattern.compile("(.*\\.(ad|adoc|txt|asciidoc))");
