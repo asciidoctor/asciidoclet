@@ -1,11 +1,14 @@
 package org.asciidoctor.asciidoclet;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.RootDoc;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * Provides an interface to the doclet options we are interested in.
@@ -16,12 +19,14 @@ public class DocletOptions {
     public static final String INCLUDE_BASEDIR = "-include-basedir";
     public static final String STYLESHEETFILE = "-stylesheetfile";
     public static final String DESTDIR = "-d";
+    public static final String ATTRIBUTES = "-attributes";
 
     private final Optional<File> basedir;
     private final Optional<File> overview;
     private final Optional<File> stylesheet;
     private final Optional<File> destdir;
     private final Charset encoding;
+    private final List<String> attributes;
 
     public static final DocletOptions NONE = new DocletOptions(new String[][]{});
 
@@ -35,6 +40,7 @@ public class DocletOptions {
         File stylesheet = null;
         File destdir = null;
         Charset encoding = Charset.defaultCharset();
+        ImmutableList.Builder<String> attrs = ImmutableList.builder();
         for (String[] option : options) {
             if (option.length > 0) {
                 if (INCLUDE_BASEDIR.equals(option[0])) {
@@ -52,6 +58,9 @@ public class DocletOptions {
                 else if (ENCODING.equals(option[0])) {
                     encoding = Charset.forName(option[1]);
                 }
+                else if (ATTRIBUTES.equals(option[0])) {
+                    attrs.addAll(attributeSplitter.split(option[1]));
+                }
             }
         }
 
@@ -60,6 +69,7 @@ public class DocletOptions {
         this.stylesheet = Optional.fromNullable(stylesheet);
         this.destdir = Optional.fromNullable(destdir);
         this.encoding = encoding;
+        this.attributes = attrs.build();
     }
 
     public Optional<File> overview() {
@@ -82,6 +92,10 @@ public class DocletOptions {
         return encoding;
     }
 
+    public Iterable<String> attributes() {
+        return attributes;
+    }
+
     public static boolean validOptions(String[][] options, DocErrorReporter errorReporter, StandardAdapter standardDoclet) {
         DocletOptions docletOptions = new DocletOptions(options);
 
@@ -96,7 +110,11 @@ public class DocletOptions {
         if (INCLUDE_BASEDIR.equals(option)) {
             return 2;
         }
+        if (ATTRIBUTES.equals(option)) {
+            return 2;
+        }
         return standardDoclet.optionLength(option);
     }
 
+    private static final Splitter attributeSplitter = Splitter.onPattern("\\s*;\\s*").omitEmptyStrings().trimResults();
 }

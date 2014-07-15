@@ -29,15 +29,25 @@ import java.net.URL;
  * include::pom.xml[tags=pom_include,indent=0]
  * ----
  *
- * <1> The -includes-basedir option must be set, typically this is the project root. It allows
- * source inclusions within javadocs, relative to the specified directory.
+ * <1> The `-include-basedir` option must be set, typically this is the project root. It allows
+ * source inclusions within javadocs, relative to the specified directory. +
+ * The `-attributes` option takes a *quoted string* containing a list of attributes that will be
+ * passed to Asciidoctor. The string may contain one or more `attrname` or `attrname=value`
+ * values, separated by *semicolons*.
  *
- * <2> The -overview option may refer to an Asciidoc file. If the file's extension does not match
+ * <2> The `-overview` option may refer to an Asciidoc file. If the file's extension does not match
  * one of `.ad`, `.adoc`, `.asciidoc` or `.txt`, then the file is ignored and will be processed
  * by the standard doclet as an HTML overview.
  *
  * == Examples
- * 
+ *
+ * Custom attributes::
+ * `{project_name}` = {project_name}
+ * +
+ * `{project_desc}` = {project_desc}
+ * +
+ * `{project_version}` = {project_version}
+ *
  * Code block (with syntax highlighting added by CodeRay)::
  * +
  * [source,java]
@@ -162,8 +172,8 @@ import java.net.URL;
  * +
  * IMPORTANT: Check this out!
  *
- * @author https://github.com/johncarl81[John Ericksen]
- * @version 0.1.0
+ * @author {author}
+ * @version {project_version}
  * @see org.asciidoctor.Asciidoclet
  * @since 0.1.0
  * @serial (or @serialField or @serialData)

@@ -1,5 +1,6 @@
 package org.asciidoctor.asciidoclet;
 
+import com.google.common.base.Optional;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.Asciidoctor;
@@ -23,7 +24,7 @@ public class AsciidoctorRendererTest {
     @Before
     public void setup(){
         mockAsciidoctor = mock(Asciidoctor.class);
-        renderer = new AsciidoctorRenderer(DocletOptions.NONE, mock(OutputTemplates.class), mockAsciidoctor);
+        renderer = new AsciidoctorRenderer(DocletOptions.NONE, Optional.<OutputTemplates>absent(), mockAsciidoctor);
     }
 
     @Test
@@ -70,11 +71,11 @@ public class AsciidoctorRendererTest {
 
     @Test
     public void testCleanInput(){
-        assertEquals("test1\ntest2", renderer.cleanJavadocInput("  test1\n test2\n"));
-        assertEquals("@", renderer.cleanJavadocInput("{@literal @}"));
-        assertEquals("/*\ntest\n*/", renderer.cleanJavadocInput("/*\ntest\n*\\/"));
-        assertEquals("&#64;", renderer.cleanJavadocInput("{at}"));
-        assertEquals("/", renderer.cleanJavadocInput("{slash}"));
+        assertEquals("test1\ntest2", AsciidoctorRenderer.cleanJavadocInput("  test1\n test2\n"));
+        assertEquals("@", AsciidoctorRenderer.cleanJavadocInput("{@literal @}"));
+        assertEquals("/*\ntest\n*/", AsciidoctorRenderer.cleanJavadocInput("/*\ntest\n*\\/"));
+        assertEquals("&#64;", AsciidoctorRenderer.cleanJavadocInput("{at}"));
+        assertEquals("/", AsciidoctorRenderer.cleanJavadocInput("{slash}"));
     }
 
     private static final class OptionsMatcher extends ArgumentMatcher<Options> {
