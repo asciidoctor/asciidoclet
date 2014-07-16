@@ -164,10 +164,22 @@ import org.asciidoctor.asciidoclet.*;
  */
 public class Asciidoclet extends Doclet {
 
-    protected static final String INCLUDE_BASEDIR_OPTION = "-include-basedir";
+    private final RootDoc rootDoc;
+    private final DocletOptions docletOptions;
+    private final DocletIterator iterator;
 
-    private static StandardAdapter standardAdapter = new StandardAdapter();
-    private static DocletIterator iterator = new DocletIterator();
+    public Asciidoclet(RootDoc rootDoc) {
+        this.rootDoc = rootDoc;
+        this.docletOptions = new DocletOptions(rootDoc);
+        this.iterator = new DocletIterator(docletOptions);
+    }
+
+    // test use
+    Asciidoclet(RootDoc rootDoc, DocletIterator iterator) {
+        this.rootDoc = rootDoc;
+        this.docletOptions = new DocletOptions(rootDoc);
+        this.iterator = iterator;
+    }
 
     /**
      * .Example usage
@@ -206,10 +218,7 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static int optionLength(String option) {
-        if (INCLUDE_BASEDIR_OPTION.equals(option)) {
-            return 2;
-        }
-        return standardAdapter.optionLength(option);
+        return optionLength(option, new StandardAdapter());
     }
 
     /**
@@ -222,14 +231,7 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static boolean start(RootDoc rootDoc) {
-        String baseDir = getBaseDir(rootDoc.options());
-        AsciidoctorRenderer renderer = new AsciidoctorRenderer(baseDir, rootDoc);
-        try {
-            return iterator.render(rootDoc, renderer) &&
-                   standardAdapter.start(rootDoc);
-        } finally {
-            renderer.cleanup();
-        }
+        return new Asciidoclet(rootDoc).start(new StandardAdapter());
     }
 
     /**
@@ -243,47 +245,24 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static boolean validOptions(String[][] options, DocErrorReporter errorReporter) {
-        boolean hasBaseDir = false;
-        for (String option[] : options) {
-            if (option.length > 0 && INCLUDE_BASEDIR_OPTION.equals(option[0])) {
-                hasBaseDir = true;
-            }
-        }
-        if (!hasBaseDir) {
-            errorReporter.printWarning(INCLUDE_BASEDIR_OPTION + " must be present for includes or file reference features.");
-        }
-
-        return standardAdapter.validOptions(options, errorReporter);
+        return validOptions(options, errorReporter, new StandardAdapter());
     }
 
-    protected static String getBaseDir(String[][] options) {
-        for (String option[] : options) {
-            if (INCLUDE_BASEDIR_OPTION.equals(option[0])) {
-                return option[1];
-            }
+    static int optionLength(String option, StandardAdapter standardDoclet) {
+        return DocletOptions.optionLength(option, standardDoclet);
+    }
+
+    static boolean validOptions(String[][] options, DocErrorReporter errorReporter, StandardAdapter standardDoclet) {
+        return DocletOptions.validOptions(options, errorReporter, standardDoclet);
+    }
+
+    boolean start(StandardAdapter standardDoclet) {
+        AsciidoctorRenderer renderer = new AsciidoctorRenderer(docletOptions, rootDoc);
+        try {
+            return iterator.render(rootDoc, renderer) &&
+                    standardDoclet.start(rootDoc);
+        } finally {
+            renderer.cleanup();
         }
-        return null;
-    }
-
-    /**
-     * _For testing purposes._
-     *
-     * Allows tests to override the standard adapter.
-     *
-     * @param adapter
-     */
-    protected static void setStandardAdapter(StandardAdapter adapter){
-        standardAdapter = adapter;
-    }
-
-    /**
-     * _For testing purposes._
-     *
-     * Allows tests to override the doclet iterator.
-     *
-     * @param iterator
-     */
-    protected static void setIterator(DocletIterator iterator) {
-        Asciidoclet.iterator = iterator;
     }
 }

@@ -23,7 +23,7 @@ public class AsciidoctorRendererTest {
     @Before
     public void setup(){
         mockAsciidoctor = mock(Asciidoctor.class);
-        renderer = new AsciidoctorRenderer(BASE_DIR, mock(OutputTemplates.class), mockAsciidoctor);
+        renderer = new AsciidoctorRenderer(DocletOptions.NONE, mock(OutputTemplates.class), mockAsciidoctor);
     }
 
     @Test

@@ -27,21 +27,18 @@ public class AsciidoctorRenderer implements DocletRenderer {
     protected static final String INLINE_DOCTYPE = "inline";
 
     private final Asciidoctor asciidoctor;
-    private final String baseDir;
+    private final DocletOptions docletOptions;
     private final OutputTemplates templates;
 
-    public AsciidoctorRenderer(String baseDir, DocErrorReporter errorReporter) {
-        this(baseDir, new OutputTemplates(errorReporter), create());
+    public AsciidoctorRenderer(DocletOptions docletOptions, DocErrorReporter errorReporter) {
+        this(docletOptions, new OutputTemplates(errorReporter), create());
     }
 
     /**
      * Constructor used directly for testing purposes only.
-     *
-     * @param baseDir
-     * @param asciidoctor
      */
-    protected AsciidoctorRenderer(String baseDir, OutputTemplates templates, Asciidoctor asciidoctor) {
-        this.baseDir = baseDir;
+    protected AsciidoctorRenderer(DocletOptions docletOptions, OutputTemplates templates, Asciidoctor asciidoctor) {
+        this.docletOptions = docletOptions;
         this.asciidoctor = asciidoctor;
         this.templates = templates;
     }
@@ -101,9 +98,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
                 .eruby("erubis")
                 .attributes(ATTRIBUTES);
 
-        if(this.baseDir != null){
-            optionsBuilder.baseDir(new File(this.baseDir));
-        }
+        optionsBuilder.baseDir(docletOptions.includeBasedir().or(new File("")));
         if(inline){
             optionsBuilder.docType(INLINE_DOCTYPE);
         }
