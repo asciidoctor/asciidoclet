@@ -26,6 +26,7 @@ public class DocletIteratorTest {
         ClassDoc mockClassDoc = mock(ClassDoc.class);
         PackageDoc mockPackageDoc = mock(PackageDoc.class);
         FieldDoc mockFieldDoc = mock(FieldDoc.class);
+        FieldDoc mockEnumFieldDoc = mock(FieldDoc.class);
         ConstructorDoc mockConstructorDoc = mock(ConstructorDoc.class);
         MethodDoc mockMethodDoc = mock(MethodDoc.class);
 
@@ -34,6 +35,7 @@ public class DocletIteratorTest {
         when(mockClassDoc.fields()).thenReturn(new FieldDoc[]{mockFieldDoc});
         when(mockClassDoc.constructors()).thenReturn(new ConstructorDoc[]{mockConstructorDoc});
         when(mockClassDoc.methods()).thenReturn(new MethodDoc[]{mockMethodDoc});
+        when(mockClassDoc.enumConstants()).thenReturn(new FieldDoc[]{mockEnumFieldDoc});
 
         iterator.render(mockDoc, mockRenderer);
 
@@ -42,6 +44,7 @@ public class DocletIteratorTest {
         verify(mockRenderer).renderDoc(mockConstructorDoc);
         verify(mockRenderer).renderDoc(mockMethodDoc);
         verify(mockRenderer).renderDoc(mockPackageDoc);
+        verify(mockRenderer).renderDoc(mockEnumFieldDoc);
     }
 
     @Test
@@ -54,6 +57,7 @@ public class DocletIteratorTest {
         when(mockClassDoc.fields()).thenReturn(new FieldDoc[]{});
         when(mockClassDoc.constructors()).thenReturn(new ConstructorDoc[]{});
         when(mockClassDoc.methods()).thenReturn(new MethodDoc[]{});
+        when(mockClassDoc.enumConstants()).thenReturn(new FieldDoc[]{});
         when(mockClassDoc.elements()).thenReturn(new AnnotationTypeElementDoc[]{mockAnnotationElement});
 
         iterator.render(mockDoc, mockRenderer);

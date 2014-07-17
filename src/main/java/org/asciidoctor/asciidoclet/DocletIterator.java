@@ -46,6 +46,9 @@ public class DocletIterator {
         for ( MemberDoc member : doc.methods() ) {
             renderer.renderDoc(member);
         }
+        for ( MemberDoc member : doc.enumConstants() ) {
+            renderer.renderDoc(member);
+        }
         if ( doc instanceof AnnotationTypeDoc) {
             for ( MemberDoc member : ((AnnotationTypeDoc)doc).elements() ) {
                 renderer.renderDoc(member);
