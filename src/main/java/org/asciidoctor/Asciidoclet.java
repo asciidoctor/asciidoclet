@@ -29,15 +29,14 @@ import java.net.URL;
  * include::pom.xml[tags=pom_include,indent=0]
  * ----
  *
- * <1> The `-include-basedir` option must be set, typically this is the project root. It allows
- * source inclusions within javadocs, relative to the specified directory. +
- * The `-attributes` option takes a *quoted string* containing a list of attributes that will be
- * passed to Asciidoctor. The string may contain one or more `attrname` or `attrname=value`
- * values, separated by *semicolons*.
+ * <1> Use the `additionalparam` parameter to pass Asciidoclet parameters to javadoc. 
+ *     See <<doclet-options>>.
  *
- * <2> The `-overview` option may refer to an Asciidoc file. If the file's extension does not match
- * one of `.ad`, `.adoc`, `.asciidoc` or `.txt`, then the file is ignored and will be processed
- * by the standard doclet as an HTML overview.
+ * <2> The `-overview` option may refer to an Asciidoc file, see <<doclet-options>>.
+ * 
+ * == Doclet Options
+ *
+ * include::README.asciidoc[tags=doclet-options]
  *
  * == Examples
  *

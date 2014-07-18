@@ -123,7 +123,7 @@
                     </docletArtifact>
                     <additionalparam>  <!--1-->
                       -include-basedir ${project.basedir}
-                      -attributes "project_name=${project.name}; \
+                      -attributes "idseparator=-; project_name=${project.name}; \
                                    project_version=${project.version}; \
                                    project_desc=${project.description}"
                     </additionalparam>

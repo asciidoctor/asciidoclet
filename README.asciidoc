@@ -93,7 +93,12 @@ public class Asciidoclet extends Doclet {
 
 The result is readable source and beautifully rendered Javadocs, the best of both worlds!
 
+// tag::usage[]
 == Usage
+
+Run javadoc with the `org.asciidoctor.Asciidoclet` doclet class.
+Some examples for common build systems are shown below.
+See <<doclet-options>> for supported options.
 
 === Maven
 
@@ -113,6 +118,13 @@ Asciidoclet may be used via a +maven-javadoc-plugin+ doclet:
             <artifactId>asciidoclet</artifactId>
             <version>${asciidoclet.version}</version>
         </docletArtifact>
+        <overview>src/main/java/overview.adoc</overview>
+        <additionalparam>
+          -include-basedir ${project.basedir}
+          -attributes "name=${project.name}; \
+                       version=${project.version}; \
+                       title-link=http://example.com[${project.name} ${project.version}]"
+        </additionalparam>
     </configuration>
 </plugin>
 ----
@@ -134,10 +146,60 @@ dependencies {
 javadoc {
     options.docletpath = configurations.asciidoclet.files.asType(List)
     options.doclet = 'org.asciidoctor.Asciidoclet'
+    options.overview = "src/main/java/overview.adoc"
+    options.addStringOption('include-basedir', "${projectDir}")
+    options.addStringOption('attributes',
+            "name=${project.name};" +
+            "version=${project.version};" +
+            "title-link=http://example.com[${project.name} ${project.version}]")
 }
 ----
 
-== Rescources and help
+=== Ant
+// Some of us still use Ant, alright?!
+Asciidoclet may be used via a doclet element in Ant's +javadoc+ task:
+
+[source,xml]
+----
+<javadoc destdir="target/javadoc"
+         sourcepath="src"
+         overview="src/overview.adoc">
+  <doclet name="org.asciidoctor.Asciidoclet" pathref="asciidoclet.classpath"> <!--1-->
+    <param name="-include-basedir" value="${basedir}"/>
+    <param name="-attributes"
+           value="name=${ant.project.name};
+                  version=${version};
+                  title-link=http://example.com[${ant.project.name} ${version}]"/>
+  </doclet>
+</javadoc>
+----
+
+<1> Assumes a path reference has been defined for Asciidoclet and its dependencies, e.g.
+using http://ant.apache.org/ivy/[Ivy] or similar.
+
+=== Doclet Options
+// tag::doclet-options[]
+
+-include-basedir <dir>::
+Sets the base directory that will be used to resolve relative path names in Asciidoc `include::` directives.
+This should be set to the project's root directory.
+
+-attributes "key[=value]; ..."::
+Sets http://asciidoctor.org/docs/user-manual/#attributes[document attributes^] that will be expanded when processing javadoc comments.
+The argument is a string containing a list of attributes in the form of `key`, `key!` or `key=value`.
+Attributes must be separated by semicolons.
++
+The document attribute `javadoc` is set automatically by the doclet. 
+This may be useful for conditionally selecting content when using the same Asciidoc file for javadoc and other documentation.
+
+-overview <file>::
+Overview documentation can be generated from an Asciidoc file using the standard `-overview` option.
+Files matching `*.ad`, `*.adoc`, `*.asciidoc` or `*.txt` are processed by Asciidoclet.
+Other files are assumed to be HTML and will be processed by the standard doclet.
+
+// end::doclet-options[]
+// end::usage[]
+== Resources and help
 
 For more information:
 
