@@ -18,6 +18,7 @@ public class DocletIteratorTest {
     private ClassDoc mockClassDoc;
     private PackageDoc mockPackageDoc;
     private FieldDoc mockFieldDoc;
+    private FieldDoc mockEnumFieldDoc;
     private ConstructorDoc mockConstructorDoc;
     private MethodDoc mockMethodDoc;
 
@@ -29,20 +30,22 @@ public class DocletIteratorTest {
         mockDoc = mock(RootDoc.class);
         mockPackageDoc = mock(PackageDoc.class);
         mockFieldDoc = mock(FieldDoc.class);
+        mockEnumFieldDoc = mock(FieldDoc.class);
         mockConstructorDoc = mock(ConstructorDoc.class);
         mockMethodDoc = mock(MethodDoc.class);
-        mockClassDoc = mockClassDoc(ClassDoc.class, mockPackageDoc, mockFieldDoc, mockConstructorDoc, mockMethodDoc);
+        mockClassDoc = mockClassDoc(ClassDoc.class, mockPackageDoc, mockFieldDoc, mockEnumFieldDoc, mockConstructorDoc, mockMethodDoc);
 
         when(mockDoc.classes()).thenReturn(new ClassDoc[]{mockClassDoc});
         when(mockDoc.options()).thenReturn(new String[][]{});
     }
 
-    private <T extends ClassDoc> T mockClassDoc(Class<T> type, PackageDoc packageDoc, FieldDoc fieldDoc, ConstructorDoc constructorDoc, MethodDoc methodDoc) {
+    private <T extends ClassDoc> T mockClassDoc(Class<T> type, PackageDoc packageDoc, FieldDoc fieldDoc, FieldDoc enumConstants, ConstructorDoc constructorDoc, MethodDoc methodDoc) {
         T classDoc = mock(type);
         when(classDoc.containingPackage()).thenReturn(packageDoc);
         when(classDoc.fields()).thenReturn(new FieldDoc[]{fieldDoc});
         when(classDoc.constructors()).thenReturn(new ConstructorDoc[]{constructorDoc});
         when(classDoc.methods()).thenReturn(new MethodDoc[]{methodDoc});
+        when(classDoc.enumConstants()).thenReturn(new FieldDoc[]{enumConstants});
         return classDoc;
     }
 
@@ -55,11 +58,12 @@ public class DocletIteratorTest {
         verify(mockRenderer).renderDoc(mockConstructorDoc);
         verify(mockRenderer).renderDoc(mockMethodDoc);
         verify(mockRenderer).renderDoc(mockPackageDoc);
+        verify(mockRenderer).renderDoc(mockEnumFieldDoc);
     }
 
     @Test
     public void testAnnotationIteration(){
-        AnnotationTypeDoc mockClassDoc = mockClassDoc(AnnotationTypeDoc.class, mockPackageDoc, mockFieldDoc, mockConstructorDoc, mockMethodDoc);
+        AnnotationTypeDoc mockClassDoc = mockClassDoc(AnnotationTypeDoc.class, mockPackageDoc, mockFieldDoc, mockEnumFieldDoc, mockConstructorDoc, mockMethodDoc);
         AnnotationTypeElementDoc mockAnnotationElement = mock(AnnotationTypeElementDoc.class);
 
         when(mockDoc.classes()).thenReturn(new ClassDoc[]{mockClassDoc});
