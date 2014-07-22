@@ -29,4 +29,16 @@ public class DocletOptionsTest {
         assertFalse(DocletOptions.NONE.overview().isPresent());
         assertEquals("test.adoc", new DocletOptions(new String[][]{{OVERVIEW, "test.adoc"}}).overview().get().getName());
     }
+
+    @Test
+    public void testStylesheetFile() {
+        assertFalse(DocletOptions.NONE.stylesheetFile().isPresent());
+        assertEquals("foo.css", new DocletOptions(new String[][]{{STYLESHEETFILE, "foo.css"}}).stylesheetFile().get().getName());
+    }
+
+    @Test
+    public void testDestDir() {
+        assertFalse(DocletOptions.NONE.destDir().isPresent());
+        assertEquals("target", new DocletOptions(new String[][]{{DESTDIR, "target"}}).destDir().get().getName());
+    }
 }

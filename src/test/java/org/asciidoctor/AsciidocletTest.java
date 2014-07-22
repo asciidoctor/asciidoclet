@@ -3,10 +3,7 @@ package org.asciidoctor;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
-import org.asciidoctor.asciidoclet.DocletIterator;
-import org.asciidoctor.asciidoclet.DocletOptions;
-import org.asciidoctor.asciidoclet.DocletRenderer;
-import org.asciidoctor.asciidoclet.StandardAdapter;
+import org.asciidoctor.asciidoclet.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,12 +17,15 @@ public class AsciidocletTest {
 
     private StandardAdapter mockAdapter;
     private DocletIterator mockIterator;
+    private Stylesheets mockStylesheets;
 
     @Before
     public void setup(){
         mockAdapter = mock(StandardAdapter.class);
         mockIterator = mock(DocletIterator.class);
+        mockStylesheets = mock(Stylesheets.class);
         when(mockIterator.render(any(RootDoc.class), any(DocletRenderer.class))).thenReturn(true);
+        when(mockStylesheets.copy()).thenReturn(true);
     }
 
     @Test
@@ -102,9 +102,25 @@ public class AsciidocletTest {
         when(mockDoc.options()).thenReturn(options);
         when(mockAdapter.start(mockDoc)).thenReturn(true);
 
-        assertTrue(new Asciidoclet(mockDoc, mockIterator).start(mockAdapter));
+        assertTrue(new Asciidoclet(mockDoc, mockIterator, mockStylesheets).start(mockAdapter));
 
         verify(mockAdapter).start(mockDoc);
         verify(mockIterator).render(eq(mockDoc), any(DocletRenderer.class));
+        verify(mockStylesheets).copy();
+    }
+
+    @Test
+    public void testStylesheetOverride(){
+        RootDoc mockDoc = mock(RootDoc.class);
+        String[][] options = new String[][]{{DocletOptions.STYLESHEETFILE, "test"}};
+
+        when(mockDoc.options()).thenReturn(options);
+        when(mockAdapter.start(mockDoc)).thenReturn(true);
+
+        assertTrue(new Asciidoclet(mockDoc, mockIterator, mockStylesheets).start(mockAdapter));
+
+        verify(mockAdapter).start(mockDoc);
+        verify(mockIterator).render(eq(mockDoc), any(DocletRenderer.class));
+        verify(mockStylesheets, never()).copy();
     }
 }

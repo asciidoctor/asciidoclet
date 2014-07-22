@@ -14,9 +14,13 @@ public class DocletOptions {
     public static final String ENCODING = "-encoding";
     public static final String OVERVIEW = "-overview";
     public static final String INCLUDE_BASEDIR = "-include-basedir";
+    public static final String STYLESHEETFILE = "-stylesheetfile";
+    public static final String DESTDIR = "-d";
 
     private final Optional<File> basedir;
     private final Optional<File> overview;
+    private final Optional<File> stylesheet;
+    private final Optional<File> destdir;
     private final Charset encoding;
 
     public static final DocletOptions NONE = new DocletOptions(new String[][]{});
@@ -28,6 +32,8 @@ public class DocletOptions {
     public DocletOptions(String[][] options) {
         File basedir = null;
         File overview = null;
+        File stylesheet = null;
+        File destdir = null;
         Charset encoding = Charset.defaultCharset();
         for (String[] option : options) {
             if (option.length > 0) {
@@ -37,6 +43,12 @@ public class DocletOptions {
                 else if (OVERVIEW.equals(option[0])) {
                     overview = new File(option[1]);
                 }
+                else if (STYLESHEETFILE.equals(option[0])) {
+                    stylesheet = new File(option[1]);
+                }
+                else if (DESTDIR.equals(option[0])) {
+                    destdir = new File(option[1]);
+                }
                 else if (ENCODING.equals(option[0])) {
                     encoding = Charset.forName(option[1]);
                 }
@@ -45,6 +57,8 @@ public class DocletOptions {
 
         this.basedir = Optional.fromNullable(basedir);
         this.overview = Optional.fromNullable(overview);
+        this.stylesheet = Optional.fromNullable(stylesheet);
+        this.destdir = Optional.fromNullable(destdir);
         this.encoding = encoding;
     }
 
@@ -52,8 +66,16 @@ public class DocletOptions {
         return overview;
     }
 
+    public Optional<File> stylesheetFile() {
+        return stylesheet;
+    }
+
     public Optional<File> includeBasedir() {
         return basedir;
+    }
+
+    public Optional<File> destDir() {
+        return destdir;
     }
 
     public Charset encoding() {
