@@ -46,6 +46,11 @@
             <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>17.0</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.9</version>
@@ -116,8 +121,9 @@
                         <artifactId>asciidoclet</artifactId>
                         <version>${project.version}</version>
                     </docletArtifact>
-                    <additionalparam>-include-basedir ${project.basedir}</additionalparam>  <!-- <1> -->
+                    <additionalparam>-include-basedir ${project.basedir}</additionalparam>  <!--1-->
                     <linksource>true</linksource>
+                    <overview>src/main/java/overview.adoc</overview>  <!--2-->
                 </configuration>
             </plugin>
             <!-- end::pom_include[] -->

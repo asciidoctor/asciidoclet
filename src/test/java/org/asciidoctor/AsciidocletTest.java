@@ -24,6 +24,7 @@ public class AsciidocletTest {
     public void setup(){
         mockAdapter = mock(StandardAdapter.class);
         mockIterator = mock(DocletIterator.class);
+        when(mockIterator.render(any(RootDoc.class), any(DocletRenderer.class))).thenReturn(true);
         Asciidoclet.setStandardAdapter(mockAdapter);
         Asciidoclet.setIterator(mockIterator);
     }
