@@ -21,31 +21,31 @@ public class StylesheetsTest {
 
     @Test
     public void java8ShouldSelectStylesheet8() throws Exception {
-        assertEquals(JAVA8_STYLESHEET_RESOURCE, stylesheets.selectStylesheet("1.8.0_11"));
+        assertEquals(JAVA8_STYLESHEET, stylesheets.selectStylesheet("1.8.0_11"));
         verifyNoMoreInteractions(mockErrorReporter);
     }
 
     @Test
     public void java7ShouldSelectStylesheet8() throws Exception {
-        assertEquals(JAVA8_STYLESHEET_RESOURCE, stylesheets.selectStylesheet("1.7.0_51"));
+        assertEquals(JAVA8_STYLESHEET, stylesheets.selectStylesheet("1.7.0_51"));
         verifyNoMoreInteractions(mockErrorReporter);
     }
 
     @Test
     public void java6ShouldSelectStylesheet6() throws Exception {
-        assertEquals(JAVA6_STYLESHEET_RESOURCE, stylesheets.selectStylesheet("1.6.0_45"));
+        assertEquals(JAVA6_STYLESHEET, stylesheets.selectStylesheet("1.6.0_45"));
         verifyNoMoreInteractions(mockErrorReporter);
     }
 
     @Test
     public void java5ShouldSelectStylesheet6() throws Exception {
-        assertEquals(JAVA6_STYLESHEET_RESOURCE, stylesheets.selectStylesheet("1.5.0_22"));
+        assertEquals(JAVA6_STYLESHEET, stylesheets.selectStylesheet("1.5.0_22"));
         verifyNoMoreInteractions(mockErrorReporter);
     }
 
     @Test
     public void unknownJavaShouldSelectStylesheet8AndWarn() throws Exception {
-        assertEquals(JAVA8_STYLESHEET_RESOURCE, stylesheets.selectStylesheet("42.3.0_12"));
+        assertEquals(JAVA8_STYLESHEET, stylesheets.selectStylesheet("42.3.0_12"));
         verify(mockErrorReporter).printWarning(anyString());
     }
 }

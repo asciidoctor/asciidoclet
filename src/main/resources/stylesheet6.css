@@ -4,6 +4,8 @@
  * with additional styles from Asciidoctor.
  */
 
+@import url('coderay-asciidoctor.css'); 
+
 /* Javadoc style sheet */
 
 /* Define colors, fonts and other style attributes here to override the defaults */

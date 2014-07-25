@@ -4,6 +4,8 @@
  * with additional styles from Asciidoctor.
  */
 
+@import url('coderay-asciidoctor.css'); 
+
 /* Javadoc style sheet */
 /*
 Overall document style
@@ -711,5 +713,4 @@ p.tableblock {
 .olist > ol .olist > ol .ulist > ul, .olist > ol .ulist > ul .ulist > ul, .ulist > ul .olist > ol .ulist > ul, .ulist > ul .ulist > ul .ulist > ul {
     list-style-type: square;
 }
-
 

@@ -25,7 +25,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
                 .attribute("javadoc", "")
                 .attribute("notitle", null)
                 .attribute("source-highlighter", "coderay")
-                .attribute("coderay-css", "style");
+                .attribute("coderay-css", "class");
     }
 
     private static OptionsBuilder defaultOptions() {
