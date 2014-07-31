@@ -171,7 +171,7 @@ import java.net.URL;
  * +
  * IMPORTANT: Check this out!
  *
- * @author {author}
+ * @author https://github.com/johncarl81[John Ericksen]
  * @version {project_version}
  * @see org.asciidoctor.Asciidoclet
  * @since 0.1.0
