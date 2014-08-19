@@ -19,7 +19,7 @@ class OutputTemplates {
 
     static final String[] templateNames = new String[] {
             "section.html.haml",
-            "block_paragraph.html.haml"
+            "paragraph.html.haml"
     };
 
     private OutputTemplates(File templateDir) {

@@ -67,23 +67,17 @@ h6 {
 ul {
     list-style-type:disc;
 }
-code, tt {
+code, tt, dt code, table tr td dt code {
+    color:rgba(0,0,0,.9);
     font-family:'DejaVu Sans Mono', monospace;
-    font-size:14px;
-    padding-top:4px;
-    margin-top:8px;
-    line-height:1.4em;
+    font-size:13px;
+    line-height:1.4;
 }
-dt code {
-    font-family:'DejaVu Sans Mono', monospace;
-    font-size:14px;
-    padding-top:4px;
+pre > code {
+    font-size: 14px !important;
 }
 table tr td dt code {
-    font-family:'DejaVu Sans Mono', monospace;
-    font-size:14px;
     vertical-align:top;
-    padding-top:4px;
 }
 sup {
     font-size:8px;
@@ -104,7 +98,8 @@ Document title and Copyright styles
     margin-top:-9px;
 }
 .legalCopy {
-    margin-left:.5em;
+    margin:.5em;
+    float:left;
 }
 .bar a, .bar a:link, .bar a:visited, .bar a:active {
     color:#FFFFFF;
@@ -290,10 +285,9 @@ Page layout container styles
 }
 /*.contentContainer dl dt, .contentContainer .description dl dt, .contentContainer .details dl dt, .serializedFormContainer dl dt { */
 .contentContainer dl dt, .serializedFormContainer dl dt, .dlist dl dt {
-    font-size:12px;
+    font-size:13px;
     font-weight:bold;
     margin:10px 0 0 0;
-    color:#4E4E4E;
 }
 
 /*.contentContainer .description dl dd, .contentContainer .details dl dd, .serializedFormContainer dl dd { */
@@ -565,10 +559,26 @@ h1.hidden {
     overflow:hidden;
     font-size:10px;
 }
-.block {
+div.block {
     display:block;
     margin:3px 10px 2px 0px;
-    color:#474747;
+    color:rgba(0,0,0,.8);
+}
+
+div.block h1, div.block h2, div.block h3, div.block h4, div.block h5, div.block h6 {
+    font-family:'DejaVu Sans', Arial, Helvetica, sans-serif;
+    font-weight:300;
+    font-style: normal;
+    color:#7a4a0e;
+}
+div.block *:not(pre) > code {
+    padding: 2px 4px;
+    background-color: #f7f7f7;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+div.block a {
+    text-decoration: underline;
 }
 .deprecatedLabel, .descfrmTypeLabel, .memberNameLabel, .memberNameLink,
 .overrideSpecifyLabel, .packageHierarchyLabel, .paramLabel, .returnLabel,
@@ -623,11 +633,11 @@ div.block table thead tr th, div.block table thead tr td, div.block table tfoot 
 div.block table tr th, div.block table tr td { padding: 0.5625em 0.625em; font-size: inherit; color: #333333; }
 div.block table tr.even, div.block table tr.alt, div.block table tr:nth-of-type(even) { background: #f9f9f9; }
 
-.subheader, #content #toctitle, .admonitionblock td.content > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .mathblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, .tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title, .tableblock > caption { line-height: 1.4; color: #7a2518; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+.subheader, #content #toctitle, .admonitionblock td.content > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .mathblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, .tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title, .tableblock > caption { line-height: 1.4; color: #7a4a0e; font-weight: 300; margin-top: 0.5em; margin-bottom: 0.25em; }
 
 .imageblock, .literalblock, .listingblock, .mathblock, .verseblock, .videoblock { margin-bottom: 1.25em; }
-.admonitionblock td.content > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .mathblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, .tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-align: left; /*font-family: "Noto Serif", "DejaVu Serif", "Serif", serif;*/ font-weight: normal; font-style: italic; }
-.tableblock > caption { text-align: left; /*font-family: "Noto Serif", "DejaVu Serif", "Serif", serif;*/ font-weight: normal; font-style: italic; white-space: nowrap; overflow: visible; max-width: 0; }
+.admonitionblock td.content > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .mathblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, .tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-align: left; font-family: "DejaVu Sans", Arial, Helvetica; font-weight: 300; font-style: italic; }
+.tableblock > caption { text-align: left; font-family: "DejaVu Sans", Arial, Helvetica; font-weight: 300; font-style: italic; white-space: nowrap; overflow: visible; max-width: 0; }
 table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
 div.block .admonitionblock > table { border: 0; background: none; width: 100%; }
 .admonitionblock > table td.icon { text-align: center; width: 80px; }
@@ -648,32 +658,16 @@ div.block .admonitionblock > table { border: 0; background: none; width: 100%; }
 .sidebarblock h1, .sidebarblock h2, .sidebarblock h3, .sidebarblock #toctitle, .sidebarblock > .content > .title, .sidebarblock h4, .sidebarblock h5, .sidebarblock h6, .sidebarblock p { color: #333333; }
 .sidebarblock h1, .sidebarblock h2, .sidebarblock h3, .sidebarblock #toctitle, .sidebarblock > .content > .title, .sidebarblock h4, .sidebarblock h5, .sidebarblock h6 { line-height: 1; margin-bottom: 0.625em; }
 .sidebarblock h1.subheader, .sidebarblock h2.subheader, .sidebarblock h3.subheader, .sidebarblock .subheader#toctitle, .sidebarblock > .content > .subheader.title, .sidebarblock h4.subheader, .sidebarblock h5.subheader, .sidebarblock h6.subheader { line-height: 1.4; }
-.sidebarblock > .content > .title { color: #7a2518; margin-top: 0; line-height: 1.6; }
+.sidebarblock > .content > .title { color: #7a4a0e; margin-top: 0; line-height: 1.6; }
 .exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
-.literalblock pre:not([class]), .listingblock pre:not([class]) { background: none; }
-.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { border-width: 1px 0; border-style: dotted; border-color: #bfbfbf; -webkit-border-radius: 4px; border-radius: 4px; padding: 0.75em 0.5em; word-wrap: break-word; }
-.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
-.literalblock pre > code, .literalblock pre[class] > code, .listingblock pre > code, .listingblock pre[class] > code { display: block; }
-.listingblock pre.highlight { padding: 0; }
-.listingblock pre.highlight > code { padding: 0.75em 0.5em; }
-.listingblock > .content { position: relative; }
-.listingblock:hover code[class*=" language-"]:before { text-transform: uppercase; font-size: 0.9em; color: #999; position: absolute; top: 0.375em; right: 0.375em; }
-.listingblock:hover code.asciidoc:before { content: "asciidoc"; }
-.listingblock:hover code.clojure:before { content: "clojure"; }
-.listingblock:hover code.css:before { content: "css"; }
-.listingblock:hover code.go:before { content: "go"; }
-.listingblock:hover code.groovy:before { content: "groovy"; }
-.listingblock:hover code.html:before { content: "html"; }
-.listingblock:hover code.java:before { content: "java"; }
-.listingblock:hover code.javascript:before { content: "javascript"; }
-.listingblock:hover code.python:before { content: "python"; }
-.listingblock:hover code.ruby:before { content: "ruby"; }
-.listingblock:hover code.sass:before { content: "sass"; }
-.listingblock:hover code.scss:before { content: "scss"; }
-.listingblock:hover code.xml:before { content: "xml"; }
-.listingblock:hover code.yaml:before { content: "yaml"; }
-.listingblock.terminal pre .command:before { content: attr(data-prompt); padding-right: 0.5em; color: #999; }
-.listingblock.terminal pre .command:not([data-prompt]):before { content: '$'; }
+.literalblock pre,.listingblock pre:not(.highlight),.listingblock pre[class="highlight"],.listingblock pre[class^="highlight "],.listingblock pre.CodeRay{ background: #f7f7f7 }
+.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;padding:1em;font-size:.8125em}
+.literalblock pre.nowrap,.literalblock pre[class].nowrap,.listingblock pre.nowrap,.listingblock pre[class].nowrap{overflow-x:auto;white-space:pre;word-wrap:normal}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]:before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:#999}
+.listingblock:hover code[data-lang]:before{display:block}
+.listingblock.terminal pre .command:before{content:attr(data-prompt);padding-right:.5em;color:#999}
+.listingblock.terminal pre .command:not([data-prompt]):before{content:"$"}
 
 .quoteblock { margin: 0 0 1.25em 0; padding: 0.5625em 1.25em 0 1.1875em; border-left: 3px solid #487c58; }
 .quoteblock blockquote { margin: 0 0 1.25em 0; padding: 0 0 0.625em 0; border: 0; }
