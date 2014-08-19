@@ -21,7 +21,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
             .attribute("slash", "/")
             .attribute("icons", null)
             .attribute("idprefix", "")
-            .attribute("notitle", null)
+            .attribute("showtitle", true)
             .attribute("source-highlighter", "coderay")
             .attribute("coderay-css", "style").get();
     protected static final String INLINE_DOCTYPE = "inline";
@@ -98,7 +98,6 @@ public class AsciidoctorRenderer implements DocletRenderer {
         OptionsBuilder optionsBuilder = OptionsBuilder.options()
                 .safe(SafeMode.SAFE)
                 .backend("html5")
-                .eruby("erubis")
                 .attributes(ATTRIBUTES);
 
         if(this.baseDir != null){
