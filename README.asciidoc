@@ -3,8 +3,7 @@ John Ericksen <https://github.com/johncarl81>
 v0.1.3
 :description: This is a guide for setting up and using the Asciidoclet project. Asciidoclet is a Javadoc Doclet based on Asciidoctor that lets you write Javadoc in the AsciiDoc syntax.
 :keywords: Asciidoclet, AsciiDoc, Asciidoctor, syntax, Javadoc, Doclet, reference
-:awestruct-layout: base
-:compat-mode:
+:page-layout: base
 :language: java
 ifndef::awestruct[]
 :idprefix:
@@ -71,7 +70,7 @@ This is the same class with Asciidoclet.
 /**
  * = Asciidoclet
  *
- * Sample comments that include +source code+.
+ * Sample comments that include `source code`.
  *
  * [source,java]
  * --
@@ -103,7 +102,7 @@ See <<doclet-options>> for supported options.
 
 === Maven
 
-Asciidoclet may be used via a +maven-javadoc-plugin+ doclet:
+Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
 
 [source,xml]
 ----
@@ -132,7 +131,7 @@ Asciidoclet may be used via a +maven-javadoc-plugin+ doclet:
 
 === Gradle
 
-Asciidoclet may be used via a doclet in the +Javadoc+ task:
+Asciidoclet may be used via a doclet in the `Javadoc` task:
 
 [source,groovy]
 ----
@@ -158,7 +157,7 @@ javadoc {
 
 === Ant
 // Some of us still use Ant, alright?!
-Asciidoclet may be used via a doclet element in Ant's +javadoc+ task:
+Asciidoclet may be used via a doclet element in Ant's `javadoc` task:
 
 [source,xml]
 ----
@@ -203,7 +202,7 @@ Attributes set by the `-attributes` option take precedence over those in the att
 
 -overview <file>::
 Overview documentation can be generated from an Asciidoc file using the standard `-overview` option.
-Files matching `*.ad`, `*.adoc`, `*.asciidoc` or `*.txt` are processed by Asciidoclet.
+Files matching [x-]`*.adoc`, [x-]`*.ad`, [x-]`*.asciidoc` or [x-]`*.txt` are processed by Asciidoclet.
 Other files are assumed to be HTML and will be processed by the standard doclet.
 
 // end::doclet-options[]
@@ -222,7 +221,7 @@ If you have questions or would like to help develop this project, please join th
 == License
 
 ....
-Copyright 2013 John Ericksen
+Copyright (C) 2013-2014 John Ericksen
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
