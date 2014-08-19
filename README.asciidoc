@@ -31,11 +31,6 @@ Traditionally, Javadocs have mixed minor markup with HTML which, if you're writi
 This is where lightweight markup languages like {asciidoc-ref}[AsciiDoc] thrive. 
 AsciiDoc straddles the line between readable markup and beautifully rendered content.
 
-[source,xml]
-----
-include::pom.xml[tags=foo,indent=0]
-----
-
 Asciidoclet incorporates an AsciiDoc renderer (Asciidoctor via the {asciidoctor-java-ref}[Asciidoctor Java integration] library) into a simple Doclet that enables AsciiDoc formatting within Javadoc comments and tags.
 
 == Example
