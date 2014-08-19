@@ -2,6 +2,7 @@ package org.asciidoctor.asciidoclet;
 
 import com.google.common.base.Optional;
 import com.sun.javadoc.Doc;
+import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
@@ -24,7 +25,7 @@ public class AsciidoctorRendererTest {
     @Before
     public void setup(){
         mockAsciidoctor = mock(Asciidoctor.class);
-        renderer = new AsciidoctorRenderer(DocletOptions.NONE, Optional.<OutputTemplates>absent(), mockAsciidoctor);
+        renderer = new AsciidoctorRenderer(DocletOptions.NONE, mock(DocErrorReporter.class), Optional.<OutputTemplates>absent(), mockAsciidoctor);
     }
 
     @Test

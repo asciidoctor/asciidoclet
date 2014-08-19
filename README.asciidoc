@@ -4,6 +4,7 @@ v0.1.3
 :description: This is a guide for setting up and using the Asciidoclet project. Asciidoclet is a Javadoc Doclet based on Asciidoctor that lets you write Javadoc in the AsciiDoc syntax.
 :keywords: Asciidoclet, AsciiDoc, Asciidoctor, syntax, Javadoc, Doclet, reference
 :awestruct-layout: base
+:compat-mode:
 :language: java
 ifndef::awestruct[]
 :idprefix:
@@ -29,6 +30,11 @@ endif::awestruct[]
 Traditionally, Javadocs have mixed minor markup with HTML which, if you're writing for HTML Javadoc output, becomes unreadable and hard to write over time. 
 This is where lightweight markup languages like {asciidoc-ref}[AsciiDoc] thrive. 
 AsciiDoc straddles the line between readable markup and beautifully rendered content.
+
+[source,xml]
+----
+include::pom.xml[tags=foo,indent=0]
+----
 
 Asciidoclet incorporates an AsciiDoc renderer (Asciidoctor via the {asciidoctor-java-ref}[Asciidoctor Java integration] library) into a simple Doclet that enables AsciiDoc formatting within Javadoc comments and tags.
 
@@ -185,12 +191,20 @@ Sets the base directory that will be used to resolve relative path names in Asci
 This should be set to the project's root directory.
 
 -attributes "key[=value]; ..."::
-Sets http://asciidoctor.org/docs/user-manual/#attributes[document attributes^] that will be expanded when processing javadoc comments.
-The argument is a string containing a list of attributes in the form of `key`, `key!` or `key=value`.
-Attributes must be separated by semicolons.
+Sets http://asciidoctor.org/docs/user-manual/#attributes[document attributes^] that will be expanded in javadoc comments.
+The argument is a string containing attributes in the form of `key`, `key!` or `key=value`, separated by semicolons.
++
+Attribute keys and values are parsed like Asciidoctor command-line attributes.
+Use `key!` to unset an attribute, and `key=value@` to allow attributes to be overridden in the attributes file or javadoc.
 +
 The document attribute `javadoc` is set automatically by the doclet. 
 This may be useful for conditionally selecting content when using the same Asciidoc file for javadoc and other documentation.
+
+-attributes-file <file>::
+Reads http://asciidoctor.org/docs/user-manual/#attributes[document attributes^] from an Asciidoc file.
+The attributes will be expanded in javadoc comments.
++
+Attributes set by the `-attributes` option take precedence over those in the attributes file.
 
 -overview <file>::
 Overview documentation can be generated from an Asciidoc file using the standard `-overview` option.

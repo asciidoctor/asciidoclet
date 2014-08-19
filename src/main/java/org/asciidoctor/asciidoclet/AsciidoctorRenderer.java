@@ -1,7 +1,6 @@
 package org.asciidoctor.asciidoclet;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Tag;
@@ -42,29 +41,29 @@ public class AsciidoctorRenderer implements DocletRenderer {
     private final Options options;
 
     public AsciidoctorRenderer(DocletOptions docletOptions, DocErrorReporter errorReporter) {
-        this(docletOptions, OutputTemplates.create(errorReporter), create());
+        this(docletOptions, errorReporter, OutputTemplates.create(errorReporter), create());
     }
 
     /**
      * Constructor used directly for testing purposes only.
      */
-    protected AsciidoctorRenderer(DocletOptions docletOptions, Optional<OutputTemplates> templates, Asciidoctor asciidoctor) {
+    protected AsciidoctorRenderer(DocletOptions docletOptions, DocErrorReporter errorReporter, Optional<OutputTemplates> templates, Asciidoctor asciidoctor) {
         this.asciidoctor = asciidoctor;
         this.templates = templates;
-        this.options = buildOptions(docletOptions, templates);
+        this.options = buildOptions(docletOptions, errorReporter);
     }
 
-    private Options buildOptions(DocletOptions docletOptions, Optional<OutputTemplates> templates) {
+    private Options buildOptions(DocletOptions docletOptions, DocErrorReporter errorReporter) {
         OptionsBuilder opts = defaultOptions();
         if (docletOptions.includeBasedir().isPresent()) opts.baseDir(docletOptions.includeBasedir().get());
         if (templates.isPresent()) opts.templateDir(templates.get().templateDir());
-        opts.attributes(buildAttributes(docletOptions));
+        opts.attributes(buildAttributes(docletOptions, errorReporter));
         return opts.get();
     }
 
-    private Attributes buildAttributes(DocletOptions docletOptions) {
+    private Attributes buildAttributes(DocletOptions docletOptions, DocErrorReporter errorReporter) {
         return defaultAttributes()
-                .arguments(Iterables.toArray(docletOptions.attributes(), String.class))
+                .attributes(new AttributesLoader(asciidoctor, docletOptions, errorReporter).load())
                 .get();
     }
 

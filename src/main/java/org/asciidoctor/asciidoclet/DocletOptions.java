@@ -20,11 +20,13 @@ public class DocletOptions {
     public static final String STYLESHEETFILE = "-stylesheetfile";
     public static final String DESTDIR = "-d";
     public static final String ATTRIBUTES = "-attributes";
+    public static final String ATTRIBUTES_FILE = "-attributes-file";
 
     private final Optional<File> basedir;
     private final Optional<File> overview;
     private final Optional<File> stylesheet;
     private final Optional<File> destdir;
+    private final Optional<File> attributesFile;
     private final Charset encoding;
     private final List<String> attributes;
 
@@ -39,6 +41,7 @@ public class DocletOptions {
         File overview = null;
         File stylesheet = null;
         File destdir = null;
+        File attrsFile = null;
         Charset encoding = Charset.defaultCharset();
         ImmutableList.Builder<String> attrs = ImmutableList.builder();
         for (String[] option : options) {
@@ -61,6 +64,9 @@ public class DocletOptions {
                 else if (ATTRIBUTES.equals(option[0])) {
                     attrs.addAll(attributeSplitter.split(option[1]));
                 }
+                else if (ATTRIBUTES_FILE.equals(option[0])) {
+                    attrsFile = new File(option[1]);
+                }
             }
         }
 
@@ -70,6 +76,7 @@ public class DocletOptions {
         this.destdir = Optional.fromNullable(destdir);
         this.encoding = encoding;
         this.attributes = attrs.build();
+        this.attributesFile = Optional.fromNullable(attrsFile);
     }
 
     public Optional<File> overview() {
@@ -92,8 +99,17 @@ public class DocletOptions {
         return encoding;
     }
 
-    public Iterable<String> attributes() {
+    public List<String> attributes() {
         return attributes;
+    }
+
+    Optional<File> attributesFile() {
+        if (!attributesFile.isPresent()) return attributesFile;
+        File f = attributesFile.get();
+        if (!f.isAbsolute() && basedir.isPresent()) {
+            f = new File(basedir.get(), f.getPath());
+        }
+        return Optional.of(f);
     }
 
     public static boolean validOptions(String[][] options, DocErrorReporter errorReporter, StandardAdapter standardDoclet) {
@@ -101,6 +117,11 @@ public class DocletOptions {
 
         if (!docletOptions.includeBasedir().isPresent()) {
             errorReporter.printWarning(INCLUDE_BASEDIR + " must be present for includes or file reference features.");
+        }
+
+        Optional<File> attrsFile = docletOptions.attributesFile();
+        if (attrsFile.isPresent() && !attrsFile.get().canRead()) {
+            errorReporter.printWarning("Cannot read attributes file " + attrsFile.get());
         }
 
         return standardDoclet.validOptions(options, errorReporter);
@@ -111,6 +132,9 @@ public class DocletOptions {
             return 2;
         }
         if (ATTRIBUTES.equals(option)) {
+            return 2;
+        }
+        if (ATTRIBUTES_FILE.equals(option)) {
             return 2;
         }
         return standardDoclet.optionLength(option);
