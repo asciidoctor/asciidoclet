@@ -17,19 +17,17 @@ import java.net.URL;
  *
  * https://github.com/asciidoctor/asciidoclet[Asciidoclet] is a Javadoc Doclet
  * that uses http://asciidoctor.org[Asciidoctor] (via the
- * https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration])
- * to render http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
+ * https://github.com/asciidoctor/asciidoctorj[Asciidoctor Java integration])
+ * to interpet http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
  *
  * include::README.asciidoc[tags=usage]
  *
  * == Examples
  *
  * Custom attributes::
- * +{project_name}+ = {project_name}
- * +
- * +{project_desc}+ = {project_desc}
- * +
- * +{project_version}+ = {project_version}
+ * `+{project_name}+`;; {project_name}
+ * `+{project_desc}+`;; {project_desc}
+ * `+{project_version}+`;; {project_version}
  *
  * Code block (with syntax highlighting added by CodeRay)::
  * +
@@ -56,19 +54,23 @@ import java.net.URL;
  * <1> Creates an instance of the Asciidoctor Java integration
  * <2> Runs Javadoc comment strings through Asciidoctor
  *
- * Inline code:: `code()` or +code()+
+ * Inline code:: `code()`
  *
  * Headings::
  * +
  * --
  * [float]
  * = Heading 1
+ *
  * [float]
  * == Heading 2
+ *
  * [float]
  * === Heading 3
+ *
  * [float]
  * ==== Heading 4
+ *
  * [float]
  * ===== Heading 5
  * --
@@ -123,11 +125,8 @@ import java.net.URL;
  * Tables::
  * +
  * .An example table
- * [cols="3", options="header"]
  * |===
- * |Column 1
- * |Column 2
- * |Column 3
+ * |Column 1 |Column 2 |Column 3
  * 
  * |1
  * |Item 1
@@ -146,8 +145,6 @@ import java.net.URL;
  * +
  * .Optional Title
  * ****
- * *Sidebar* Block
- *
  * Usage: Notes in a sidebar, naturally.
  * ****
  *

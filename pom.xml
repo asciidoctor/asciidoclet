@@ -127,14 +127,14 @@
                         <artifactId>asciidoclet</artifactId>
                         <version>${project.version}</version>
                     </docletArtifact>
-                    <additionalparam>  <!--1-->
+                    <additionalparam> <!--1-->
                       -include-basedir ${project.basedir}
                       -attributes "idseparator=-; project_name=${project.name}; \
                                    project_version=${project.version}; \
                                    project_desc=${project.description}"
                     </additionalparam>
                     <linksource>true</linksource>
-                    <overview>src/main/java/overview.adoc</overview>  <!--2-->
+                    <overview>src/main/java/overview.adoc</overview> <!--2-->
                 </configuration>
             </plugin>
             <!-- end::pom_include[] -->
