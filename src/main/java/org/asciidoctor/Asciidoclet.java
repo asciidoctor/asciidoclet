@@ -20,23 +20,7 @@ import java.net.URL;
  * https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration])
  * to render http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
  *
- * == Usage
- * 
- * Asciidoclet may be used via a custom doclet in the maven-javadoc-plugin:
- *
- * [source,xml]
- * ----
- * include::pom.xml[tags=pom_include,indent=0]
- * ----
- *
- * <1> Use the `additionalparam` parameter to pass Asciidoclet parameters to javadoc. 
- *     See <<doclet-options>>.
- *
- * <2> The `-overview` option may refer to an Asciidoc file, see <<doclet-options>>.
- * 
- * == Doclet Options
- *
- * include::README.asciidoc[tags=doclet-options]
+ * include::README.asciidoc[tags=usage]
  *
  * == Examples
  *
