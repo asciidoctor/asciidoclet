@@ -3,14 +3,15 @@
  *
  * https://github.com/asciidoctor/asciidoclet[Asciidoclet] is a Javadoc Doclet
  * that uses http://asciidoctor.org[Asciidoctor] (via the
- * https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration])
- * to render http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
+ * https://github.com/asciidoctor/asciidoctorj[Asciidoctor Java integration])
+ * to interpret http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
  *
  * == Usage
  *
  * Asciidoclet may be used via a custom doclet in the maven-javadoc-plugin:
  *
  * [source,xml]
+ * ----
  * <plugin>
  *   <groupId>org.apache.maven.plugins</groupId>
  *   <artifactId>maven-javadoc-plugin</artifactId>
@@ -25,6 +26,7 @@
  *     </docletArtifact>
  *   </configuration>
  * </plugin>
+ * ----
  *
  * == Examples
  *
@@ -60,12 +62,16 @@
  * --
  * [float]
  * = Heading 1
+ *
  * [float]
  * == Heading 2
+ *
  * [float]
  * === Heading 3
+ *
  * [float]
  * ==== Heading 4
+ *
  * [float]
  * ===== Heading 5
  * --
@@ -120,11 +126,8 @@
  * Tables::
  * +
  * .An example table
- * [cols="3", options="header"]
  * |===
- * |Column 1
- * |Column 2
- * |Column 3
+ * |Column 1 |Column 2 |Column 3
  *
  * |1
  * |Item 1

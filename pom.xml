@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.sun.tools</groupId>
@@ -121,9 +121,9 @@
                         <artifactId>asciidoclet</artifactId>
                         <version>${project.version}</version>
                     </docletArtifact>
-                    <additionalparam>-include-basedir ${project.basedir}</additionalparam>  <!--1-->
+                    <additionalparam>-include-basedir ${project.basedir}</additionalparam> <!--1-->
                     <linksource>true</linksource>
-                    <overview>src/main/java/overview.adoc</overview>  <!--2-->
+                    <overview>src/main/java/overview.adoc</overview> <!--2-->
                 </configuration>
             </plugin>
             <!-- end::pom_include[] -->

@@ -11,8 +11,8 @@ import org.asciidoctor.asciidoclet.*;
  *
  * https://github.com/asciidoctor/asciidoclet[Asciidoclet] is a Javadoc Doclet
  * that uses http://asciidoctor.org[Asciidoctor] (via the
- * https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration])
- * to render http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
+ * https://github.com/asciidoctor/asciidoctorj[Asciidoctor Java integration])
+ * to interpret http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
  *
  * == Usage
  * 
@@ -20,14 +20,15 @@ import org.asciidoctor.asciidoclet.*;
  *
  * [source,xml]
  * ----
- * include::pom.xml[tags=pom_include,indent=0]
+ * include::pom.xml[lines=104..128,indent=0]
  * ----
+ * //include::pom.xml[tags=pom_include,indent=0]
  *
- * <1> The -includes-basedir option must be set, typically this is the project root. It allows
+ * <1> The `-includes-basedir` option must be set, typically this is the project root. It allows
  * source inclusions within javadocs, relative to the specified directory.
  *
- * <2> The -overview option may refer to an Asciidoc file. If the file's extension does not match
- * one of `.ad`, `.adoc`, `.asciidoc` or `.txt`, then the file is ignored and will be processed
+ * <2> The `-overview` option may refer to an Asciidoc file. If the file's extension does not match
+ * one of `.adoc`, `.ad`, `.asciidoc` or `.txt`, then the file is ignored and will be processed
  * by the standard doclet as an HTML overview.
  *
  * == Examples
@@ -64,12 +65,16 @@ import org.asciidoctor.asciidoclet.*;
  * --
  * [float]
  * = Heading 1
+ *
  * [float]
  * == Heading 2
+ *
  * [float]
  * === Heading 3
+ *
  * [float]
  * ==== Heading 4
+ *
  * [float]
  * ===== Heading 5
  * --
@@ -124,11 +129,8 @@ import org.asciidoctor.asciidoclet.*;
  * Tables::
  * +
  * .An example table
- * [cols="3", options="header"]
  * |===
- * |Column 1
- * |Column 2
- * |Column 3
+ * |Column 1 |Column 2 |Column 3
  * 
  * |1
  * |Item 1
