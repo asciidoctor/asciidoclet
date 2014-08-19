@@ -25,11 +25,11 @@ import java.net.URL;
  * == Examples
  *
  * Custom attributes::
- * `{project_name}` = {project_name}
+ * +{project_name}+ = {project_name}
  * +
- * `{project_desc}` = {project_desc}
+ * +{project_desc}+ = {project_desc}
  * +
- * `{project_version}` = {project_version}
+ * +{project_version}+ = {project_version}
  *
  * Code block (with syntax highlighting added by CodeRay)::
  * +
