@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.nio.charset.Charset;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 import static org.asciidoctor.asciidoclet.DocletOptions.*;
 
 public class DocletOptionsTest {
@@ -40,5 +41,11 @@ public class DocletOptionsTest {
     public void testDestDir() {
         assertFalse(DocletOptions.NONE.destDir().isPresent());
         assertEquals("target", new DocletOptions(new String[][]{{DESTDIR, "target"}}).destDir().get().getName());
+    }
+
+    @Test
+    public void testRequires() {
+        assertTrue(DocletOptions.NONE.requires().isEmpty());
+        assertThat(new DocletOptions(new String[][]{{REQUIRES, "foo"}, {REQUIRES, "bar"}}).requires(), contains("foo", "bar"));
     }
 }
