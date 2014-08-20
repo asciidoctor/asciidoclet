@@ -572,6 +572,7 @@ div.block h1, div.block h2, div.block h3, div.block h4, div.block h5, div.block 
     color:#7a4a0e;
 }
 div.block *:not(pre) > code {
+    font-weight: normal;
     padding: 2px 4px;
     background-color: #f7f7f7;
     -webkit-border-radius: 4px;
@@ -676,7 +677,7 @@ div.block .admonitionblock > table { border: 0; background: none; width: 100%; }
 .quoteblock .attribution br { display: none; }
 .quoteblock .attribution cite { display: block; }
 
-table.tableblock{max-width:100%;border-collapse:separate}
+table.tableblock{max-width:100%;border-collapse:separate;border-spacing:0}
 table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
 table.spread{width:100%}
 table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
