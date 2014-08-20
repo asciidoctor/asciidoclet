@@ -20,7 +20,7 @@ import java.net.URL;
  * https://github.com/asciidoctor/asciidoctorj[Asciidoctor Java integration])
  * to interpet http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
  *
- * include::README.asciidoc[tags=usage]
+ * include::README.adoc[tags=usage]
  *
  * == Examples
  *
