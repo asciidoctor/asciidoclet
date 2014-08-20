@@ -1,11 +1,10 @@
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
 import com.google.common.io.Files;
 import com.sun.javadoc.*;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -16,6 +15,12 @@ import java.util.regex.Pattern;
  * @author John Ericksen
  */
 public class DocletIterator {
+
+    private final DocletOptions docletOptions;
+
+    public DocletIterator(DocletOptions docletOptions) {
+        this.docletOptions = docletOptions;
+    }
 
     /**
      * Renders a RootDoc's contents.
@@ -64,12 +69,12 @@ public class DocletIterator {
     }
 
     private boolean processOverview(RootDoc rootDoc, DocletRenderer renderer) {
-        File overviewFile = getOverviewFile(rootDoc.options());
-        if (overviewFile != null) {
+        Optional<File> overview = docletOptions.overview();
+        if (overview.isPresent()) {
+            File overviewFile = overview.get();
             if (isAsciidocFile(overviewFile.getName())) {
                 try {
-                    Charset encoding = getEncoding(rootDoc.options());
-                    String overviewContent = Files.toString(overviewFile, encoding);
+                    String overviewContent = Files.toString(overviewFile, docletOptions.encoding());
                     rootDoc.setRawCommentText(overviewContent);
                     renderer.renderDoc(rootDoc);
                 } catch (IOException e) {
@@ -82,24 +87,6 @@ public class DocletIterator {
             }
         }
         return true;
-    }
-
-    private File getOverviewFile(String[][] options) {
-        for (String option[] : options) {
-            if ("-overview".equals(option[0])) {
-                return new File(option[1]);
-            }
-        }
-        return null;
-    }
-
-    private Charset getEncoding(String[][] options) {
-        for (String option[] : options) {
-            if ("-encoding".equals(option[0])) {
-                return Charset.forName(option[1]);
-            }
-        }
-        return Charsets.UTF_8;
     }
 
     private static boolean isAsciidocFile(String name) {

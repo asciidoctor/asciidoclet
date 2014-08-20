@@ -1,37 +1,34 @@
 package org.asciidoctor;
 
+import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Doclet;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
 import org.asciidoctor.asciidoclet.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 /**
  * = Asciidoclet
  *
  * https://github.com/asciidoctor/asciidoclet[Asciidoclet] is a Javadoc Doclet
  * that uses http://asciidoctor.org[Asciidoctor] (via the
- * https://github.com/asciidoctor/asciidoctor-java-integration[Asciidoctor Java integration])
- * to render http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
+ * https://github.com/asciidoctor/asciidoctorj[Asciidoctor Java integration])
+ * to interpet http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
  *
- * == Usage
- * 
- * Asciidoclet may be used via a custom doclet in the maven-javadoc-plugin:
- *
- * [source,xml]
- * ----
- * include::pom.xml[tags=pom_include,indent=0]
- * ----
- *
- * <1> The -includes-basedir option must be set, typically this is the project root. It allows
- * source inclusions within javadocs, relative to the specified directory.
- *
- * <2> The -overview option may refer to an Asciidoc file. If the file's extension does not match
- * one of `.ad`, `.adoc`, `.asciidoc` or `.txt`, then the file is ignored and will be processed
- * by the standard doclet as an HTML overview.
+ * include::README.asciidoc[tags=usage]
  *
  * == Examples
- * 
+ *
+ * Custom attributes::
+ * `+{project_name}+`;; {project_name}
+ * `+{project_desc}+`;; {project_desc}
+ * `+{project_version}+`;; {project_version}
+ *
  * Code block (with syntax highlighting added by CodeRay)::
  * +
  * [source,java]
@@ -57,19 +54,23 @@ import org.asciidoctor.asciidoclet.*;
  * <1> Creates an instance of the Asciidoctor Java integration
  * <2> Runs Javadoc comment strings through Asciidoctor
  *
- * Inline code:: `code()` or +code()+
+ * Inline code:: `code()`
  *
  * Headings::
  * +
  * --
  * [float]
  * = Heading 1
+ *
  * [float]
  * == Heading 2
+ *
  * [float]
  * === Heading 3
+ *
  * [float]
  * ==== Heading 4
+ *
  * [float]
  * ===== Heading 5
  * --
@@ -124,11 +125,8 @@ import org.asciidoctor.asciidoclet.*;
  * Tables::
  * +
  * .An example table
- * [cols="3", options="header"]
  * |===
- * |Column 1
- * |Column 2
- * |Column 3
+ * |Column 1 |Column 2 |Column 3
  * 
  * |1
  * |Item 1
@@ -147,8 +145,6 @@ import org.asciidoctor.asciidoclet.*;
  * +
  * .Optional Title
  * ****
- * *Sidebar* Block
- *
  * Usage: Notes in a sidebar, naturally.
  * ****
  *
@@ -157,17 +153,32 @@ import org.asciidoctor.asciidoclet.*;
  * IMPORTANT: Check this out!
  *
  * @author https://github.com/johncarl81[John Ericksen]
- * @version 0.1.0
+ * @version {project_version}
  * @see org.asciidoctor.Asciidoclet
  * @since 0.1.0
  * @serial (or @serialField or @serialData)
  */
 public class Asciidoclet extends Doclet {
 
-    protected static final String INCLUDE_BASEDIR_OPTION = "-include-basedir";
+    private final RootDoc rootDoc;
+    private final DocletOptions docletOptions;
+    private final DocletIterator iterator;
+    private final Stylesheets stylesheets;
 
-    private static StandardAdapter standardAdapter = new StandardAdapter();
-    private static DocletIterator iterator = new DocletIterator();
+    public Asciidoclet(RootDoc rootDoc) {
+        this.rootDoc = rootDoc;
+        this.docletOptions = new DocletOptions(rootDoc);
+        this.iterator = new DocletIterator(docletOptions);
+        this.stylesheets = new Stylesheets(docletOptions, rootDoc);
+    }
+
+    // test use
+    Asciidoclet(RootDoc rootDoc, DocletIterator iterator, Stylesheets stylesheets) {
+        this.rootDoc = rootDoc;
+        this.docletOptions = new DocletOptions(rootDoc);
+        this.iterator = iterator;
+        this.stylesheets = stylesheets;
+    }
 
     /**
      * .Example usage
@@ -206,10 +217,7 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static int optionLength(String option) {
-        if (INCLUDE_BASEDIR_OPTION.equals(option)) {
-            return 2;
-        }
-        return standardAdapter.optionLength(option);
+        return optionLength(option, new StandardAdapter());
     }
 
     /**
@@ -222,14 +230,7 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static boolean start(RootDoc rootDoc) {
-        String baseDir = getBaseDir(rootDoc.options());
-        AsciidoctorRenderer renderer = new AsciidoctorRenderer(baseDir, rootDoc);
-        try {
-            return iterator.render(rootDoc, renderer) &&
-                   standardAdapter.start(rootDoc);
-        } finally {
-            renderer.cleanup();
-        }
+        return new Asciidoclet(rootDoc).start(new StandardAdapter());
     }
 
     /**
@@ -243,47 +244,34 @@ public class Asciidoclet extends Doclet {
      */
     @SuppressWarnings("UnusedDeclaration")
     public static boolean validOptions(String[][] options, DocErrorReporter errorReporter) {
-        boolean hasBaseDir = false;
-        for (String option[] : options) {
-            if (option.length > 0 && INCLUDE_BASEDIR_OPTION.equals(option[0])) {
-                hasBaseDir = true;
-            }
-        }
-        if (!hasBaseDir) {
-            errorReporter.printWarning(INCLUDE_BASEDIR_OPTION + " must be present for includes or file reference features.");
-        }
-
-        return standardAdapter.validOptions(options, errorReporter);
+        return validOptions(options, errorReporter, new StandardAdapter());
     }
 
-    protected static String getBaseDir(String[][] options) {
-        for (String option[] : options) {
-            if (INCLUDE_BASEDIR_OPTION.equals(option[0])) {
-                return option[1];
-            }
+    static int optionLength(String option, StandardAdapter standardDoclet) {
+        return DocletOptions.optionLength(option, standardDoclet);
+    }
+
+    static boolean validOptions(String[][] options, DocErrorReporter errorReporter, StandardAdapter standardDoclet) {
+        return DocletOptions.validOptions(options, errorReporter, standardDoclet);
+    }
+
+    boolean start(StandardAdapter standardDoclet) {
+        return run(standardDoclet)
+                && postProcess();
+    }
+
+    private boolean run(StandardAdapter standardDoclet) {
+        AsciidoctorRenderer renderer = new AsciidoctorRenderer(docletOptions, rootDoc);
+        try {
+            return iterator.render(rootDoc, renderer) &&
+                    standardDoclet.start(rootDoc);
+        } finally {
+            renderer.cleanup();
         }
-        return null;
     }
 
-    /**
-     * _For testing purposes._
-     *
-     * Allows tests to override the standard adapter.
-     *
-     * @param adapter
-     */
-    protected static void setStandardAdapter(StandardAdapter adapter){
-        standardAdapter = adapter;
-    }
-
-    /**
-     * _For testing purposes._
-     *
-     * Allows tests to override the doclet iterator.
-     *
-     * @param iterator
-     */
-    protected static void setIterator(DocletIterator iterator) {
-        Asciidoclet.iterator = iterator;
+    private boolean postProcess() {
+        if (docletOptions.stylesheetFile().isPresent()) return true;
+        return stylesheets.copy();
     }
 }

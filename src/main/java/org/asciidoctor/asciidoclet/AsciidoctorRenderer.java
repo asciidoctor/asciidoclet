@@ -1,11 +1,10 @@
 package org.asciidoctor.asciidoclet;
 
+import com.google.common.base.Optional;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.*;
-
-import java.io.File;
 
 import static org.asciidoctor.Asciidoctor.Factory.create;
 
@@ -16,34 +15,56 @@ import static org.asciidoctor.Asciidoctor.Factory.create;
  */
 public class AsciidoctorRenderer implements DocletRenderer {
 
-    private static final Attributes ATTRIBUTES = AttributesBuilder.attributes()
-            .attribute("at", "&#64;")
-            .attribute("slash", "/")
-            .attribute("icons", null)
-            .attribute("idprefix", "")
-            .attribute("notitle", null)
-            .attribute("source-highlighter", "coderay")
-            .attribute("coderay-css", "style").get();
+    private static AttributesBuilder defaultAttributes() {
+        return AttributesBuilder.attributes()
+                .attribute("at", "&#64;")
+                .attribute("slash", "/")
+                .attribute("icons", null)
+                .attribute("idprefix", "")
+                .attribute("idseparator", "-")
+                .attribute("javadoc", "")
+                .attribute("showtitle", true)
+                .attribute("source-highlighter", "coderay")
+                .attribute("coderay-css", "class");
+    }
+
+    private static OptionsBuilder defaultOptions() {
+        return OptionsBuilder.options()
+                .safe(SafeMode.SAFE)
+                .backend("html5");
+    }
+
     protected static final String INLINE_DOCTYPE = "inline";
 
     private final Asciidoctor asciidoctor;
-    private final String baseDir;
-    private final OutputTemplates templates;
+    private final Optional<OutputTemplates> templates;
+    private final Options options;
 
-    public AsciidoctorRenderer(String baseDir, DocErrorReporter errorReporter) {
-        this(baseDir, new OutputTemplates(errorReporter), create());
+    public AsciidoctorRenderer(DocletOptions docletOptions, DocErrorReporter errorReporter) {
+        this(docletOptions, errorReporter, OutputTemplates.create(errorReporter), create());
     }
 
     /**
      * Constructor used directly for testing purposes only.
-     *
-     * @param baseDir
-     * @param asciidoctor
      */
-    protected AsciidoctorRenderer(String baseDir, OutputTemplates templates, Asciidoctor asciidoctor) {
-        this.baseDir = baseDir;
+    protected AsciidoctorRenderer(DocletOptions docletOptions, DocErrorReporter errorReporter, Optional<OutputTemplates> templates, Asciidoctor asciidoctor) {
         this.asciidoctor = asciidoctor;
         this.templates = templates;
+        this.options = buildOptions(docletOptions, errorReporter);
+    }
+
+    private Options buildOptions(DocletOptions docletOptions, DocErrorReporter errorReporter) {
+        OptionsBuilder opts = defaultOptions();
+        if (docletOptions.includeBasedir().isPresent()) opts.baseDir(docletOptions.includeBasedir().get());
+        if (templates.isPresent()) opts.templateDir(templates.get().templateDir());
+        opts.attributes(buildAttributes(docletOptions, errorReporter));
+        return opts.get();
+    }
+
+    private Attributes buildAttributes(DocletOptions docletOptions, DocErrorReporter errorReporter) {
+        return defaultAttributes()
+                .attributes(new AttributesLoader(asciidoctor, docletOptions, errorReporter).load())
+                .get();
     }
 
     /**
@@ -67,7 +88,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
     }
 
     public void cleanup() {
-        templates.delete();
+        if (templates.isPresent()) templates.get().delete();
     }
 
     /**
@@ -94,25 +115,11 @@ public class AsciidoctorRenderer implements DocletRenderer {
      * @return content rendered by Asciidoctor
      */
     private String render(String input, boolean inline) {
-
-        OptionsBuilder optionsBuilder = OptionsBuilder.options()
-                .safe(SafeMode.SAFE)
-                .backend("html5")
-                .eruby("erubis")
-                .attributes(ATTRIBUTES);
-
-        if(this.baseDir != null){
-            optionsBuilder.baseDir(new File(this.baseDir));
-        }
-        if(inline){
-            optionsBuilder.docType(INLINE_DOCTYPE);
-        }
-        templates.addToOptions(optionsBuilder);
-
-        return asciidoctor.render(cleanJavadocInput(input), optionsBuilder.get());
+        options.setDocType(inline ? INLINE_DOCTYPE : null);
+        return asciidoctor.render(cleanJavadocInput(input), options);
     }
 
-    protected String cleanJavadocInput(String input){
+    protected static String cleanJavadocInput(String input){
         return input.trim()
             .replaceAll("\n ", "\n") // Newline space to accommodate javadoc newlines.
             .replaceAll("\\{at}", "&#64;") // {at} is translated into @.

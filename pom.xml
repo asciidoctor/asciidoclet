@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.sun.tools</groupId>
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.9</version>
+            <version>4.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -72,6 +72,12 @@
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -121,9 +127,14 @@
                         <artifactId>asciidoclet</artifactId>
                         <version>${project.version}</version>
                     </docletArtifact>
-                    <additionalparam>-include-basedir ${project.basedir}</additionalparam>  <!--1-->
+                    <additionalparam> <!--1-->
+                      -include-basedir ${project.basedir}
+                      -attributes "idseparator=-; project_name=${project.name}; \
+                                   project_version=${project.version}; \
+                                   project_desc=${project.description}"
+                    </additionalparam>
                     <linksource>true</linksource>
-                    <overview>src/main/java/overview.adoc</overview>  <!--2-->
+                    <overview>src/main/java/overview.adoc</overview> <!--2-->
                 </configuration>
             </plugin>
             <!-- end::pom_include[] -->

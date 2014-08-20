@@ -3,7 +3,7 @@ John Ericksen <https://github.com/johncarl81>
 v0.1.3
 :description: This is a guide for setting up and using the Asciidoclet project. Asciidoclet is a Javadoc Doclet based on Asciidoctor that lets you write Javadoc in the AsciiDoc syntax.
 :keywords: Asciidoclet, AsciiDoc, Asciidoctor, syntax, Javadoc, Doclet, reference
-:awestruct-layout: base
+:page-layout: base
 :language: java
 ifndef::awestruct[]
 :idprefix:
@@ -70,7 +70,7 @@ This is the same class with Asciidoclet.
 /**
  * = Asciidoclet
  *
- * Sample comments that include +source code+.
+ * Sample comments that include `source code`.
  *
  * [source,java]
  * --
@@ -93,11 +93,16 @@ public class Asciidoclet extends Doclet {
 
 The result is readable source and beautifully rendered Javadocs, the best of both worlds!
 
+// tag::usage[]
 == Usage
+
+Run javadoc with the `org.asciidoctor.Asciidoclet` doclet class.
+Some examples for common build systems are shown below.
+See <<doclet-options>> for supported options.
 
 === Maven
 
-Asciidoclet may be used via a +maven-javadoc-plugin+ doclet:
+Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
 
 [source,xml]
 ----
@@ -113,13 +118,20 @@ Asciidoclet may be used via a +maven-javadoc-plugin+ doclet:
             <artifactId>asciidoclet</artifactId>
             <version>${asciidoclet.version}</version>
         </docletArtifact>
+        <overview>src/main/java/overview.adoc</overview>
+        <additionalparam>
+          -include-basedir ${project.basedir}
+          -attributes "name=${project.name}; \
+                       version=${project.version}; \
+                       title-link=http://example.com[${project.name} ${project.version}]"
+        </additionalparam>
     </configuration>
 </plugin>
 ----
 
 === Gradle
 
-Asciidoclet may be used via a doclet in the +Javadoc+ task:
+Asciidoclet may be used via a doclet in the `Javadoc` task:
 
 [source,groovy]
 ----
@@ -134,10 +146,68 @@ dependencies {
 javadoc {
     options.docletpath = configurations.asciidoclet.files.asType(List)
     options.doclet = 'org.asciidoctor.Asciidoclet'
+    options.overview = "src/main/java/overview.adoc"
+    options.addStringOption('include-basedir', "${projectDir}")
+    options.addStringOption('attributes',
+            "name=${project.name};" +
+            "version=${project.version};" +
+            "title-link=http://example.com[${project.name} ${project.version}]")
 }
 ----
 
-== Rescources and help
+=== Ant
+// Some of us still use Ant, alright?!
+Asciidoclet may be used via a doclet element in Ant's `javadoc` task:
+
+[source,xml]
+----
+<javadoc destdir="target/javadoc"
+         sourcepath="src"
+         overview="src/overview.adoc">
+  <doclet name="org.asciidoctor.Asciidoclet" pathref="asciidoclet.classpath"> <!--1-->
+    <param name="-include-basedir" value="${basedir}"/>
+    <param name="-attributes"
+           value="name=${ant.project.name};
+                  version=${version};
+                  title-link=http://example.com[${ant.project.name} ${version}]"/>
+  </doclet>
+</javadoc>
+----
+
+<1> Assumes a path reference has been defined for Asciidoclet and its dependencies, e.g.
+using http://ant.apache.org/ivy/[Ivy] or similar.
+
+=== Doclet Options
+// tag::doclet-options[]
+
+-include-basedir <dir>::
+Sets the base directory that will be used to resolve relative path names in Asciidoc `include::` directives.
+This should be set to the project's root directory.
+
+-attributes "key[=value]; ..."::
+Sets http://asciidoctor.org/docs/user-manual/#attributes[document attributes^] that will be expanded in javadoc comments.
+The argument is a string containing attributes in the form of `key`, `key!` or `key=value`, separated by semicolons.
++
+Attribute keys and values are parsed like Asciidoctor command-line attributes.
+Use `key!` to unset an attribute, and `key=value@` to allow attributes to be overridden in the attributes file or javadoc.
++
+The document attribute `javadoc` is set automatically by the doclet. 
+This may be useful for conditionally selecting content when using the same Asciidoc file for javadoc and other documentation.
+
+-attributes-file <file>::
+Reads http://asciidoctor.org/docs/user-manual/#attributes[document attributes^] from an Asciidoc file.
+The attributes will be expanded in javadoc comments.
++
+Attributes set by the `-attributes` option take precedence over those in the attributes file.
+
+-overview <file>::
+Overview documentation can be generated from an Asciidoc file using the standard `-overview` option.
+Files matching [x-]`*.adoc`, [x-]`*.ad`, [x-]`*.asciidoc` or [x-]`*.txt` are processed by Asciidoclet.
+Other files are assumed to be HTML and will be processed by the standard doclet.
+
+// end::doclet-options[]
+// end::usage[]
+== Resources and help
 
 For more information:
 
@@ -151,7 +221,7 @@ If you have questions or would like to help develop this project, please join th
 == License
 
 ....
-Copyright 2013 John Ericksen
+Copyright (C) 2013-2014 John Ericksen
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

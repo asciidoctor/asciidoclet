@@ -1,10 +1,10 @@
 package org.asciidoctor.asciidoclet;
 
+import com.google.common.base.Optional;
 import com.google.common.io.ByteSink;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.sun.javadoc.DocErrorReporter;
-import org.asciidoctor.OptionsBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,30 +16,31 @@ import java.net.URL;
 class OutputTemplates {
 
     private final File templateDir;
-    private final DocErrorReporter errorReporter;
 
     static final String[] templateNames = new String[] {
             "section.html.haml",
-            "block_paragraph.html.haml"
+            "paragraph.html.haml"
     };
 
-    OutputTemplates(DocErrorReporter errorReporter) {
-        this.errorReporter = errorReporter;
-        this.templateDir = prepareTemplateDir();
+    private OutputTemplates(File templateDir) {
+        this.templateDir = templateDir;
     }
 
-    void addToOptions(OptionsBuilder optionsBuilder) {
-        if (templateDir != null) optionsBuilder.templateDir(templateDir);
+    static Optional<OutputTemplates> create(DocErrorReporter errorReporter) {
+        File dir = prepareTemplateDir(errorReporter);
+        return dir == null ? Optional.<OutputTemplates>absent() : Optional.of(new OutputTemplates(dir));
+    }
+
+    File templateDir() {
+        return templateDir;
     }
 
     void delete() {
-        if (templateDir != null) {
-            for (String templateName : templateNames) new File(templateDir, templateName).delete();
-            templateDir.delete();
-        }
+        for (String templateName : templateNames) new File(templateDir, templateName).delete();
+        templateDir.delete();
     }
 
-    private File prepareTemplateDir() {
+    private static File prepareTemplateDir(DocErrorReporter errorReporter) {
         // copy our template resources to the templateDir so Asciidoctor can use them.
         File templateDir = Files.createTempDir();
         try {
@@ -51,8 +52,8 @@ class OutputTemplates {
         }
     }
 
-    private void prepareTemplate(File templateDir, String template) throws IOException {
-        URL src = getClass().getClassLoader().getResource("templates/" + template);
+    private static void prepareTemplate(File templateDir, String template) throws IOException {
+        URL src = OutputTemplates.class.getClassLoader().getResource("templates/" + template);
         if (src == null) throw new IOException("Could not find template " + template);
         ByteSink dest = Files.asByteSink(new File(templateDir, template));
         Resources.asByteSource(src).copyTo(dest);

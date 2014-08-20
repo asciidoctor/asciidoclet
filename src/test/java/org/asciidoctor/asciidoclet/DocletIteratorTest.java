@@ -12,7 +12,6 @@ import static org.junit.Assert.*;
  */
 public class DocletIteratorTest {
 
-    private DocletIterator iterator;
     private DocletRenderer mockRenderer;
     private RootDoc mockDoc;
     private ClassDoc mockClassDoc;
@@ -25,7 +24,6 @@ public class DocletIteratorTest {
     @Before
     public void setup(){
         mockRenderer = mock(DocletRenderer.class);
-        iterator = new DocletIterator();
 
         mockDoc = mock(RootDoc.class);
         mockPackageDoc = mock(PackageDoc.class);
@@ -51,7 +49,7 @@ public class DocletIteratorTest {
 
     @Test
     public void testIteration(){
-        iterator.render(mockDoc, mockRenderer);
+        new DocletIterator(DocletOptions.NONE).render(mockDoc, mockRenderer);
 
         verify(mockRenderer).renderDoc(mockClassDoc);
         verify(mockRenderer).renderDoc(mockFieldDoc);
@@ -69,7 +67,7 @@ public class DocletIteratorTest {
         when(mockDoc.classes()).thenReturn(new ClassDoc[]{mockClassDoc});
         when(mockClassDoc.elements()).thenReturn(new AnnotationTypeElementDoc[]{mockAnnotationElement});
 
-        iterator.render(mockDoc, mockRenderer);
+        new DocletIterator(DocletOptions.NONE).render(mockDoc, mockRenderer);
 
         verify(mockRenderer).renderDoc(mockClassDoc);
         verify(mockRenderer).renderDoc(mockAnnotationElement);
@@ -77,7 +75,7 @@ public class DocletIteratorTest {
 
     @Test
     public void testIgnoreNonAsciidocOverview() {
-        when(mockDoc.options()).thenReturn(new String[][] {{"-overview", "foo.html"}});
+        DocletIterator iterator = new DocletIterator(new DocletOptions(new String[][] {{DocletOptions.OVERVIEW, "foo.html"}}));
 
         assertTrue(iterator.render(mockDoc, mockRenderer));
         verify(mockDoc, never()).setRawCommentText(any(String.class));
@@ -85,15 +83,14 @@ public class DocletIteratorTest {
 
     @Test
     public void testFailIfAsciidocOverviewNotFound() {
-        when(mockDoc.options()).thenReturn(new String[][] {{"-overview", "notfound.adoc"}});
+        DocletIterator iterator = new DocletIterator(new DocletOptions(new String[][] {{DocletOptions.OVERVIEW, "notfound.adoc"}}));
 
         assertFalse(iterator.render(mockDoc, mockRenderer));
     }
 
     @Test
     public void testOverviewFound() {
-        when(mockDoc.options()).thenReturn(new String[][] {{"-overview", "src/main/java/overview.adoc"}});
-
+        DocletIterator iterator = new DocletIterator(new DocletOptions(new String[][] {{DocletOptions.OVERVIEW, "src/main/java/overview.adoc"}}));
         assertTrue(iterator.render(mockDoc, mockRenderer));
         verify(mockRenderer).renderDoc(mockDoc);
     }
