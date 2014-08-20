@@ -16,11 +16,11 @@ import java.util.List;
 public class DocletOptions {
     public static final String ENCODING = "-encoding";
     public static final String OVERVIEW = "-overview";
-    public static final String INCLUDE_BASEDIR = "-include-basedir";
-    public static final String STYLESHEETFILE = "-stylesheetfile";
+    public static final String BASEDIR = "--base-dir";
+    public static final String STYLESHEET = "--stylesheet";
     public static final String DESTDIR = "-d";
-    public static final String ATTRIBUTES = "-attributes";
-    public static final String ATTRIBUTES_FILE = "-attributes-file";
+    public static final String ATTRIBUTES = "--attributes";
+    public static final String ATTRIBUTES_FILE = "--attributes-file";
 
     private final Optional<File> basedir;
     private final Optional<File> overview;
@@ -46,13 +46,13 @@ public class DocletOptions {
         ImmutableList.Builder<String> attrs = ImmutableList.builder();
         for (String[] option : options) {
             if (option.length > 0) {
-                if (INCLUDE_BASEDIR.equals(option[0])) {
+                if (BASEDIR.equals(option[0])) {
                     basedir = new File(option[1]);
                 }
                 else if (OVERVIEW.equals(option[0])) {
                     overview = new File(option[1]);
                 }
-                else if (STYLESHEETFILE.equals(option[0])) {
+                else if (STYLESHEET.equals(option[0])) {
                     stylesheet = new File(option[1]);
                 }
                 else if (DESTDIR.equals(option[0])) {
@@ -83,11 +83,11 @@ public class DocletOptions {
         return overview;
     }
 
-    public Optional<File> stylesheetFile() {
+    public Optional<File> stylesheet() {
         return stylesheet;
     }
 
-    public Optional<File> includeBasedir() {
+    public Optional<File> baseDir() {
         return basedir;
     }
 
@@ -115,8 +115,8 @@ public class DocletOptions {
     public static boolean validOptions(String[][] options, DocErrorReporter errorReporter, StandardAdapter standardDoclet) {
         DocletOptions docletOptions = new DocletOptions(options);
 
-        if (!docletOptions.includeBasedir().isPresent()) {
-            errorReporter.printWarning(INCLUDE_BASEDIR + " must be present for includes or file reference features.");
+        if (!docletOptions.baseDir().isPresent()) {
+            errorReporter.printWarning(BASEDIR + " must be present for includes or file reference features to work properly.");
         }
 
         Optional<File> attrsFile = docletOptions.attributesFile();
@@ -128,7 +128,7 @@ public class DocletOptions {
     }
 
     public static int optionLength(String option, StandardAdapter standardDoclet) {
-        if (INCLUDE_BASEDIR.equals(option)) {
+        if (BASEDIR.equals(option)) {
             return 2;
         }
         if (ATTRIBUTES.equals(option)) {

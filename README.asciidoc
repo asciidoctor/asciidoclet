@@ -120,10 +120,10 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
         </docletArtifact>
         <overview>src/main/java/overview.adoc</overview>
         <additionalparam>
-          -include-basedir ${project.basedir}
-          -attributes "name=${project.name}; \
-                       version=${project.version}; \
-                       title-link=http://example.com[${project.name} ${project.version}]"
+          --base-dir ${project.basedir}
+          --attributes "name=${project.name}; \
+                        version=${project.version}; \
+                        title-link=http://example.com[${project.name} ${project.version}]"
         </additionalparam>
     </configuration>
 </plugin>
@@ -147,8 +147,8 @@ javadoc {
     options.docletpath = configurations.asciidoclet.files.asType(List)
     options.doclet = 'org.asciidoctor.Asciidoclet'
     options.overview = "src/main/java/overview.adoc"
-    options.addStringOption('include-basedir', "${projectDir}")
-    options.addStringOption('attributes',
+    options.addStringOption('-base-dir', "${projectDir}")
+    options.addStringOption('-attributes',
             "name=${project.name};" +
             "version=${project.version};" +
             "title-link=http://example.com[${project.name} ${project.version}]")
@@ -165,8 +165,8 @@ Asciidoclet may be used via a doclet element in Ant's `javadoc` task:
          sourcepath="src"
          overview="src/overview.adoc">
   <doclet name="org.asciidoctor.Asciidoclet" pathref="asciidoclet.classpath"> <!--1-->
-    <param name="-include-basedir" value="${basedir}"/>
-    <param name="-attributes"
+    <param name="--base-dir" value="${basedir}"/>
+    <param name="--attributes"
            value="name=${ant.project.name};
                   version=${version};
                   title-link=http://example.com[${ant.project.name} ${version}]"/>
@@ -180,11 +180,11 @@ using http://ant.apache.org/ivy/[Ivy] or similar.
 === Doclet Options
 // tag::doclet-options[]
 
--include-basedir <dir>::
+--base-dir <dir>::
 Sets the base directory that will be used to resolve relative path names in Asciidoc `include::` directives.
 This should be set to the project's root directory.
 
--attributes "key[=value]; ..."::
+--attributes "key[=value]; ..."::
 Sets http://asciidoctor.org/docs/user-manual/#attributes[document attributes^] that will be expanded in javadoc comments.
 The argument is a string containing attributes in the form of `key`, `key!` or `key=value`, separated by semicolons.
 +
@@ -194,7 +194,7 @@ Use `key!` to unset an attribute, and `key=value@` to allow attributes to be ove
 The document attribute `javadoc` is set automatically by the doclet. 
 This may be useful for conditionally selecting content when using the same Asciidoc file for javadoc and other documentation.
 
--attributes-file <file>::
+--attributes-file <file>::
 Reads http://asciidoctor.org/docs/user-manual/#attributes[document attributes^] from an Asciidoc file.
 The attributes will be expanded in javadoc comments.
 +
