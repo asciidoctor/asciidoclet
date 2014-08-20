@@ -77,7 +77,7 @@ public class DocletOptions {
                     gemPath = option[1];
                 }
                 else if (REQUIRES.equals(option[0])) {
-                    requires.addAll(requiresSplitter.split(option[1]));
+                    requires.add(option[1]);
                 }
             }
         }
@@ -169,5 +169,4 @@ public class DocletOptions {
     }
 
     private static final Splitter attributeSplitter = Splitter.onPattern("\\s*;\\s*").omitEmptyStrings().trimResults();
-    private static final Splitter requiresSplitter = Splitter.onPattern("\\s*,\\s*").omitEmptyStrings().trimResults();
 }
