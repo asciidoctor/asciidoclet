@@ -57,7 +57,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
 
     private Options buildOptions(DocletOptions docletOptions, DocErrorReporter errorReporter) {
         OptionsBuilder opts = defaultOptions();
-        if (docletOptions.includeBasedir().isPresent()) opts.baseDir(docletOptions.includeBasedir().get());
+        if (docletOptions.baseDir().isPresent()) opts.baseDir(docletOptions.baseDir().get());
         if (templates.isPresent()) opts.templateDir(templates.get().templateDir());
         opts.attributes(buildAttributes(docletOptions, errorReporter));
         if (docletOptions.requires().size() > 0) {

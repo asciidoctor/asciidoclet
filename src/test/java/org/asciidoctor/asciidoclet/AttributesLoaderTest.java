@@ -40,7 +40,7 @@ public class AttributesLoaderTest {
     @Test
     public void testOnlyCommandLineAttributes() {
         DocletOptions options = new DocletOptions(new String[][] {
-                { "-attributes", "foo=bar; foo2=foo-two; not!; override=override@" }
+                { "--attributes", "foo=bar; foo2=foo-two; not!; override=override@" }
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
 
@@ -59,7 +59,7 @@ public class AttributesLoaderTest {
         File attrsFile = createTempFile("attrs.adoc", ATTRS);
 
         DocletOptions options = new DocletOptions(new String[][] {
-                { "-attributes-file", attrsFile.getAbsolutePath() }
+                { "--attributes-file", attrsFile.getAbsolutePath() }
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
 
@@ -77,8 +77,8 @@ public class AttributesLoaderTest {
         File attrsFile = createTempFile("attrs.adoc", ATTRS);
 
         DocletOptions options = new DocletOptions(new String[][] {
-                { "-attributes", "foo=bar; not!; override=override@" },
-                { "-attributes-file", attrsFile.getAbsolutePath() }
+                { "--attributes", "foo=bar; not!; override=override@" },
+                { "--attributes-file", attrsFile.getAbsolutePath() }
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
 
@@ -98,8 +98,8 @@ public class AttributesLoaderTest {
         createTempFile("attrs-include.adoc", ATTRS);
 
         DocletOptions options = new DocletOptions(new String[][] {
-                { "-attributes-file", attrsFile.getAbsolutePath() },
-                { "-include-basedir", attrsFile.getParentFile().getAbsolutePath() },
+                { "--attributes-file", attrsFile.getAbsolutePath() },
+                { "--base-dir", attrsFile.getParentFile().getAbsolutePath() },
 
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
@@ -119,9 +119,9 @@ public class AttributesLoaderTest {
         createTempFile("foo", "attrs-include.adoc", ATTRS);
 
         DocletOptions options = new DocletOptions(new String[][] {
-                { "-attributes-file", attrsFile.getAbsolutePath() },
-                { "-include-basedir", attrsFile.getParentFile().getAbsolutePath() },
-                { "-attributes", "includedir=foo" },
+                { "--attributes-file", attrsFile.getAbsolutePath() },
+                { "--base-dir", attrsFile.getParentFile().getAbsolutePath() },
+                { "--attributes", "includedir=foo" },
 
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
