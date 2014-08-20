@@ -65,7 +65,7 @@ class AttributesLoader {
                 .safe(SafeMode.SAFE)
                 .eruby("erubis")
                 .attributes(existingAttrs);
-        if (docletOptions.includeBasedir().isPresent()) options.baseDir(docletOptions.includeBasedir().get());
+        if (docletOptions.baseDir().isPresent()) options.baseDir(docletOptions.baseDir().get());
         Map<String,Object> parsed = asciidoctor.readDocumentStructure(in, options.get().map()).getHeader().getAttributes();
         // workaround for https://github.com/asciidoctor/asciidoctorj/pull/169
         return new HashMap<String,Object>(parsed);

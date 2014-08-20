@@ -12,8 +12,8 @@ public class DocletOptionsTest {
 
     @Test
     public void testGetBaseDir(){
-        assertFalse(DocletOptions.NONE.includeBasedir().isPresent());
-        assertEquals("test", new DocletOptions(new String[][]{{INCLUDE_BASEDIR, "test"}}).includeBasedir().get().getName());
+        assertFalse(DocletOptions.NONE.baseDir().isPresent());
+        assertEquals("test", new DocletOptions(new String[][]{{BASEDIR, "test"}}).baseDir().get().getName());
     }
 
     @Test
@@ -32,8 +32,8 @@ public class DocletOptionsTest {
 
     @Test
     public void testStylesheetFile() {
-        assertFalse(DocletOptions.NONE.stylesheetFile().isPresent());
-        assertEquals("foo.css", new DocletOptions(new String[][]{{STYLESHEETFILE, "foo.css"}}).stylesheetFile().get().getName());
+        assertFalse(DocletOptions.NONE.stylesheet().isPresent());
+        assertEquals("foo.css", new DocletOptions(new String[][]{{STYLESHEET, "foo.css"}}).stylesheet().get().getName());
     }
 
     @Test

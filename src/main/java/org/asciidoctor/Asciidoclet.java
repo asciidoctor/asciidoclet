@@ -271,7 +271,7 @@ public class Asciidoclet extends Doclet {
     }
 
     private boolean postProcess() {
-        if (docletOptions.stylesheetFile().isPresent()) return true;
+        if (docletOptions.stylesheet().isPresent()) return true;
         return stylesheets.copy();
     }
 }

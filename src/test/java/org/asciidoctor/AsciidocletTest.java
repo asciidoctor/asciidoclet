@@ -35,7 +35,7 @@ public class AsciidocletTest {
 
     @Test
     public void testIncludeBaseDirOptionLength(){
-        assertEquals(2, Asciidoclet.optionLength(DocletOptions.INCLUDE_BASEDIR, mockAdapter));
+        assertEquals(2, Asciidoclet.optionLength(DocletOptions.BASEDIR, mockAdapter));
 
         verifyZeroInteractions(mockAdapter);
         verifyZeroInteractions(mockIterator);
@@ -55,7 +55,7 @@ public class AsciidocletTest {
     @Test
     public void testValidBaseDirOption(){
         DocErrorReporter mockReporter = mock(DocErrorReporter.class);
-        String[][] inputOptions = new String[][]{{DocletOptions.INCLUDE_BASEDIR, ""}};
+        String[][] inputOptions = new String[][]{{DocletOptions.BASEDIR, ""}};
 
         when(mockAdapter.validOptions(inputOptions, mockReporter)).thenReturn(true);
 
@@ -97,7 +97,7 @@ public class AsciidocletTest {
     @Test
     public void testStart(){
         RootDoc mockDoc = mock(RootDoc.class);
-        String[][] options = new String[][]{{DocletOptions.INCLUDE_BASEDIR, "test"}};
+        String[][] options = new String[][]{{DocletOptions.BASEDIR, "test"}};
 
         when(mockDoc.options()).thenReturn(options);
         when(mockAdapter.start(mockDoc)).thenReturn(true);
@@ -112,7 +112,7 @@ public class AsciidocletTest {
     @Test
     public void testStylesheetOverride(){
         RootDoc mockDoc = mock(RootDoc.class);
-        String[][] options = new String[][]{{DocletOptions.STYLESHEETFILE, "test"}};
+        String[][] options = new String[][]{{DocletOptions.STYLESHEET, "test"}};
 
         when(mockDoc.options()).thenReturn(options);
         when(mockAdapter.start(mockDoc)).thenReturn(true);
