@@ -21,12 +21,16 @@ public class DocletOptions {
     public static final String DESTDIR = "-d";
     public static final String ATTRIBUTES = "-attributes";
     public static final String ATTRIBUTES_FILE = "-attributes-file";
+    public static final String GEM_PATH = "--gem-path";
+    public static final String REQUIRES = "-r";
 
     private final Optional<File> basedir;
     private final Optional<File> overview;
     private final Optional<File> stylesheet;
     private final Optional<File> destdir;
     private final Optional<File> attributesFile;
+    private final String gemPath;
+    private final List<String> requires;
     private final Charset encoding;
     private final List<String> attributes;
 
@@ -42,6 +46,8 @@ public class DocletOptions {
         File stylesheet = null;
         File destdir = null;
         File attrsFile = null;
+        String gemPath = null;
+        ImmutableList.Builder<String> requires = ImmutableList.builder();
         Charset encoding = Charset.defaultCharset();
         ImmutableList.Builder<String> attrs = ImmutableList.builder();
         for (String[] option : options) {
@@ -67,6 +73,12 @@ public class DocletOptions {
                 else if (ATTRIBUTES_FILE.equals(option[0])) {
                     attrsFile = new File(option[1]);
                 }
+                else if (GEM_PATH.equals(option[0])) {
+                    gemPath = option[1];
+                }
+                else if (REQUIRES.equals(option[0])) {
+                    requires.addAll(requiresSplitter.split(option[1]));
+                }
             }
         }
 
@@ -77,6 +89,8 @@ public class DocletOptions {
         this.encoding = encoding;
         this.attributes = attrs.build();
         this.attributesFile = Optional.fromNullable(attrsFile);
+        this.gemPath = gemPath;
+        this.requires = requires.build();
     }
 
     public Optional<File> overview() {
@@ -112,6 +126,14 @@ public class DocletOptions {
         return Optional.of(f);
     }
 
+    public String gemPath() {
+        return gemPath;
+    }
+
+    public List<String> requires() {
+        return requires;
+    }
+
     public static boolean validOptions(String[][] options, DocErrorReporter errorReporter, StandardAdapter standardDoclet) {
         DocletOptions docletOptions = new DocletOptions(options);
 
@@ -137,8 +159,15 @@ public class DocletOptions {
         if (ATTRIBUTES_FILE.equals(option)) {
             return 2;
         }
+        if (GEM_PATH.equals(option)) {
+            return 2;
+        }
+        if (REQUIRES.equals(option)) {
+            return 2;
+        }
         return standardDoclet.optionLength(option);
     }
 
     private static final Splitter attributeSplitter = Splitter.onPattern("\\s*;\\s*").omitEmptyStrings().trimResults();
+    private static final Splitter requiresSplitter = Splitter.onPattern("\\s*,\\s*").omitEmptyStrings().trimResults();
 }

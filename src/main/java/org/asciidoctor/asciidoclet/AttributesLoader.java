@@ -8,7 +8,6 @@ import org.asciidoctor.*;
 
 import java.io.File;
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +62,6 @@ class AttributesLoader {
     private Map<String,Object> parseAttributes(Reader in, Map<String,Object> existingAttrs) {
         OptionsBuilder options = OptionsBuilder.options()
                 .safe(SafeMode.SAFE)
-                .eruby("erubis")
                 .attributes(existingAttrs);
         if (docletOptions.includeBasedir().isPresent()) options.baseDir(docletOptions.includeBasedir().get());
         Map<String,Object> parsed = asciidoctor.readDocumentStructure(in, options.get().map()).getHeader().getAttributes();
