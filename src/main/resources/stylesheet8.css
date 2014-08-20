@@ -700,6 +700,17 @@ th.valign-middle,td.valign-middle{vertical-align:middle}
 
 .dlist dl dd, .contentContainer .description .dlist dl dd, .contentContainer .details .dlist dl dd { margin-left: 1.125em; }
 
+.contentContainer hr {
+  border: 0 solid #ddddd8;
+  border-top-width: 1px;
+  height: 0;
+  margin: 1em 0 1.25em 0;
+}
+
+.contentContainer hr + br {
+  display: none;
+}
+
 p.tableblock {
     margin-top: .5em;
     margin-bottom: 0;
