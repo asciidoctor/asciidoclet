@@ -83,7 +83,7 @@ public class DocletIterator {
                 }
             }
             else {
-                rootDoc.printNotice("Skipping non-Asciidoc overview " + overviewFile + ", will be processed by standard doclet.");
+                rootDoc.printNotice("Skipping non-AsciiDoc overview " + overviewFile + ", will be processed by standard Doclet.");
             }
         }
         return true;

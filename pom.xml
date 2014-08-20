@@ -8,7 +8,7 @@
     <packaging>jar</packaging>
     <version>1.5.0-SNAPSHOT</version>
 
-    <name>Asciidoc Javadoc Doclet</name>
+    <name>AsciiDoc Javadoc Doclet</name>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>

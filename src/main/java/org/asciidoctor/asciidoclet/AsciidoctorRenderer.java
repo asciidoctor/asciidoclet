@@ -5,6 +5,8 @@ import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.*;
+import org.asciidoctor.internal.JRubyRuntimeContext;
+import org.asciidoctor.internal.RubyUtils;
 
 import static org.asciidoctor.Asciidoctor.Factory.create;
 
@@ -41,7 +43,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
     private final Options options;
 
     public AsciidoctorRenderer(DocletOptions docletOptions, DocErrorReporter errorReporter) {
-        this(docletOptions, errorReporter, OutputTemplates.create(errorReporter), create());
+        this(docletOptions, errorReporter, OutputTemplates.create(errorReporter), create(docletOptions.gemPath()));
     }
 
     /**
@@ -58,6 +60,12 @@ public class AsciidoctorRenderer implements DocletRenderer {
         if (docletOptions.includeBasedir().isPresent()) opts.baseDir(docletOptions.includeBasedir().get());
         if (templates.isPresent()) opts.templateDir(templates.get().templateDir());
         opts.attributes(buildAttributes(docletOptions, errorReporter));
+        if (docletOptions.requires().size() > 0) {
+            for (String require : docletOptions.requires()) {
+                // FIXME AsciidoctorJ should provide a public API for requiring paths in the Ruby runtime
+                RubyUtils.requireLibrary(JRubyRuntimeContext.get(), require);
+            }
+        }
         return opts.get();
     }
 
