@@ -17,7 +17,7 @@ public class DocletOptions {
     public static final String ENCODING = "-encoding";
     public static final String OVERVIEW = "-overview";
     public static final String BASEDIR = "--base-dir";
-    public static final String STYLESHEET = "--stylesheet";
+    public static final String STYLESHEET = "-stylesheetfile";
     public static final String DESTDIR = "-d";
     public static final String ATTRIBUTES = "--attributes";
     public static final String ATTRIBUTES_FILE = "--attributes-file";
