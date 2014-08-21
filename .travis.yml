@@ -5,3 +5,7 @@ jdk:
   - openjdk6
 notifications:
   irc: "irc.freenode.org#asciidoctor"
+script:
+  - mvn clean test jacoco:report
+after_success:
+  - mvn coveralls:jacoco
