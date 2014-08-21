@@ -24,6 +24,8 @@ endif::awestruct[]
 
 {asciidoclet-src-ref}[Asciidoclet] is a Javadoc Doclet based on Asciidoctor that lets you write Javadoc in the AsciiDoc syntax.
 
+image:http://img.shields.io/travis/asciidoctor/asciidoclet/master.svg["Build Status", link="https://travis-ci.org/asciidoctor/asciidoclet"]
+
 == Introduction
 
 Traditionally, Javadocs have mixed minor markup with HTML which, if you're writing for HTML Javadoc output, becomes unreadable and hard to write over time. 
