@@ -19,10 +19,12 @@ public class DocletOptions {
     public static final String BASEDIR = "--base-dir";
     public static final String STYLESHEET = "-stylesheetfile";
     public static final String DESTDIR = "-d";
-    public static final String ATTRIBUTES = "--attributes";
+    public static final String ATTRIBUTE = "-a";
+    public static final String ATTRIBUTE_LONG = "--attribute";
     public static final String ATTRIBUTES_FILE = "--attributes-file";
     public static final String GEM_PATH = "--gem-path";
-    public static final String REQUIRES = "-r";
+    public static final String REQUIRE = "-r";
+    public static final String REQUIRE_LONG = "--require";
 
     private final Optional<File> basedir;
     private final Optional<File> overview;
@@ -67,8 +69,8 @@ public class DocletOptions {
                 else if (ENCODING.equals(option[0])) {
                     encoding = Charset.forName(option[1]);
                 }
-                else if (ATTRIBUTES.equals(option[0])) {
-                    attrs.addAll(attributeSplitter.split(option[1]));
+                else if (ATTRIBUTE.equals(option[0]) || ATTRIBUTE_LONG.equals(option[0])) {
+                    attrs.addAll(COMMA_WS.split(option[1]));
                 }
                 else if (ATTRIBUTES_FILE.equals(option[0])) {
                     attrsFile = new File(option[1]);
@@ -76,8 +78,8 @@ public class DocletOptions {
                 else if (GEM_PATH.equals(option[0])) {
                     gemPath = option[1];
                 }
-                else if (REQUIRES.equals(option[0])) {
-                    requires.add(option[1]);
+                else if (REQUIRE.equals(option[0]) || REQUIRE_LONG.equals(option[0])) {
+                    requires.addAll(COMMA_WS.split(option[1]));
                 }
             }
         }
@@ -153,7 +155,7 @@ public class DocletOptions {
         if (BASEDIR.equals(option)) {
             return 2;
         }
-        if (ATTRIBUTES.equals(option)) {
+        if (ATTRIBUTE.equals(option) || ATTRIBUTE_LONG.equals(option)) {
             return 2;
         }
         if (ATTRIBUTES_FILE.equals(option)) {
@@ -162,11 +164,12 @@ public class DocletOptions {
         if (GEM_PATH.equals(option)) {
             return 2;
         }
-        if (REQUIRES.equals(option)) {
+        if (REQUIRE.equals(option) || REQUIRE_LONG.equals(option)) {
             return 2;
         }
         return standardDoclet.optionLength(option);
     }
 
-    private static final Splitter attributeSplitter = Splitter.onPattern("\\s*;\\s*").omitEmptyStrings().trimResults();
+    // Split on comma with optional whitespace
+    private static final Splitter COMMA_WS = Splitter.onPattern("\\s*,\\s*").omitEmptyStrings().trimResults();
 }

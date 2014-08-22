@@ -40,7 +40,7 @@ public class AttributesLoaderTest {
     @Test
     public void testOnlyCommandLineAttributes() {
         DocletOptions options = new DocletOptions(new String[][] {
-                { "--attributes", "foo=bar; foo2=foo-two; not!; override=override@" }
+                { "-a", "foo=bar, foo2=foo-two, not!, override=override@" }
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
 
@@ -48,6 +48,26 @@ public class AttributesLoaderTest {
 
         assertThat(attrs, Matchers.<String,Object>hasEntry("foo", "bar"));
         assertThat(attrs, Matchers.<String,Object>hasEntry("foo2", "foo-two"));
+        assertThat(attrs, Matchers.<String,Object>hasEntry("override", "override@"));
+        assertThat(attrs, not(hasKey("not")));
+        assertThat(attrs, hasKey("not!"));
+        verifyNoMoreInteractions(mockErrorReporter);
+    }
+
+    @Test
+    public void testOnlyCommandLineAttributesMulti() {
+        DocletOptions options = new DocletOptions(new String[][] {
+                { "-a", "foo=bar" },
+                { "-a", "foo2=foo two" },
+                { "-a", "not!" },
+                { "-a", "override=override@" },
+        });
+        AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
+
+        Map<String,Object> attrs = loader.load();
+
+        assertThat(attrs, Matchers.<String,Object>hasEntry("foo", "bar"));
+        assertThat(attrs, Matchers.<String,Object>hasEntry("foo2", "foo two"));
         assertThat(attrs, Matchers.<String,Object>hasEntry("override", "override@"));
         assertThat(attrs, not(hasKey("not")));
         assertThat(attrs, hasKey("not!"));
@@ -77,7 +97,7 @@ public class AttributesLoaderTest {
         File attrsFile = createTempFile("attrs.adoc", ATTRS);
 
         DocletOptions options = new DocletOptions(new String[][] {
-                { "--attributes", "foo=bar; not!; override=override@" },
+                { "--attribute", "foo=bar, not!, override=override@" },
                 { "--attributes-file", attrsFile.getAbsolutePath() }
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
@@ -121,7 +141,7 @@ public class AttributesLoaderTest {
         DocletOptions options = new DocletOptions(new String[][] {
                 { "--attributes-file", attrsFile.getAbsolutePath() },
                 { "--base-dir", attrsFile.getParentFile().getAbsolutePath() },
-                { "--attributes", "includedir=foo" },
+                { "-a", "includedir=foo" },
 
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);

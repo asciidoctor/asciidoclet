@@ -46,6 +46,11 @@ public class DocletOptionsTest {
     @Test
     public void testRequires() {
         assertTrue(DocletOptions.NONE.requires().isEmpty());
-        assertThat(new DocletOptions(new String[][]{{REQUIRES, "foo"}, {REQUIRES, "bar"}}).requires(), contains("foo", "bar"));
+        assertThat(new DocletOptions(new String[][]{{REQUIRE, "foo"}, {REQUIRE, "bar"}}).requires(), contains("foo", "bar"));
+        assertThat(new DocletOptions(new String[][]{
+                {REQUIRE, "a , diagrams/awesome"},
+                {REQUIRE_LONG, "bar"},
+                {REQUIRE_LONG, "baz,noddy"}}).requires(),
+                contains("a", "diagrams/awesome", "bar", "baz", "noddy"));
     }
 }
