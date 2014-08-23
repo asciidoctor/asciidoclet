@@ -32,6 +32,14 @@
         <developerConnection>scm:git:git@github.com:asciidoctor/asciidoclet.git</developerConnection>
     </scm>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray-asciidoctor-maven-asciidoclet</id>
+            <name>asciidoctor-maven-asciidoclet</name>
+            <url>https://api.bintray.com/maven/asciidoctor/maven/asciidoclet</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.asciidoctor</groupId>
