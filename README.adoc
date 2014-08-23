@@ -215,6 +215,17 @@ If `<file>` is a relative path name, it is assumed to be relative to the `--base
 +
 Attributes set by the `-a`/`--attribute` option take precedence over those in the attributes file.
 
+-r, --require <library>,...::
+Make the specified RubyGems library available to Asciidoctor's JRuby runtime, for example `-r asciidoctor-diagram`.
++
+This option may be specified more than once.
+Alternatively multiple library names may be specified in a single argument, separated by commas.
+
+--gem-path <path>::
+Sets the `GEM_PATH` for Asciidoctor's JRuby runtime.
+This option is only needed when using the `--require` option, and the `GEM_PATH` environment variable is not set,
+or a different `GEM_PATH` is required.
+
 -overview <file>::
 Overview documentation can be generated from an Asciidoc file using the standard `-overview` option.
 Files matching [x-]`*.adoc`, [x-]`*.ad`, [x-]`*.asciidoc` or [x-]`*.txt` are processed by Asciidoclet.
