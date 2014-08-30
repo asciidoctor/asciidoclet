@@ -142,7 +142,7 @@ configurations {
 }
 
 dependencies {
-    asciidoclet 'org.asciidoctor:asciidoclet:0.+'
+    asciidoclet 'org.asciidoctor:asciidoclet:1.+'
 }
  
 javadoc {
