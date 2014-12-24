@@ -30,12 +30,12 @@ import java.net.URL;
  */
 class OutputTemplates {
 
-    private final File templateDir;
-
-    static final String[] templateNames = new String[] {
+    private static final String[] TEMPLATE_NAMES = new String[] {
             "section.html.haml",
             "paragraph.html.haml"
     };
+
+    private final File templateDir;
 
     private OutputTemplates(File templateDir) {
         this.templateDir = templateDir;
@@ -51,7 +51,7 @@ class OutputTemplates {
     }
 
     void delete() {
-        for (String templateName : templateNames) new File(templateDir, templateName).delete();
+        for (String templateName : TEMPLATE_NAMES) new File(templateDir, templateName).delete();
         templateDir.delete();
     }
 
@@ -59,7 +59,7 @@ class OutputTemplates {
         // copy our template resources to the templateDir so Asciidoctor can use them.
         File templateDir = Files.createTempDir();
         try {
-            for (String templateName : templateNames) prepareTemplate(templateDir, templateName);
+            for (String templateName : TEMPLATE_NAMES) prepareTemplate(templateDir, templateName);
             return templateDir;
         } catch (IOException e) {
             errorReporter.printWarning("Failed to prepare templates: " + e.getLocalizedMessage());

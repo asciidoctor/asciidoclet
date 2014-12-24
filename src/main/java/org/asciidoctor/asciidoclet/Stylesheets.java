@@ -59,8 +59,12 @@ public class Stylesheets {
     }
 
     String selectStylesheet(String javaVersion) {
-        if (javaVersion.matches("^1\\.[56]\\D.*")) return JAVA6_STYLESHEET;
-        if (javaVersion.matches("^1\\.[78]\\D.*")) return JAVA8_STYLESHEET;
+        if (javaVersion.matches("^1\\.[56]\\D.*")){
+            return JAVA6_STYLESHEET;
+        }
+        if (javaVersion.matches("^1\\.[78]\\D.*")){
+            return JAVA8_STYLESHEET;
+        }
         errorReporter.printWarning("Unrecognized Java version " + javaVersion + ", using Java 7/8 stylesheet");
         // TODO: review this when Java 9 becomes available!
         return JAVA8_STYLESHEET;

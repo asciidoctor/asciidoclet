@@ -20,8 +20,6 @@ import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.*;
-import org.asciidoctor.internal.JRubyRuntimeContext;
-import org.asciidoctor.internal.RubyUtils;
 
 import static org.asciidoctor.Asciidoctor.Factory.create;
 
@@ -114,7 +112,9 @@ public class AsciidoctorRenderer implements DocletRenderer {
     }
 
     public void cleanup() {
-        if (templates.isPresent()) templates.get().delete();
+        if (templates.isPresent()){
+            templates.get().delete();
+        }
     }
 
     /**
