@@ -48,7 +48,6 @@ public class Stylesheets {
         }
         String stylesheet = selectStylesheet(System.getProperty("java.version"));
         File destDir = docletOptions.destDir().get();
-        File destFile = new File(docletOptions.destDir().get(), OUTPUT_STYLESHEET);
         try {
             Resources.copy(Resources.getResource(stylesheet), new FileOutputStream(new File(destDir, OUTPUT_STYLESHEET)));
             Resources.copy(Resources.getResource(CODERAY_STYLESHEET), new FileOutputStream(new File(destDir, CODERAY_STYLESHEET)));
