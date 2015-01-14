@@ -20,8 +20,6 @@ import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.*;
-import org.asciidoctor.internal.JRubyRuntimeContext;
-import org.asciidoctor.internal.RubyUtils;
 
 import static org.asciidoctor.Asciidoctor.Factory.create;
 
@@ -72,13 +70,16 @@ public class AsciidoctorRenderer implements DocletRenderer {
 
     private Options buildOptions(DocletOptions docletOptions, DocErrorReporter errorReporter) {
         OptionsBuilder opts = defaultOptions();
-        if (docletOptions.baseDir().isPresent()) opts.baseDir(docletOptions.baseDir().get());
-        if (templates.isPresent()) opts.templateDir(templates.get().templateDir());
+        if (docletOptions.baseDir().isPresent()){
+            opts.baseDir(docletOptions.baseDir().get());
+        }
+        if (templates.isPresent()){
+            opts.templateDir(templates.get().templateDir());
+        }
         opts.attributes(buildAttributes(docletOptions, errorReporter));
         if (docletOptions.requires().size() > 0) {
             for (String require : docletOptions.requires()) {
-                // FIXME AsciidoctorJ should provide a public API for requiring paths in the Ruby runtime
-                RubyUtils.requireLibrary(JRubyRuntimeContext.get(), require);
+                asciidoctor.rubyExtensionRegistry().requireLibrary(require);
             }
         }
         return opts.get();
@@ -111,7 +112,9 @@ public class AsciidoctorRenderer implements DocletRenderer {
     }
 
     public void cleanup() {
-        if (templates.isPresent()) templates.get().delete();
+        if (templates.isPresent()){
+            templates.get().delete();
+        }
     }
 
     /**

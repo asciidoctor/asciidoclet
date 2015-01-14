@@ -32,6 +32,8 @@ import java.util.regex.Pattern;
  */
 public class DocletIterator {
 
+    private static final Pattern ASCIIDOC_FILE_PATTERN = Pattern.compile("(.*\\.(ad|adoc|txt|asciidoc))");
+
     private final DocletOptions docletOptions;
 
     public DocletIterator(DocletOptions docletOptions) {
@@ -108,6 +110,4 @@ public class DocletIterator {
     private static boolean isAsciidocFile(String name) {
         return ASCIIDOC_FILE_PATTERN.matcher(name).matches();
     }
-
-    static final Pattern ASCIIDOC_FILE_PATTERN = Pattern.compile("(.*\\.(ad|adoc|txt|asciidoc))");
 }

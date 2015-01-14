@@ -48,7 +48,6 @@ public class Stylesheets {
         }
         String stylesheet = selectStylesheet(System.getProperty("java.version"));
         File destDir = docletOptions.destDir().get();
-        File destFile = new File(docletOptions.destDir().get(), OUTPUT_STYLESHEET);
         try {
             Resources.copy(Resources.getResource(stylesheet), new FileOutputStream(new File(destDir, OUTPUT_STYLESHEET)));
             Resources.copy(Resources.getResource(CODERAY_STYLESHEET), new FileOutputStream(new File(destDir, CODERAY_STYLESHEET)));
@@ -60,8 +59,12 @@ public class Stylesheets {
     }
 
     String selectStylesheet(String javaVersion) {
-        if (javaVersion.matches("^1\\.[56]\\D.*")) return JAVA6_STYLESHEET;
-        if (javaVersion.matches("^1\\.[78]\\D.*")) return JAVA8_STYLESHEET;
+        if (javaVersion.matches("^1\\.[56]\\D.*")){
+            return JAVA6_STYLESHEET;
+        }
+        if (javaVersion.matches("^1\\.[78]\\D.*")){
+            return JAVA8_STYLESHEET;
+        }
         errorReporter.printWarning("Unrecognized Java version " + javaVersion + ", using Java 7/8 stylesheet");
         // TODO: review this when Java 9 becomes available!
         return JAVA8_STYLESHEET;

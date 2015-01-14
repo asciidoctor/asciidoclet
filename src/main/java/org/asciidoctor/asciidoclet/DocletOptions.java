@@ -29,6 +29,10 @@ import java.util.List;
  * Provides an interface to the doclet options we are interested in.
  */
 public class DocletOptions {
+
+    // Split on comma with optional whitespace
+    private static final Splitter COMMA_WS = Splitter.onPattern("\\s*,\\s*").omitEmptyStrings().trimResults();
+
     public static final String ENCODING = "-encoding";
     public static final String OVERVIEW = "-overview";
     public static final String BASEDIR = "--base-dir";
@@ -41,6 +45,8 @@ public class DocletOptions {
     public static final String REQUIRE = "-r";
     public static final String REQUIRE_LONG = "--require";
 
+    public static final DocletOptions NONE = new DocletOptions(new String[][]{});
+
     private final Optional<File> basedir;
     private final Optional<File> overview;
     private final Optional<File> stylesheet;
@@ -50,8 +56,6 @@ public class DocletOptions {
     private final List<String> requires;
     private final Charset encoding;
     private final List<String> attributes;
-
-    public static final DocletOptions NONE = new DocletOptions(new String[][]{});
 
     public DocletOptions(RootDoc rootDoc) {
         this(rootDoc.options());
@@ -184,7 +188,4 @@ public class DocletOptions {
         }
         return standardDoclet.optionLength(option);
     }
-
-    // Split on comma with optional whitespace
-    private static final Splitter COMMA_WS = Splitter.onPattern("\\s*,\\s*").omitEmptyStrings().trimResults();
 }
