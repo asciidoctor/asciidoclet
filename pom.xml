@@ -6,7 +6,7 @@
     <groupId>org.asciidoctor</groupId>
     <artifactId>asciidoclet</artifactId>
     <packaging>jar</packaging>
-    <version>1.5.2</version>
+    <version>1.5.3-SNAPSHOT</version>
 
     <name>AsciiDoc Javadoc Doclet</name>
 
