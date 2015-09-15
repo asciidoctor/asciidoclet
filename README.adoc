@@ -17,7 +17,7 @@ endif::awestruct[]
 :asciidoclet-src-ref: https://github.com/asciidoctor/asciidoclet
 :asciidoclet-javadoc-ref: https://oss.sonatype.org/service/local/repositories/releases/archive/org/asciidoctor/asciidoclet/1.5.2/asciidoclet-1.5.2-javadoc.jar/!/index.html
 :asciidoclet-release-ref: http://asciidoctor.org/news/2014/09/09/asciidoclet-1.5.0-released/
-:asciidoclet-powered-ref: https://github.com/asciidoctor/asciidoclet/blob/master/doc/asciidoclet-powered.adoc
+:asciidoclet-powered-ref: https://github.com/asciidoctor/asciidoclet/blob/master/src/docs/asciidoc/asciidoclet-powered.adoc
 :asciidoc-ref: http://asciidoc.org
 :asciidoctor-java-ref: http://asciidoctor.org/docs/install-and-use-asciidoctor-java-integration/
 :asciidoclet-issues-ref: https://github.com/asciidoctor/asciidoclet/issues
