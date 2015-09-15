@@ -5,6 +5,7 @@ v0.1.3
 :keywords: Asciidoclet, AsciiDoc, Asciidoctor, syntax, Javadoc, Doclet, reference
 :page-layout: base
 :language: java
+ifdef::env-github,env-browser[:outfilesuffix: .adoc]
 ifndef::awestruct[]
 :idprefix:
 :idseparator: -
@@ -17,7 +18,6 @@ endif::awestruct[]
 :asciidoclet-src-ref: https://github.com/asciidoctor/asciidoclet
 :asciidoclet-javadoc-ref: https://oss.sonatype.org/service/local/repositories/releases/archive/org/asciidoctor/asciidoclet/1.5.2/asciidoclet-1.5.2-javadoc.jar/!/index.html
 :asciidoclet-release-ref: http://asciidoctor.org/news/2014/09/09/asciidoclet-1.5.0-released/
-:asciidoclet-powered-ref: https://github.com/asciidoctor/asciidoclet/blob/master/src/docs/asciidoc/asciidoclet-powered.adoc
 :asciidoc-ref: http://asciidoc.org
 :asciidoctor-java-ref: http://asciidoctor.org/docs/install-and-use-asciidoctor-java-integration/
 :asciidoclet-issues-ref: https://github.com/asciidoctor/asciidoclet/issues
@@ -256,7 +256,7 @@ If you have questions or would like to help develop this project, please join th
 
 == Powered by AsciiDoclet
 
-We have a {asciidoclet-powered-ref}[Powered by AsciiDoclet] page. If you have an example of nifty JavaDoc powered by AsciiDoclet, please send us a pull request.
+We have a <<src/docs/asciidoc/asciidoclet-powered.adoc#,Powered by AsciiDoclet>> page. If you have an example of nifty JavaDoc powered by AsciiDoclet, please send us a pull request.
 
 == License
 
