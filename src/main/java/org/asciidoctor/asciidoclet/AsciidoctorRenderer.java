@@ -127,7 +127,28 @@ public class AsciidoctorRenderer implements DocletRenderer {
         //print out directly
         buffer.append(tag.name());
         buffer.append(" ");
-        buffer.append(render(tag.text(), true));
+        if ("@param".equals(tag.name())) {
+            // Special handling for @param <T> tags
+            // See http://docs.oracle.com/javase/1.5.0/docs/tooldocs/windows/javadoc.html#@param
+            String parameterName = getParameterName(tag.text());
+            buffer.append(parameterName).append(' ');
+            buffer.append(render(tag.text().replace(parameterName, ""), true));
+        }
+        else {
+            buffer.append(render(tag.text(), true));
+        }
+    }
+
+    protected String getParameterName(String text) {
+        int openBracket = text.indexOf('<');
+        int closeBracket = text.indexOf('>');
+        if (openBracket != -1 && closeBracket != -1) {
+            String parameterName = text.substring(openBracket, closeBracket + 1);
+            if (parameterName.matches("\\<[a-zA-Z_$][a-zA-Z\\d_$]*\\>")) {
+                return parameterName;
+            }
+        }
+        return "";
     }
 
     /**

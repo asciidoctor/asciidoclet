@@ -52,6 +52,7 @@ public class AsciidoctorRendererTest {
         when(mockDoc.getRawCommentText()).thenReturn(rawText);
         when(mockDoc.commentText()).thenReturn("");
         when(mockDoc.tags()).thenReturn(new Tag[]{});
+        when(mockAsciidoctor.render(anyString(), any(Options.class))).thenReturn("");
 
         renderer.renderDoc(mockDoc);
         verify(mockDoc).setRawCommentText("{@literal @}" + convertedText);
@@ -92,6 +93,12 @@ public class AsciidoctorRendererTest {
         assertEquals("/*\ntest\n*/", AsciidoctorRenderer.cleanJavadocInput("/*\ntest\n*\\/"));
         assertEquals("&#64;", AsciidoctorRenderer.cleanJavadocInput("{at}"));
         assertEquals("/", AsciidoctorRenderer.cleanJavadocInput("{slash}"));
+    }
+
+    @Test
+    public void testParameterName() {
+        assertEquals("<R>", renderer.getParameterName("<R> test <T>"));
+        assertEquals("", renderer.getParameterName("<NOT A TYPE> test <T>"));
     }
 
     private static final class OptionsMatcher extends ArgumentMatcher<Options> {
