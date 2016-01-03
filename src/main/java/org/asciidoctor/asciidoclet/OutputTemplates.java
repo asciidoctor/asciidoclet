@@ -28,7 +28,7 @@ import java.net.URL;
 /**
  * Sets up a temporary directory containing output templates for use by Asciidoctor.
  */
-class OutputTemplates {
+public class OutputTemplates {
 
     private static final String[] TEMPLATE_NAMES = new String[] {
             "section.html.haml",
@@ -51,7 +51,9 @@ class OutputTemplates {
     }
 
     void delete() {
-        for (String templateName : TEMPLATE_NAMES) new File(templateDir, templateName).delete();
+        for (String templateName : TEMPLATE_NAMES) {
+            new File(templateDir, templateName).delete();
+        }
         templateDir.delete();
     }
 
@@ -59,7 +61,9 @@ class OutputTemplates {
         // copy our template resources to the templateDir so Asciidoctor can use them.
         File templateDir = Files.createTempDir();
         try {
-            for (String templateName : TEMPLATE_NAMES) prepareTemplate(templateDir, templateName);
+            for (String templateName : TEMPLATE_NAMES) {
+                prepareTemplate(templateDir, templateName);
+            }
             return templateDir;
         } catch (IOException e) {
             errorReporter.printWarning("Failed to prepare templates: " + e.getLocalizedMessage());
@@ -69,7 +73,9 @@ class OutputTemplates {
 
     private static void prepareTemplate(File templateDir, String template) throws IOException {
         URL src = OutputTemplates.class.getClassLoader().getResource("templates/" + template);
-        if (src == null) throw new IOException("Could not find template " + template);
+        if (src == null) {
+            throw new IOException("Could not find template " + template);
+        }
         ByteSink dest = Files.asByteSink(new File(templateDir, template));
         Resources.asByteSource(src).copyTo(dest);
     }

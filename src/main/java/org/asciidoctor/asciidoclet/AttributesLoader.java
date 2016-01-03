@@ -42,31 +42,33 @@ class AttributesLoader {
         this.errorReporter = errorReporter;
     }
 
-    Map<String,Object> load() {
+    Map<String, Object> load() {
         List<String> attributeArgs = docletOptions.attributes();
         Set<String> unset = getUnsetAttributes(attributeArgs);
 
         // Parse command-line attrs first, if any
-        Map<String,Object> cmdlineAttrs = parseCmdLineAttributes(attributeArgs);
+        Map<String, Object> cmdlineAttrs = parseCmdLineAttributes(attributeArgs);
 
         // Parse the attributes file, passing in any command-line attrs already set
-        Map<String,Object> attrs = parseAttributesFile(docletOptions.attributesFile(), cmdlineAttrs);
+        Map<String, Object> attrs = parseAttributesFile(docletOptions.attributesFile(), cmdlineAttrs);
 
         // Remove any attributes that were set in the file but removed by the -attributes option
         attrs.keySet().removeAll(unset);
 
         // Put unset attribute names back into the map as "key!", so Asciidoctor will unset
         // those attributes in the document.
-        for (String key : unset) attrs.put(key + "!", "");
+        for (String key : unset) {
+            attrs.put(key + "!", "");
+        }
 
         return attrs;
     }
 
-    private Map<String,Object> parseCmdLineAttributes(List<String> attributeArgs) {
+    private Map<String, Object> parseCmdLineAttributes(List<String> attributeArgs) {
         return new Attributes(attributeArgs.toArray(new String[attributeArgs.size()])).map();
     }
 
-    private Map<String,Object> parseAttributesFile(Optional<File> attrsFile, Map<String,Object> cmdlineAttrs) {
+    private Map<String, Object> parseAttributesFile(Optional<File> attrsFile, Map<String, Object> cmdlineAttrs) {
         if (attrsFile.isPresent()) {
             try {
                 return parseAttributes(Files.newReader(attrsFile.get(), docletOptions.encoding()), cmdlineAttrs);
@@ -77,29 +79,34 @@ class AttributesLoader {
         return cmdlineAttrs;
     }
 
-    private Map<String,Object> parseAttributes(Reader in, Map<String,Object> existingAttrs) {
+    private Map<String, Object> parseAttributes(Reader in, Map<String, Object> existingAttrs) {
         OptionsBuilder options = OptionsBuilder.options()
                 .safe(SafeMode.SAFE)
                 .attributes(existingAttrs);
-        if (docletOptions.baseDir().isPresent()) options.baseDir(docletOptions.baseDir().get());
-        Map<String,Object> parsed = asciidoctor.readDocumentStructure(in, options.get().map()).getHeader().getAttributes();
+        if (docletOptions.baseDir().isPresent()) {
+            options.baseDir(docletOptions.baseDir().get());
+        }
+        Map<String, Object> parsed = asciidoctor.readDocumentStructure(in, options.get().map()).getHeader().getAttributes();
         // workaround for https://github.com/asciidoctor/asciidoctorj/pull/169
-        return new HashMap<String,Object>(parsed);
+        return new HashMap<String, Object>(parsed);
     }
 
     private Set<String> getUnsetAttributes(List<String> args) {
         ImmutableSet.Builder<String> removed = ImmutableSet.builder();
         for (String arg : args) {
             String key = getKey(arg);
-            if (key.startsWith("!") || key.endsWith("!"))
+            if (key.startsWith("!") || key.endsWith("!")) {
                 removed.add(normalizeAttrName(key));
+            }
         }
         return removed.build();
     }
 
     private String getKey(String arg) {
         int idx = arg.indexOf('=');
-        if (idx == 0) throw new IllegalArgumentException("Invalid attribute arg: \"" + arg + "\"");
+        if (idx == 0) {
+            throw new IllegalArgumentException("Invalid attribute arg: \"" + arg + "\"");
+        }
         return idx == -1 ? arg : arg.substring(0, idx);
     }
 

@@ -38,7 +38,7 @@ public class DocletIteratorTest {
     private MethodDoc mockMethodDoc;
 
     @Before
-    public void setup(){
+    public void setup() {
         mockRenderer = mock(DocletRenderer.class);
 
         mockDoc = mock(RootDoc.class);
@@ -64,7 +64,7 @@ public class DocletIteratorTest {
     }
 
     @Test
-    public void testIteration(){
+    public void testIteration() {
         new DocletIterator(DocletOptions.NONE).render(mockDoc, mockRenderer);
 
         verify(mockRenderer).renderDoc(mockClassDoc);
@@ -76,7 +76,7 @@ public class DocletIteratorTest {
     }
 
     @Test
-    public void testAnnotationIteration(){
+    public void testAnnotationIteration() {
         AnnotationTypeDoc mockClassDoc = mockClassDoc(AnnotationTypeDoc.class, mockPackageDoc, mockFieldDoc, mockEnumFieldDoc, mockConstructorDoc, mockMethodDoc);
         AnnotationTypeElementDoc mockAnnotationElement = mock(AnnotationTypeElementDoc.class);
 

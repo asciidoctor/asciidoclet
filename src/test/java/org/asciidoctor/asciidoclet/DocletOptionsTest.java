@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 public class DocletOptionsTest {
 
     @Test
-    public void testGetBaseDir(){
+    public void testGetBaseDir() {
         assertFalse(DocletOptions.NONE.baseDir().isPresent());
         assertEquals("test", new DocletOptions(new String[][]{{BASEDIR, "test"}}).baseDir().get().getName());
     }

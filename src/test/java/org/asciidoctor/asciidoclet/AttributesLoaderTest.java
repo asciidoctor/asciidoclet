@@ -49,7 +49,7 @@ public class AttributesLoaderTest {
         DocletOptions options = DocletOptions.NONE;
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mock(DocErrorReporter.class));
 
-        Map<String,Object> attrs = loader.load();
+        Map<String, Object> attrs = loader.load();
 
         assertTrue(attrs.isEmpty());
         verifyNoMoreInteractions(mockErrorReporter);
@@ -62,11 +62,11 @@ public class AttributesLoaderTest {
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
 
-        Map<String,Object> attrs = loader.load();
+        Map<String, Object> attrs = loader.load();
 
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo", "bar"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo2", "foo-two"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("override", "override@"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo", "bar"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo2", "foo-two"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("override", "override@"));
         assertThat(attrs, not(hasKey("not")));
         assertThat(attrs, hasKey("not!"));
         verifyNoMoreInteractions(mockErrorReporter);
@@ -82,11 +82,11 @@ public class AttributesLoaderTest {
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
 
-        Map<String,Object> attrs = loader.load();
+        Map<String, Object> attrs = loader.load();
 
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo", "bar"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo2", "foo two"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("override", "override@"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo", "bar"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo2", "foo two"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("override", "override@"));
         assertThat(attrs, not(hasKey("not")));
         assertThat(attrs, hasKey("not!"));
         verifyNoMoreInteractions(mockErrorReporter);
@@ -101,11 +101,11 @@ public class AttributesLoaderTest {
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
 
-        Map<String,Object> attrs = loader.load();
+        Map<String, Object> attrs = loader.load();
 
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo", "BAR"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo2", "BAR-TWO"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("override", "OVERRIDE"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo", "BAR"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo2", "BAR-TWO"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("override", "OVERRIDE"));
         assertThat(attrs, hasKey("not"));
         verifyNoMoreInteractions(mockErrorReporter);
     }
@@ -120,11 +120,11 @@ public class AttributesLoaderTest {
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
 
-        Map<String,Object> attrs = new HashMap<String,Object>(loader.load());
+        Map<String, Object> attrs = new HashMap<String, Object>(loader.load());
 
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo", "bar"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo2", "bar-TWO"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("override", "OVERRIDE"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo", "bar"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo2", "bar-TWO"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("override", "OVERRIDE"));
         assertThat(attrs, not(hasKey("not")));
         assertThat(attrs, hasKey("not!"));
         verifyNoMoreInteractions(mockErrorReporter);
@@ -142,11 +142,11 @@ public class AttributesLoaderTest {
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
 
-        Map<String,Object> attrs = loader.load();
+        Map<String, Object> attrs = loader.load();
 
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo", "BAR"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo2", "BAR-TWO"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("override", "OVERRIDE"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo", "BAR"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo2", "BAR-TWO"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("override", "OVERRIDE"));
         assertThat(attrs, hasKey("not"));
         verifyNoMoreInteractions(mockErrorReporter);
     }
@@ -164,11 +164,11 @@ public class AttributesLoaderTest {
         });
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, mockErrorReporter);
 
-        Map<String,Object> attrs = loader.load();
+        Map<String, Object> attrs = loader.load();
 
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo", "BAR"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("foo2", "BAR-TWO"));
-        assertThat(attrs, Matchers.<String,Object>hasEntry("override", "OVERRIDE"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo", "BAR"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("foo2", "BAR-TWO"));
+        assertThat(attrs, Matchers.<String, Object>hasEntry("override", "OVERRIDE"));
         assertThat(attrs, hasKey("not"));
         verifyNoMoreInteractions(mockErrorReporter);
     }

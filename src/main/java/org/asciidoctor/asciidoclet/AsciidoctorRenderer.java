@@ -70,10 +70,10 @@ public class AsciidoctorRenderer implements DocletRenderer {
 
     private Options buildOptions(DocletOptions docletOptions, DocErrorReporter errorReporter) {
         OptionsBuilder opts = defaultOptions();
-        if (docletOptions.baseDir().isPresent()){
+        if (docletOptions.baseDir().isPresent()) {
             opts.baseDir(docletOptions.baseDir().get());
         }
-        if (templates.isPresent()){
+        if (templates.isPresent()) {
             opts.templateDir(templates.get().templateDir());
         }
         opts.attributes(buildAttributes(docletOptions, errorReporter));
@@ -104,7 +104,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
         StringBuilder buffer = new StringBuilder();
         buffer.append(render(doc.commentText(), false));
         buffer.append('\n');
-        for ( Tag tag : doc.tags() ) {
+        for (Tag tag : doc.tags()) {
             renderTag(tag, buffer);
             buffer.append('\n');
         }
@@ -112,7 +112,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
     }
 
     public void cleanup() {
-        if (templates.isPresent()){
+        if (templates.isPresent()) {
             templates.get().delete();
         }
     }
@@ -145,7 +145,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
         return asciidoctor.render(cleanJavadocInput(input), options);
     }
 
-    protected static String cleanJavadocInput(String input){
+    protected static String cleanJavadocInput(String input) {
         return input.trim()
             .replaceAll("\n ", "\n") // Newline space to accommodate javadoc newlines.
             .replaceAll("\\{at}", "&#64;") // {at} is translated into @.

@@ -27,10 +27,10 @@ import java.io.IOException;
  * output directory.
  */
 public class Stylesheets {
-    static String JAVA8_STYLESHEET = "stylesheet8.css";
-    static String JAVA6_STYLESHEET = "stylesheet6.css";
-    static String CODERAY_STYLESHEET = "coderay-asciidoctor.css";
-    static String OUTPUT_STYLESHEET = "stylesheet.css";
+    static final String JAVA8_STYLESHEET = "stylesheet8.css";
+    static final String JAVA6_STYLESHEET = "stylesheet6.css";
+    static final String CODERAY_STYLESHEET = "coderay-asciidoctor.css";
+    static final String OUTPUT_STYLESHEET = "stylesheet.css";
 
     private final DocletOptions docletOptions;
     private final DocErrorReporter errorReporter;
@@ -59,10 +59,10 @@ public class Stylesheets {
     }
 
     String selectStylesheet(String javaVersion) {
-        if (javaVersion.matches("^1\\.[56]\\D.*")){
+        if (javaVersion.matches("^1\\.[56]\\D.*")) {
             return JAVA6_STYLESHEET;
         }
-        if (javaVersion.matches("^1\\.[78]\\D.*")){
+        if (javaVersion.matches("^1\\.[78]\\D.*")) {
             return JAVA8_STYLESHEET;
         }
         errorReporter.printWarning("Unrecognized Java version " + javaVersion + ", using Java 7/8 stylesheet");

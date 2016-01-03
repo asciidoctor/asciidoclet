@@ -36,7 +36,7 @@ public class AsciidocletTest {
     private Stylesheets mockStylesheets;
 
     @Before
-    public void setup(){
+    public void setup() {
         mockAdapter = mock(StandardAdapter.class);
         mockIterator = mock(DocletIterator.class);
         mockStylesheets = mock(Stylesheets.class);
@@ -45,12 +45,12 @@ public class AsciidocletTest {
     }
 
     @Test
-    public void testVersion(){
+    public void testVersion() {
         assertEquals(LanguageVersion.JAVA_1_5, Asciidoclet.languageVersion());
     }
 
     @Test
-    public void testIncludeBaseDirOptionLength(){
+    public void testIncludeBaseDirOptionLength() {
         assertEquals(2, Asciidoclet.optionLength(DocletOptions.BASEDIR, mockAdapter));
 
         verifyZeroInteractions(mockAdapter);
@@ -58,7 +58,7 @@ public class AsciidocletTest {
     }
 
     @Test
-    public void testOtherOptionLength(){
+    public void testOtherOptionLength() {
         String testParameter = "parameter";
         int returnSize = 42;
 
@@ -69,7 +69,7 @@ public class AsciidocletTest {
     }
 
     @Test
-    public void testValidBaseDirOption(){
+    public void testValidBaseDirOption() {
         DocErrorReporter mockReporter = mock(DocErrorReporter.class);
         String[][] inputOptions = new String[][]{{DocletOptions.BASEDIR, ""}};
 
@@ -83,7 +83,7 @@ public class AsciidocletTest {
     }
 
     @Test
-    public void testInvalidBaseDirOption(){
+    public void testInvalidBaseDirOption() {
         DocErrorReporter mockReporter = mock(DocErrorReporter.class);
         String[][] inputOptions = new String[][]{{""}};
 
@@ -97,7 +97,7 @@ public class AsciidocletTest {
     }
 
     @Test
-    public void testEmptyBaseDirOption(){
+    public void testEmptyBaseDirOption() {
         DocErrorReporter mockReporter = mock(DocErrorReporter.class);
         String[][] inputOptions = new String[][]{{}};
 
@@ -111,7 +111,7 @@ public class AsciidocletTest {
     }
 
     @Test
-    public void testStart(){
+    public void testStart() {
         RootDoc mockDoc = mock(RootDoc.class);
         String[][] options = new String[][]{{DocletOptions.BASEDIR, "test"}};
 
@@ -126,7 +126,7 @@ public class AsciidocletTest {
     }
 
     @Test
-    public void testStylesheetOverride(){
+    public void testStylesheetOverride() {
         RootDoc mockDoc = mock(RootDoc.class);
         String[][] options = new String[][]{{DocletOptions.STYLESHEET, "test"}};
 

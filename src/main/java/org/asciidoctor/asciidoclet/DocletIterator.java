@@ -47,7 +47,9 @@ public class DocletIterator {
      * @param renderer
      */
     public boolean render(RootDoc rootDoc, DocletRenderer renderer) {
-        if (!processOverview(rootDoc, renderer)) return false;
+        if (!processOverview(rootDoc, renderer)) {
+            return false;
+        }
         Set<PackageDoc> packages = new HashSet<PackageDoc>();
         for (ClassDoc doc : rootDoc.classes()) {
             packages.add(doc.containingPackage());
@@ -67,20 +69,20 @@ public class DocletIterator {
     private void renderClass(ClassDoc doc, DocletRenderer renderer) {
         //handle the various parts of the Class doc
         renderer.renderDoc(doc);
-        for ( MemberDoc member : doc.fields() ) {
+        for (MemberDoc member : doc.fields()) {
             renderer.renderDoc(member);
         }
-        for ( MemberDoc member : doc.constructors() ) {
+        for (MemberDoc member : doc.constructors()) {
             renderer.renderDoc(member);
         }
-        for ( MemberDoc member : doc.methods() ) {
+        for (MemberDoc member : doc.methods()) {
             renderer.renderDoc(member);
         }
-        for ( MemberDoc member : doc.enumConstants() ) {
+        for (MemberDoc member : doc.enumConstants()) {
             renderer.renderDoc(member);
         }
-        if ( doc instanceof AnnotationTypeDoc) {
-            for ( MemberDoc member : ((AnnotationTypeDoc)doc).elements() ) {
+        if (doc instanceof AnnotationTypeDoc) {
+            for (MemberDoc member : ((AnnotationTypeDoc)doc).elements()) {
                 renderer.renderDoc(member);
             }
         }

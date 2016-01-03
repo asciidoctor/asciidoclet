@@ -139,7 +139,9 @@ public class DocletOptions {
     }
 
     Optional<File> attributesFile() {
-        if (!attributesFile.isPresent()) return attributesFile;
+        if (!attributesFile.isPresent()) {
+            return attributesFile;
+        }
         File f = attributesFile.get();
         if (!f.isAbsolute() && basedir.isPresent()) {
             f = new File(basedir.get(), f.getPath());

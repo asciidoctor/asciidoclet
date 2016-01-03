@@ -38,13 +38,13 @@ public class AsciidoctorRendererTest {
     private Asciidoctor mockAsciidoctor;
 
     @Before
-    public void setup(){
+    public void setup() {
         mockAsciidoctor = mock(Asciidoctor.class);
         renderer = new AsciidoctorRenderer(DocletOptions.NONE, mock(DocErrorReporter.class), Optional.<OutputTemplates>absent(), mockAsciidoctor);
     }
 
     @Test
-    public void testAtLiteralRender(){
+    public void testAtLiteralRender() {
         Doc mockDoc = mock(Doc.class);
         String convertedText = "Test";
         String rawText = "@" + convertedText;
@@ -59,7 +59,7 @@ public class AsciidoctorRendererTest {
     }
 
     @Test
-    public void testTagRender(){
+    public void testTagRender() {
         Doc mockDoc = mock(Doc.class);
         Tag mockTag = mock(Tag.class);
 
@@ -86,7 +86,7 @@ public class AsciidoctorRendererTest {
     }
 
     @Test
-    public void testCleanInput(){
+    public void testCleanInput() {
         assertEquals("test1\ntest2", AsciidoctorRenderer.cleanJavadocInput("  test1\n test2\n"));
         assertEquals("@", AsciidoctorRenderer.cleanJavadocInput("{@literal @}"));
         assertEquals("/*\ntest\n*/", AsciidoctorRenderer.cleanJavadocInput("/*\ntest\n*\\/"));
@@ -98,7 +98,7 @@ public class AsciidoctorRendererTest {
 
         private final boolean inline;
 
-        private OptionsMatcher(boolean inline){
+        private OptionsMatcher(boolean inline) {
             this.inline = inline;
         }
 

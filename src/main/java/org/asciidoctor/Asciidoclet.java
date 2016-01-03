@@ -200,7 +200,7 @@ public class Asciidoclet extends Doclet {
      * @serialData something else
      * @link Asciidoclet
      */
-    public static void exampleDeprecated(String field) throws Exception{
+    public static void exampleDeprecated(String field) throws Exception {
         //noop
     }
 
@@ -280,7 +280,7 @@ public class Asciidoclet extends Doclet {
     }
 
     private boolean postProcess() {
-        if (docletOptions.stylesheet().isPresent()){
+        if (docletOptions.stylesheet().isPresent()) {
             return true;
         }
         return stylesheets.copy();
