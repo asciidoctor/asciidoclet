@@ -237,6 +237,16 @@ Other files are assumed to be HTML and will be processed by the standard doclet.
 // end::doclet-options[]
 // end::usage[]
 
+=== Log Warning
+
+Currently there is a intermittent benign warning message that is emitted during a run of Asciidoclet stating the following:
+
+....
+WARN: tilt autoloading 'tilt/haml' in a non thread-safe way; explicit require 'tilt/haml' suggested.
+....
+
+Unfortunately, until the underlying library removes this warning message, it will be logged during the build.
+
 == Additional Features
 
 Make sure to see {asciidoclet-release-ref}[Asciidoclet 1.5.0 Release Notes] for additional features not documented here.
