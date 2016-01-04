@@ -21,6 +21,9 @@ import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.*;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static org.asciidoctor.Asciidoctor.Factory.create;
 
 /**
@@ -29,6 +32,9 @@ import static org.asciidoctor.Asciidoctor.Factory.create;
  * @author John Ericksen
  */
 public class AsciidoctorRenderer implements DocletRenderer {
+
+
+    private static final Pattern PARAM_TYPE_PATTERN = Pattern.compile("(<[a-zA-Z_$][a-zA-Z\\d_$]*>)(?: .*)?");
 
     private static AttributesBuilder defaultAttributes() {
         return AttributesBuilder.attributes()
@@ -130,22 +136,20 @@ public class AsciidoctorRenderer implements DocletRenderer {
         if ("@param".equals(tag.name())) {
             // Special handling for @param <T> tags
             // See http://docs.oracle.com/javase/1.5.0/docs/tooldocs/windows/javadoc.html#@param
-            String parameterName = getParameterName(tag.text());
-            buffer.append(parameterName).append(' ');
-            buffer.append(render(tag.text().replace(parameterName, ""), true));
+            String parameterName = getTypeParamName(tag.text());
+            buffer.append(parameterName).append(" ");
+            buffer.append(render(tag.text().substring(parameterName.length()), true));
         }
         else {
             buffer.append(render(tag.text(), true));
         }
     }
 
-    protected String getParameterName(String text) {
-        int openBracket = text.indexOf('<');
-        int closeBracket = text.indexOf('>');
-        if (openBracket != -1 && closeBracket != -1) {
-            String parameterName = text.substring(openBracket, closeBracket + 1);
-            if (parameterName.matches("\\<[a-zA-Z_$][a-zA-Z\\d_$]*\\>")) {
-                return parameterName;
+    protected String getTypeParamName(String text) {
+        if (text.startsWith("<")) {
+            Matcher paramMatcher = PARAM_TYPE_PATTERN.matcher(text);
+            if (paramMatcher.matches()) {
+                return paramMatcher.group(1);
             }
         }
         return "";
@@ -162,6 +166,9 @@ public class AsciidoctorRenderer implements DocletRenderer {
      * @return content rendered by Asciidoctor
      */
     private String render(String input, boolean inline) {
+        if (input.trim().isEmpty()) {
+            return "";
+        }
         options.setDocType(inline ? INLINE_DOCTYPE : null);
         return asciidoctor.render(cleanJavadocInput(input), options);
     }

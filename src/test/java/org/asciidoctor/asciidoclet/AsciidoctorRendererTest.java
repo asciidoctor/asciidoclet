@@ -50,9 +50,9 @@ public class AsciidoctorRendererTest {
         String rawText = "@" + convertedText;
 
         when(mockDoc.getRawCommentText()).thenReturn(rawText);
-        when(mockDoc.commentText()).thenReturn("");
+        when(mockDoc.commentText()).thenReturn("input");
         when(mockDoc.tags()).thenReturn(new Tag[]{});
-        when(mockAsciidoctor.render(anyString(), any(Options.class))).thenReturn("");
+        when(mockAsciidoctor.render(anyString(), any(Options.class))).thenReturn("input");
 
         renderer.renderDoc(mockDoc);
         verify(mockDoc).setRawCommentText("{@literal @}" + convertedText);
@@ -71,19 +71,19 @@ public class AsciidoctorRendererTest {
         when(mockTag.name()).thenReturn(tagName);
         when(mockTag.text()).thenReturn(tagText);
 
-        when(mockDoc.getRawCommentText()).thenReturn("");
-        when(mockDoc.commentText()).thenReturn("");
+        when(mockDoc.getRawCommentText()).thenReturn("input");
+        when(mockDoc.commentText()).thenReturn("input");
         when(mockDoc.tags()).thenReturn(new Tag[]{mockTag});
 
-        when(mockAsciidoctor.render(eq(""), argThat(new OptionsMatcher(false)))).thenReturn("");
+        when(mockAsciidoctor.render(eq("input"), argThat(new OptionsMatcher(false)))).thenReturn("input");
         when(mockAsciidoctor.render(eq(tagText), argThat(new OptionsMatcher(true)))).thenReturn(asciidoctorRenderedString);
 
         renderer.renderDoc(mockDoc);
 
-        verify(mockAsciidoctor).render(eq(""), argThat(new OptionsMatcher(false)));
+        verify(mockAsciidoctor).render(eq("input"), argThat(new OptionsMatcher(false)));
         verify(mockAsciidoctor).render(eq(tagText), argThat(new OptionsMatcher(true)));
-        verify(mockDoc).setRawCommentText("");
-        verify(mockDoc).setRawCommentText("\n" + tagName + " " + asciidoctorRenderedString + "\n");
+        verify(mockDoc).setRawCommentText("input");
+        verify(mockDoc).setRawCommentText("input\n" + tagName + " " + asciidoctorRenderedString + "\n");
     }
 
     @Test
@@ -97,8 +97,8 @@ public class AsciidoctorRendererTest {
 
     @Test
     public void testParameterName() {
-        assertEquals("<R>", renderer.getParameterName("<R> test <T>"));
-        assertEquals("", renderer.getParameterName("<NOT A TYPE> test <T>"));
+        assertEquals("<R>", renderer.getTypeParamName("<R> test <T>"));
+        assertEquals("", renderer.getTypeParamName("<NOT A TYPE> test <T>"));
     }
 
     private static final class OptionsMatcher extends ArgumentMatcher<Options> {
