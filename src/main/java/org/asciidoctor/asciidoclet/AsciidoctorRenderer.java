@@ -18,11 +18,9 @@ package org.asciidoctor.asciidoclet;
 import com.google.common.base.Optional;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.*;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.asciidoctor.Asciidoctor.Factory.create;
 
@@ -32,9 +30,6 @@ import static org.asciidoctor.Asciidoctor.Factory.create;
  * @author John Ericksen
  */
 public class AsciidoctorRenderer implements DocletRenderer {
-
-
-    private static final Pattern PARAM_TYPE_PATTERN = Pattern.compile("(<[a-zA-Z_$][a-zA-Z\\d_$]*>)(?: .*)?");
 
     private static AttributesBuilder defaultAttributes() {
         return AttributesBuilder.attributes()
@@ -130,29 +125,19 @@ public class AsciidoctorRenderer implements DocletRenderer {
      * @param buffer output buffer
      */
     private void renderTag(Tag tag, StringBuilder buffer) {
-        //print out directly
-        buffer.append(tag.name());
-        buffer.append(" ");
-        if ("@param".equals(tag.name())) {
-            // Special handling for @param <T> tags
-            // See http://docs.oracle.com/javase/1.5.0/docs/tooldocs/windows/javadoc.html#@param
-            String parameterName = getTypeParamName(tag.text());
-            buffer.append(parameterName).append(" ");
-            buffer.append(render(tag.text().substring(parameterName.length()), true));
-        }
-        else {
-            buffer.append(render(tag.text(), true));
-        }
-    }
-
-    protected String getTypeParamName(String text) {
-        if (text.startsWith("<")) {
-            Matcher paramMatcher = PARAM_TYPE_PATTERN.matcher(text);
-            if (paramMatcher.matches()) {
-                return paramMatcher.group(1);
+        buffer.append(tag.name()).append(' ');
+        // Special handling for @param <T> tags
+        // See http://docs.oracle.com/javase/1.5.0/docs/tooldocs/windows/javadoc.html#@param
+        if ((tag instanceof ParamTag) && ((ParamTag) tag).isTypeParameter()) {
+            ParamTag paramTag = (ParamTag) tag;
+            buffer.append("<" + paramTag.parameterName() + ">");
+            String text = paramTag.parameterComment();
+            if (text.length() > 0) {
+                buffer.append(' ').append(render(text, true));
             }
+            return;
         }
-        return "";
+        buffer.append(render(tag.text(), true));
     }
 
     /**
