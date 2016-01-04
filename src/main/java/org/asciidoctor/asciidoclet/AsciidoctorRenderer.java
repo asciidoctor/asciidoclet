@@ -18,6 +18,7 @@ package org.asciidoctor.asciidoclet;
 import com.google.common.base.Optional;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.*;
 
@@ -124,9 +125,18 @@ public class AsciidoctorRenderer implements DocletRenderer {
      * @param buffer output buffer
      */
     private void renderTag(Tag tag, StringBuilder buffer) {
-        //print out directly
-        buffer.append(tag.name());
-        buffer.append(" ");
+        buffer.append(tag.name()).append(' ');
+        // Special handling for @param <T> tags
+        // See http://docs.oracle.com/javase/1.5.0/docs/tooldocs/windows/javadoc.html#@param
+        if ((tag instanceof ParamTag) && ((ParamTag) tag).isTypeParameter()) {
+            ParamTag paramTag = (ParamTag) tag;
+            buffer.append("<" + paramTag.parameterName() + ">");
+            String text = paramTag.parameterComment();
+            if (text.length() > 0) {
+                buffer.append(' ').append(render(text, true));
+            }
+            return;
+        }
         buffer.append(render(tag.text(), true));
     }
 
@@ -141,6 +151,9 @@ public class AsciidoctorRenderer implements DocletRenderer {
      * @return content rendered by Asciidoctor
      */
     private String render(String input, boolean inline) {
+        if (input.trim().isEmpty()) {
+            return "";
+        }
         options.setDocType(inline ? INLINE_DOCTYPE : null);
         return asciidoctor.render(cleanJavadocInput(input), options);
     }
