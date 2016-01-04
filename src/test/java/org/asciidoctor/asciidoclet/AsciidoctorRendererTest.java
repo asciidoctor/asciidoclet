@@ -18,6 +18,7 @@ package org.asciidoctor.asciidoclet;
 import com.google.common.base.Optional;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
+import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
@@ -96,9 +97,44 @@ public class AsciidoctorRendererTest {
     }
 
     @Test
-    public void testParameterName() {
-        assertEquals("<R>", renderer.getTypeParamName("<R> test <T>"));
-        assertEquals("", renderer.getTypeParamName("<NOT A TYPE> test <T>"));
+    public void testParamTagWithTypeParameter() {
+        String commentText = "comment";
+        String param1Name = "T";
+        String param1Desc = "";
+        String param1Text = "<" + param1Name + ">";
+        String param2Name = "X";
+        String param2Desc = "description";
+        String param2Text = "<" + param2Name + "> " + param2Desc;
+        String sourceText = commentText + "\n@param " + param1Text + "\n@param " + param2Text;
+
+        Doc mockDoc = mock(Doc.class);
+        when(mockDoc.getRawCommentText()).thenReturn(sourceText);
+        when(mockDoc.commentText()).thenReturn(commentText);
+        Tag[] tags = new Tag[2];
+        ParamTag mockTag1 = mock(ParamTag.class);
+        when(mockTag1.name()).thenReturn("@param");
+        when(mockTag1.isTypeParameter()).thenReturn(true);
+        when(mockTag1.parameterName()).thenReturn(param1Name);
+        when(mockTag1.parameterComment()).thenReturn(param1Desc);
+        tags[0] = mockTag1;
+        ParamTag mockTag2 = mock(ParamTag.class);
+        when(mockTag2.name()).thenReturn("@param");
+        when(mockTag2.isTypeParameter()).thenReturn(true);
+        when(mockTag2.parameterName()).thenReturn(param2Name);
+        when(mockTag2.parameterComment()).thenReturn(param2Desc);
+        tags[1] = mockTag2;
+        when(mockDoc.tags()).thenReturn(tags);
+        when(mockAsciidoctor.render(eq(commentText), any(Options.class))).thenReturn(commentText);
+        when(mockAsciidoctor.render(eq(param2Desc), any(Options.class))).thenReturn(param2Desc);
+
+        renderer.renderDoc(mockDoc);
+
+        verify(mockAsciidoctor).render(eq(commentText), argThat(new OptionsMatcher(false)));
+        verify(mockAsciidoctor).render(eq(param2Desc), argThat(new OptionsMatcher(true)));
+        // fixture step
+        verify(mockDoc).setRawCommentText(eq(sourceText));
+        // result step
+        verify(mockDoc).setRawCommentText(eq(sourceText));
     }
 
     private static final class OptionsMatcher extends ArgumentMatcher<Options> {
