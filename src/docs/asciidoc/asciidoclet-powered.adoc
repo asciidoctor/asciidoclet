@@ -1,4 +1,4 @@
-= Projects Powered by AsciiDoclet
+= Projects Powered by Asciidoclet
 
 [cols="2,3,4"]
 |===
@@ -27,6 +27,10 @@
 |https://github.com/msgilligan/bitcoinj-addons[bitcoinj-addons]
 |https://github.com/msgilligan/bitcoinj-addons[msgilligan/bitcoinj-addons]
 |http://msgilligan.github.io/bitcoinj-addons/apidoc/index.html[JavaDoc], see http://msgilligan.github.io/bitcoinj-addons/apidoc/com/msgilligan/bitcoinj/rpc/BitcoinClient.html[BitcoinClient]
+
+|https://github.com/chrisvest/stormpot[stormpot]
+|https://github.com/chrisvest/stormpot[stormpot]
+|http://chrisvest.github.io/stormpot/site/apidocs/stormpot/package-summary.html[JavaDoc]
 
 |===
 
