@@ -41,7 +41,9 @@ public class AsciidoctorRenderer implements DocletRenderer {
                 .attribute("javadoc", "")
                 .attribute("showtitle", true)
                 .attribute("source-highlighter", "coderay")
-                .attribute("coderay-css", "class");
+                .attribute("coderay-css", "class")
+                .attribute("env-asciidoclet")
+                .attribute("env", "asciidoclet");
     }
 
     private static OptionsBuilder defaultOptions() {
