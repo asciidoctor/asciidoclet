@@ -1,0 +1,301 @@
+= Asciidoclet
+John Ericksen <https://github.com/johncarl81>
+v0.1.3
+:description: This is a guide for setting up and using the Asciidoclet project. Asciidoclet is a Javadoc Doclet based on Asciidoctor that lets you write Javadoc in the AsciiDoc syntax.
+:keywords: Asciidoclet, AsciiDoc, Asciidoctor, syntax, Javadoc, Doclet, reference
+:page-layout: base
+:language: java
+ifdef::env-github,env-browser[:outfilesuffix: .adoc]
+ifndef::awestruct[]
+:idprefix:
+:idseparator: -
+:toc:
+:sectanchors:
+:icons: font
+:source-highlighter: highlight.js
+endif::awestruct[]
+// Refs
+:asciidoclet-src-ref: https://github.com/asciidoctor/asciidoclet
+:asciidoclet-javadoc-ref: https://oss.sonatype.org/service/local/repositories/releases/archive/org/asciidoctor/asciidoclet/1.5.2/asciidoclet-1.5.2-javadoc.jar/!/index.html
+:asciidoclet-release-ref: http://asciidoctor.org/news/2014/09/09/asciidoclet-1.5.0-released/
+:asciidoc-ref: http://asciidoc.org
+:asciidoctor-java-ref: http://asciidoctor.org/docs/install-and-use-asciidoctor-java-integration/
+:asciidoclet-issues-ref: https://github.com/asciidoctor/asciidoclet/issues
+:asciidoctor-src-ref: https://github.com/asciidoctor/asciidoctor
+:asciidoctor-java-src-ref: https://github.com/asciidoctor/asciidoctor-java-integration
+:discuss-ref: http://discuss.asciidoctor.org/
+:translators: D瓜哥
+ifdef::env-github[翻译： {translators}]
+
+{asciidoclet-src-ref}[Asciidoclet] 是一个基于 Asciidoctor 的 Javadoc Doclet，它可以让你是使用 AsciiDoc 语法来撰写 Javadoc。
+
+image:http://img.shields.io/travis/asciidoctor/asciidoclet/master.svg["Build Status", link="https://travis-ci.org/asciidoctor/asciidoclet"]
+image:https://img.shields.io/badge/javadoc.io-1.5.4-blue.svg[Javadoc, link=http://www.javadoc.io/doc/org.asciidoctor/asciidoclet/1.5.4]
+
+[[introduction]]
+== 介绍
+
+当你撰写为 HTML 格式的 Javadoc 输出时，传统做法是 Javadocs 会稍微混合一些 HTML 标记，随着时间的推移这将导致既不易读又难以书写。
+这也是轻量级标记语言之所以能繁荣成长的原因所在。
+AsciiDoc 跨越了易读标记和精美的渲染内容之间的鸿沟。
+
+Asciidoclet 将 AsciiDoc 渲染器（通过调用 {asciidoctor-java-ref}[Asciidoctor Java integration] 库而组成的 Asciidoctor）包装成了一个简单的 Doclet，这样就可以在 Javadoc 的注释和标签中使用 AsciiDoc 格式。
+
+[[example]]
+== 示例
+
+这是一个类的传统 Javadoc 的例子。
+
+[source]
+.使用传统方式撰写 Javadoc 的 Java 类
+----
+/**
+ * <h1>Asciidoclet</h1>
+ *
+ * <p>Sample comments that include {@code source code}.</p>
+ *
+ * <pre>{@code
+ * public class Asciidoclet extends Doclet {
+ *     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+ *
+ *     {@literal @}SuppressWarnings("UnusedDeclaration")
+ *     public static boolean start(RootDoc rootDoc) {
+ *         new Asciidoclet().render(rootDoc);
+ *         return Standard.start(rootDoc);
+ *     }
+ * }
+ * }</pre>
+ *
+ * @author <a href="https://github.com/johncarl81">John Ericksen</a>
+ */
+public class Asciidoclet extends Doclet {
+}
+----
+
+相同的类，但使用了 Asciidoclet。
+
+[source]
+.使用 Asciidoclet 撰写 Javadoc 的 Java 类
+----
+/**
+ * = Asciidoclet
+ *
+ * Sample comments that include `source code`.
+ *
+ * [source,java]
+ * --
+ * public class Asciidoclet extends Doclet {
+ *     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+ *
+ *     @SuppressWarnings("UnusedDeclaration")
+ *     public static boolean start(RootDoc rootDoc) {
+ *         new Asciidoclet().render(rootDoc);
+ *         return Standard.start(rootDoc);
+ *     }
+ * }
+ * --
+ *
+ * @author https://github.com/johncarl81[John Ericksen]
+ */
+public class Asciidoclet extends Doclet {
+}
+----
+
+结果就是更易读的源码和渲染后精美的 Javadocs，各得其所，堪称完美。
+
+// tag::usage[]
+[[usage]]
+== 用法
+
+带上 `org.asciidoctor.Asciidoclet` 参数来运行 `javadoc`。
+下面几个例子演示在常用的构建系统中的用法。
+通过 <<doclet-options,Doclet 选项>> 来查看更多的支持的选项。
+
+[[maven]]
+=== Maven
+
+可以通过 `maven-javadoc-plugin` 插件来使用 Asciidoclet :
+
+[source,xml]
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>2.9</version>
+    <configuration>
+        <source>1.7</source>
+        <doclet>org.asciidoctor.Asciidoclet</doclet>
+        <docletArtifact>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoclet</artifactId>
+            <version>${asciidoclet.version}</version>
+        </docletArtifact>
+        <overview>src/main/java/overview.adoc</overview>
+        <additionalparam>
+          --base-dir ${project.basedir}
+          --attribute "name=${project.name}"
+          --attribute "version=${project.version}"
+          --attribute "title-link=http://example.com[${project.name} ${project.version}]"
+        </additionalparam>
+    </configuration>
+</plugin>
+----
+
+[[gradle]]
+=== Gradle
+
+可以通过 `Javadoc` 任务来使用 Asciidoclet :
+
+[source,groovy]
+----
+configurations {
+    asciidoclet
+}
+
+dependencies {
+    asciidoclet 'org.asciidoctor:asciidoclet:1.+'
+}
+
+javadoc {
+    options.docletpath = configurations.asciidoclet.files.asType(List)
+    options.doclet = 'org.asciidoctor.Asciidoclet'
+    options.overview = "src/main/java/overview.adoc"
+    options.addStringOption "-base-dir", "${projectDir}" // <1>
+    options.addStringOption "-attribute", // <2>
+            "name=${project.name}," +
+            "version=${project.version}," +
+            "title-link=http://example.com[${project.name} ${project.version}]")
+}
+----
+<1> 传递给 Gradle 的 javadoc 任务的选项名必须忽略掉第一个 `-`，所以，这里的 `-base-dir` 就指 `--base-dir`。
+    请看下面 <<doclet-options, Doclet 选项>>。
+<2> Gradle 的 javadoc 任务不允许多次出现相同选项。
+    多个属性可以在一行中指定，之间使用英文半角逗号分割。
+
+[[ant]]
+=== Ant
+// Some of us still use Ant, alright?!
+可以通过 Ant 的 `javadoc` 任务的 doclet 元素来使用 Asciidoclet：
+
+[source,xml]
+----
+<javadoc destdir="target/javadoc"
+         sourcepath="src"
+         overview="src/overview.adoc">
+  <doclet name="org.asciidoctor.Asciidoclet" pathref="asciidoclet.classpath"> <!--1-->
+    <param name="--base-dir" value="${basedir}"/>
+    <param name="--attribute" value="name=${ant.project.name}"/>
+    <param name="--attribute" value="version=${version}"/>
+    <param name="--attribute" value="title-link=http://example.com[${ant.project.name} ${version}]"/>
+  </doclet>
+</javadoc>
+----
+<1> 假设定义了指向 Asciidoclet 及其依赖的路径。举例来说，使用 http://ant.apache.org/ivy/[Ivy] 或相似产品。
+
+[[doclet-options]]
+=== Doclet 选项
+// tag::doclet-options[]
+
+--base-dir <dir>::
+设置基础目录，被 Asciidoc 用于解析在 `include::` 中的相对路径。
+这个选项应该设置成项目的根目录。
+
+-a, --attribute "name[=value], ..."::
+设置 http://asciidoctor.org/docs/user-manual/#attributes[文档属性^]，这些设置将用在 javadoc 注释上。
+这个参数是一个字符串，包含一个属性或者多个使用英文半角逗号分割的多个属性。
++
+这个选项可以使用多次，例如：`-a name=foo -a version=1`。
++
+属性使用和 Asciidoctor 命令行属性相同的语法：
++
+--
+* `name` 设置属性（使用空值）
+* `name=value` 将属性设置为 `value`。出现中在 javadoc 中的 `{name}` 将会使用这个值来替换。
+* `name=value@` 除非在属性文件或者 javadoc 中设置这个属性，否则将这个属性设置为 `value`。
+* `name!` 取消设置。
+--
++
+文档属性 `javadoc` 将会被这个 doclet 自动设置。
+当为 javadoc 和其他文档使用相同 Asciidoc 文件，它将被用于有条件的选中的内容。
+// This can be used for conditionally selecting content when using the same Asciidoc file for javadoc and other documentation.
+
+--attributes-file <file>::
+从一个 Asciidoc 文件中，读取 http://asciidoctor.org/docs/user-manual/#attributes[文档属性^] 。
+这些属性将用在 javadoc 注释上。
++
+如果 `<file>` 是一个相对路径名称，它将假设相对于 `--base-dir` 路径。
++
+通过 `-a`/`--attribute` 选项设置的属性比属性文件中的属性有更高的优先级。
+
+-r, --require <library>,...::
+给 Asciidoctor 的 JRuby 运行时增加必要的 RubyGems 库，例如 `-r asciidoctor-diagram`。
++
+这个选项可以设置一次道多次。
+也可以在一个参数中设置多个库，中间使用英文半角逗号分割。
+
+--gem-path <path>::
+为 Asciidoctor 的 JRuby 运行时 设置 `GEM_PATH`。
+这个选项只有在使用 `--require` 选项并且 `GEM_PATH` 环境变量没有设置或者需要一个不同的 `GEM_PATH` 时才需要。
+
+-overview <file>::
+标准的 `-overview` 选项，可以从 Asciidoc 文件生成概述文档。
+匹配 [x-]`*.adoc`、[x-]`*.ad`、[x-]`*.asciidoc` 或 [x-]`*.txt` 的文件都可以被 Asciidoclet 处理。
+其他文件被认为是 HTML，将由标准的 doclet 处理。
+
+// end::doclet-options[]
+// end::usage[]
+
+[[log-warning]]
+=== 日志警告
+
+目前，当运行 Asciidoclet 时，会输出一个类似下面的间歇良性警告消息：
+// Currently there is a intermittent benign warning message that is emitted during a run of Asciidoclet stating the following:
+
+....
+WARN: tilt autoloading 'tilt/haml' in a non thread-safe way; explicit require 'tilt/haml' suggested.
+....
+
+不幸的是，直到底层库删除这个警告信息，在构建中都会输出这条消息。
+
+[[additional-features]]
+== 附加特性
+
+查看 {asciidoclet-release-ref}[Asciidoclet 1.5.0 发布日志] 来获取更多这里没有记录的特性。
+
+[[resources-and-help]]
+== 资源及帮助
+
+从下来链接中可以获取更多信息：
+
+* {asciidoclet-release-ref}[Asciidoclet 1.5.0 发布日志]
+* {asciidoclet-src-ref}[Asciidoclet 源码]
+* {asciidoclet-javadoc-ref}[Asciidoclet JavaDoc]
+* {asciidoclet-issues-ref}[Asciidoclet Issue Tracker]
+* {asciidoctor-src-ref}[Asciidoctor 源码]
+* {asciidoctor-java-src-ref}[Asciidoctor Java 集成源码]
+
+如果你有什么问题或者想帮助开发这个项目，请加入 {discuss-ref}[Asciidoctor 讨论组]。
+
+[[powered-by-asciidoclet]]
+== Powered by Asciidoclet
+
+我们有一个 <<src/docs/asciidoc/asciidoclet-powered.adoc#,Powered by Asciidoclet>> 页面。如果你有使用 Asciidoclet 制成的精美 JavaDoc 例子，请提交一个 Pull Request。
+
+[[license]]
+== 许可证
+
+....
+Copyright (C) 2013-2015 John Ericksen
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+....
