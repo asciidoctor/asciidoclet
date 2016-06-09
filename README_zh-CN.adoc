@@ -29,6 +29,11 @@ ifdef::env-github[翻译： {translators}]
 
 {asciidoclet-src-ref}[Asciidoclet] 是一个基于 Asciidoctor 的 Javadoc Doclet，它可以让你是使用 AsciiDoc 语法来撰写 Javadoc。
 
+.该文档有如下语言的翻译版：
+* link:README.adoc[English] -- 这是原始文档。
+
+TIP: 本文档是 link:README.adoc[README] 的翻译版。如果发现有什么不一致或者错误的地方，请以原文档为准。
+
 image:http://img.shields.io/travis/asciidoctor/asciidoclet/master.svg["Build Status", link="https://travis-ci.org/asciidoctor/asciidoclet"]
 image:https://img.shields.io/badge/javadoc.io-1.5.4-blue.svg[Javadoc, link=http://www.javadoc.io/doc/org.asciidoctor/asciidoclet/1.5.4]
 
