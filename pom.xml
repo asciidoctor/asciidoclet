@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj</artifactId>
-            <version>1.5.4</version>
+            <version>1.5.6</version>
         </dependency>
         <dependency>
             <groupId>com.sun.tools</groupId>
@@ -168,7 +168,7 @@
                     </excludes>
                     <properties>
                         <startYear>2013</startYear>
-                        <currentYear>2015</currentYear>
+                        <currentYear>2018</currentYear>
                         <name>John Ericksen</name>
                     </properties>
                     <useDefaultExcludes>true</useDefaultExcludes>
@@ -182,7 +182,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <finalName>${build.finalName}-all</finalName>
+                    <finalName>${project.build.finalName}-all</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
