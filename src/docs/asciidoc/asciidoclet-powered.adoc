@@ -20,8 +20,8 @@
 |https://github.com/javaee-samples/javaee7-samples[javaee-samples/javaee7-samples]
 |http://javaee.support[literate programming site] built from JavaDoc
 
-|http://https://github.com/JGrenier/asciidoclet-sample[asciidoclet-sample]
-|http://https://github.com/JGrenier/asciidoclet-sample[JGrenier/asciidoclet-sample]
+|http://github.com/JGrenier/asciidoclet-sample[asciidoclet-sample]
+|http://github.com/JGrenier/asciidoclet-sample[JGrenier/asciidoclet-sample]
 |Not available
 
 |https://github.com/msgilligan/bitcoinj-addons[bitcoinj-addons]
