@@ -1,6 +1,6 @@
-/* Asciidoclet Java 7/8 javadoc stylesheet
+/* Asciidoclet Java 9+ javadoc stylesheet
  *
- * Javadoc stylesheet based on http://docs.oracle.com/javase/8/docs/api/stylesheet.css
+ * Javadoc stylesheet based on http://docs.oracle.com/javase/9/docs/api/stylesheet.css
  * with additional styles from Asciidoctor.
  */
 
@@ -576,6 +576,7 @@ td.colSecond, th.colSecond, td.colLast, th.colConstructorName, th.colLast {
 .memberSummary td.colFirst, .memberSummary th.colFirst,
 .memberSummary td.colSecond, .memberSummary th.colSecond, .memberSummary th.colConstructorName,
 .typeSummary td.colFirst {
+    width:25%;
     vertical-align:top;
 }
 .packagesSummary th.colLast, .packagesSummary td.colLast {
