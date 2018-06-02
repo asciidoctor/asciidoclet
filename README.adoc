@@ -15,7 +15,7 @@ ifdef::env-github,env-browser[]
 endif::[]
 ifdef::env-github[]
 :badges:
-:!toc-title;
+:!toc-title:
 endif::[]
 // Refs
 :asciidoclet-src-ref: https://github.com/asciidoctor/asciidoclet
