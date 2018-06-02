@@ -27,6 +27,7 @@ import java.io.IOException;
  * output directory.
  */
 public class Stylesheets {
+    static final String JAVA9_STYLESHEET = "stylesheet9.css";
     static final String JAVA8_STYLESHEET = "stylesheet8.css";
     static final String JAVA6_STYLESHEET = "stylesheet6.css";
     static final String CODERAY_STYLESHEET = "coderay-asciidoctor.css";
@@ -65,8 +66,11 @@ public class Stylesheets {
         if (javaVersion.matches("^1\\.[78]\\D.*")) {
             return JAVA8_STYLESHEET;
         }
-        errorReporter.printWarning("Unrecognized Java version " + javaVersion + ", using Java 7/8 stylesheet");
-        // TODO: review this when Java 9 becomes available!
-        return JAVA8_STYLESHEET;
+        if (javaVersion.matches("^(9|10)(\\.)?.*")) {
+            return JAVA9_STYLESHEET;
+        }
+        errorReporter.printWarning("Unrecognized Java version " + javaVersion + ", using Java 9 stylesheet");
+        // TODO: review this when Java 11 becomes available and/or make more configurable!
+        return JAVA9_STYLESHEET;
     }
 }

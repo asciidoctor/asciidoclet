@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import static org.asciidoctor.asciidoclet.Stylesheets.JAVA6_STYLESHEET;
 import static org.asciidoctor.asciidoclet.Stylesheets.JAVA8_STYLESHEET;
+import static org.asciidoctor.asciidoclet.Stylesheets.JAVA9_STYLESHEET;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -33,6 +34,24 @@ public class StylesheetsTest {
     public void setup() throws Exception {
         mockErrorReporter = mock(DocErrorReporter.class);
         stylesheets = new Stylesheets(DocletOptions.NONE, mockErrorReporter);
+    }
+
+    @Test
+    public void java10dot0dot1ShouldSelectStylesheet9    () throws Exception {
+        assertEquals(JAVA9_STYLESHEET, stylesheets.selectStylesheet("10.0.1"));
+        verifyNoMoreInteractions(mockErrorReporter);
+    }
+
+    @Test
+    public void java10SelectStylesheet9() throws Exception {
+        assertEquals(JAVA9_STYLESHEET, stylesheets.selectStylesheet("10"));
+        verifyNoMoreInteractions(mockErrorReporter);
+    }
+
+    @Test
+    public void java9ShouldSelectStylesheet9() throws Exception {
+        assertEquals(JAVA9_STYLESHEET, stylesheets.selectStylesheet("9"));
+        verifyNoMoreInteractions(mockErrorReporter);
     }
 
     @Test
@@ -61,7 +80,7 @@ public class StylesheetsTest {
 
     @Test
     public void unknownJavaShouldSelectStylesheet8AndWarn() throws Exception {
-        assertEquals(JAVA8_STYLESHEET, stylesheets.selectStylesheet("42.3.0_12"));
+        assertEquals(JAVA9_STYLESHEET, stylesheets.selectStylesheet("42.3.0_12"));
         verify(mockErrorReporter).printWarning(anyString());
     }
 }
