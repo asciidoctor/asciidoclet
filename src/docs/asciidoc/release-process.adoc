@@ -1,0 +1,29 @@
+= Asciidoclet Release Process
+
+== Introduction
+
+This document describes the release procedures used for releasing Asciidoclet. Currently releases are made by https://github.com/johncarl81[@johncarl81] who has all the necessary access credentials.
+
+== Snapshot releases
+
+Snapshot releases are published to the Sonatype snapshot repository, which would be configured for read access in Gradle as follows:
+
+
+    repositories {
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+    }
+
+Deployment is done via the Maven command line with the following command:
+
+    mvn clean deploy
+
+TBD: Document how to set up credentials for publishing.
+
+== Official releases
+
+TBD.
+
+
+    
