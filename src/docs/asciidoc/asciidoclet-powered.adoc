@@ -6,29 +6,25 @@
 
 |https://github.com/asciidoctor/asciidoclet[Asciidoclet]
 |https://github.com/asciidoctor/asciidoclet[asciidoctor/asciidoclet]
-|https://oss.sonatype.org/service/local/repositories/releases/archive/org/asciidoctor/asciidoclet/1.5.2/asciidoclet-1.5.2-javadoc.jar/!/index.html[JavaDoc jar]
+|https://oss.sonatype.org/service/local/repositories/releases/archive/org/asciidoctor/asciidoclet/1.5.4/asciidoclet-1.5.4-javadoc.jar/!/index.html[JavaDoc jar]
 
 |http://androidtransfuse.org[Transfuse]
 |https://github.com/johncarl81/transfuse[johncarl81/transfuse]
-|https://oss.sonatype.org/service/local/repositories/releases/archive/org/androidtransfuse/transfuse-api/0.3.0-beta-7/transfuse-api-0.3.0-beta-7-javadoc.jar/!/index.html[JavaDoc jar]
+|https://oss.sonatype.org/service/local/repositories/releases/archive/org/androidtransfuse/transfuse-api/0.3.0-beta-11/transfuse-api-0.3.0-beta-11-javadoc.jar/!/index.html[JavaDoc jar]
 
 |http://parceler.org[Parceler]
 |https://github.com/johncarl81/parceler[johncarl81/parceler]
-|https://oss.sonatype.org/service/local/repositories/releases/archive/org/parceler/parceler-api/1.0.3/parceler-api-1.0.3-javadoc.jar/!/index.html[JavaDoc jar]
-
-|http://javaee.support[JavaEE Samples]
-|https://github.com/javaee-samples/javaee7-samples[javaee-samples/javaee7-samples]
-|http://javaee.support[literate programming site] built from JavaDoc
+|https://oss.sonatype.org/service/local/repositories/releases/archive/org/parceler/parceler-api/1.1.10/parceler-api-1.1.10-javadoc.jar/!/index.html[JavaDoc jar]
 
 |http://github.com/JGrenier/asciidoclet-sample[asciidoclet-sample]
 |http://github.com/JGrenier/asciidoclet-sample[JGrenier/asciidoclet-sample]
 |Not available
 
-|https://github.com/msgilligan/bitcoinj-addons[bitcoinj-addons]
-|https://github.com/msgilligan/bitcoinj-addons[msgilligan/bitcoinj-addons]
-|http://msgilligan.github.io/bitcoinj-addons/apidoc/index.html[JavaDoc], see http://msgilligan.github.io/bitcoinj-addons/apidoc/com/msgilligan/bitcoinj/rpc/BitcoinClient.html[BitcoinClient]
+|https://consensusj.github.io/consensusj[ConsensusJ]
+|https://github.com/ConsensusJ/bitcoinj-addons[ConsensusJ/consensusj]
+|https://consensusj.github.io/consensusj/apidoc/index.html[JavaDoc], see http://consensusj.github.io/consensusj/apidoc/com/msgilligan/bitcoinj/rpc/BitcoinClient.html[BitcoinClient]
 
-|https://github.com/chrisvest/stormpot[stormpot]
+|https://chrisvest.github.io/stormpot/[Stormpot]
 |https://github.com/chrisvest/stormpot[stormpot]
 |http://chrisvest.github.io/stormpot/site/apidocs/stormpot/package-summary.html[JavaDoc]
 
