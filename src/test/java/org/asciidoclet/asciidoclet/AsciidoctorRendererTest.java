@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 John Ericksen
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoctor.asciidoclet;
+package org.asciidoclet.asciidoclet;
 
 import com.google.common.base.Optional;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.Tag;
+import org.asciidoclet.asciidoclet.AsciidoctorRenderer;
+import org.asciidoclet.asciidoclet.DocletOptions;
+import org.asciidoclet.asciidoclet.OutputTemplates;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Options;
 import org.junit.Before;
@@ -41,7 +44,7 @@ public class AsciidoctorRendererTest {
     @Before
     public void setup() {
         mockAsciidoctor = mock(Asciidoctor.class);
-        renderer = new AsciidoctorRenderer(DocletOptions.NONE, mock(DocErrorReporter.class), Optional.<OutputTemplates>absent(), mockAsciidoctor);
+        renderer = new AsciidoctorRenderer( DocletOptions.NONE, mock(DocErrorReporter.class), Optional.<OutputTemplates>absent(), mockAsciidoctor);
     }
 
     @Test

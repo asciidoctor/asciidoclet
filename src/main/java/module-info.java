@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 John Ericksen
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoctor.asciidoclet;
-
-import com.sun.javadoc.Doc;
-
-/**
- * Interface used to render a Javadoc Doc
- *
- * @author John Ericksen
- */
-public interface DocletRenderer {
-
-    void renderDoc(Doc doc);
+module asciidoclet {
+    requires java.base;
+    requires jdk.javadoc;
+    requires asciidoctorj;
+    requires guava;
+    exports org.asciidoclet;
 }

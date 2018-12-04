@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 John Ericksen
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoctor.asciidoclet;
+package org.asciidoclet.asciidoclet;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.sun.javadoc.DocErrorReporter;
+import org.asciidoclet.asciidoclet.AttributesLoader;
+import org.asciidoclet.asciidoclet.DocletOptions;
 import org.asciidoctor.Asciidoctor;
 import org.hamcrest.Matchers;
 import org.junit.Rule;

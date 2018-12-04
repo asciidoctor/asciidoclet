@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 John Ericksen
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoctor.asciidoclet;
+package org.asciidoclet.asciidoclet;
 
 import com.google.common.base.Charsets;
+import org.asciidoclet.asciidoclet.DocletOptions;
 import org.junit.Test;
 
 import java.nio.charset.Charset;
 
-import static org.asciidoctor.asciidoclet.DocletOptions.*;
+import static org.asciidoclet.asciidoclet.DocletOptions.*;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
 
@@ -28,7 +29,7 @@ public class DocletOptionsTest {
 
     @Test
     public void testGetBaseDir() {
-        assertFalse(DocletOptions.NONE.baseDir().isPresent());
+        assertFalse( DocletOptions.NONE.baseDir().isPresent());
         assertEquals("test", new DocletOptions(new String[][]{{BASEDIR, "test"}}).baseDir().get().getName());
     }
 

@@ -147,7 +147,7 @@
                 </executions>
                 <configuration>
                     <source>1.7</source>
-                    <doclet>org.asciidoctor.Asciidoclet</doclet>
+                    <doclet>org.asciidoclet.Asciidoclet</doclet>
                     <docletArtifact>
                         <groupId>org.asciidoctor</groupId>
                         <artifactId>asciidoclet</artifactId>

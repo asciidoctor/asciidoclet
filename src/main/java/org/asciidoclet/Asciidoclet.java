@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 John Ericksen
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoctor;
+package org.asciidoclet;
 
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Doclet;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
-import org.asciidoctor.asciidoclet.*;
+import org.asciidoclet.asciidoclet.AsciidoctorRenderer;
+import org.asciidoclet.asciidoclet.DocletIterator;
+import org.asciidoclet.asciidoclet.DocletOptions;
+import org.asciidoclet.asciidoclet.StandardAdapter;
+import org.asciidoclet.asciidoclet.Stylesheets;
 
 /**
  * = Asciidoclet
@@ -163,7 +167,7 @@ import org.asciidoctor.asciidoclet.*;
  *
  * @author https://github.com/johncarl81[John Ericksen]
  * @version {project_version}
- * @see org.asciidoctor.Asciidoclet
+ * @see Asciidoclet
  * @since 0.1.0
  * @serial (or @serialField or @serialData)
  */

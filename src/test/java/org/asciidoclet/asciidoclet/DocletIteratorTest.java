@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 John Ericksen
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoctor.asciidoclet;
+package org.asciidoclet.asciidoclet;
 
 import com.sun.javadoc.*;
+import org.asciidoclet.asciidoclet.DocletIterator;
+import org.asciidoclet.asciidoclet.DocletOptions;
+import org.asciidoclet.asciidoclet.DocletRenderer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,7 +68,7 @@ public class DocletIteratorTest {
 
     @Test
     public void testIteration() {
-        new DocletIterator(DocletOptions.NONE).render(mockDoc, mockRenderer);
+        new DocletIterator( DocletOptions.NONE).render(mockDoc, mockRenderer);
 
         verify(mockRenderer).renderDoc(mockClassDoc);
         verify(mockRenderer).renderDoc(mockFieldDoc);

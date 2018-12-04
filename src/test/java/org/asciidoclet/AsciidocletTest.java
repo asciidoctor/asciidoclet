@@ -1,5 +1,5 @@
 /**
- * Copyright 2013-2015 John Ericksen
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoctor;
+package org.asciidoclet;
 
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.RootDoc;
-import org.asciidoctor.asciidoclet.*;
+import org.asciidoclet.Asciidoclet;
+import org.asciidoclet.asciidoclet.DocletIterator;
+import org.asciidoclet.asciidoclet.DocletOptions;
+import org.asciidoclet.asciidoclet.DocletRenderer;
+import org.asciidoclet.asciidoclet.StandardAdapter;
+import org.asciidoclet.asciidoclet.Stylesheets;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +45,7 @@ public class AsciidocletTest {
         mockAdapter = mock(StandardAdapter.class);
         mockIterator = mock(DocletIterator.class);
         mockStylesheets = mock(Stylesheets.class);
-        when(mockIterator.render(any(RootDoc.class), any(DocletRenderer.class))).thenReturn(true);
+        when(mockIterator.render(any(RootDoc.class), any( DocletRenderer.class))).thenReturn(true);
         when(mockStylesheets.copy()).thenReturn(true);
     }
 
@@ -51,7 +56,7 @@ public class AsciidocletTest {
 
     @Test
     public void testIncludeBaseDirOptionLength() {
-        assertEquals(2, Asciidoclet.optionLength(DocletOptions.BASEDIR, mockAdapter));
+        assertEquals(2, Asciidoclet.optionLength( DocletOptions.BASEDIR, mockAdapter));
 
         verifyZeroInteractions(mockAdapter);
         verifyZeroInteractions(mockIterator);
