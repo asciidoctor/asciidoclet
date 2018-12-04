@@ -47,26 +47,9 @@
             <version>1.5.8.1</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.tools</groupId>
-            <artifactId>tools</artifactId>
-            <version>${java.version}</version>
-            <scope>system</scope>
-            <systemPath>${java.home}/../lib/tools.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>20.0</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -100,16 +83,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.8.0</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <release>11</release>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -123,7 +109,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -133,19 +119,19 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>1.7</source>
-                    <doclet>org.asciidoctor.Asciidoclet</doclet>
+                    <source>11</source>
+                    <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
                     <docletArtifact>
-                        <groupId>org.asciidoctor</groupId>
-                        <artifactId>asciidoclet</artifactId>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
                         <version>${project.version}</version>
                     </docletArtifact>
-                    <additionalparam> <!--1-->
-                        --base-dir ${project.basedir}
-                        --attribute "project_name=${project.name}"
-                        --attribute "project_version=${project.version}"
-                        --attribute "project_desc=${project.description}"
-                    </additionalparam>
+                    <additionalOptions>  <!--1-->
+                      --base-dir ${project.basedir}
+                      --attribute "project_name=${project.name}"
+                      --attribute "project_version=${project.version}"
+                      --attribute "project_desc=${project.description}"
+                    </additionalOptions>
                     <linksource>true</linksource>
                     <overview>src/main/java/overview.adoc</overview> <!--2-->
                 </configuration>
@@ -154,7 +140,7 @@
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
-                <version>1.9.0</version>
+                <version>1.10.b1</version>
                 <configuration>
                     <header>NOTICE</header>
                     <includes>
@@ -173,12 +159,15 @@
                     </properties>
                     <useDefaultExcludes>true</useDefaultExcludes>
                     <strictCheck>true</strictCheck>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.2.1</version>
                 <configuration>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>shaded</shadedClassifierName>

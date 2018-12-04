@@ -1,5 +1,5 @@
-/**
- * Copyright 2013-2015 John Ericksen
+/*
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@
  *   <version>2.9</version>
  *   <configuration>
  *     <source>1.7</source>
- *     <doclet>org.asciidoctor.Asciidoclet</doclet>
+ *     <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
  *     <docletArtifact>
- *       <groupId>org.asciidoclet</groupId>
+ *       <groupId>org.asciidoctor</groupId>
  *       <artifactId>asciidoclet</artifactId>
  *       <version>${asciidoclet.version}</version>
  *     </docletArtifact>
@@ -173,8 +173,8 @@
  *
  * @author https://github.com/johncarl81[John Ericksen]
  * @version 0.1.0
- * @see org.asciidoctor.Asciidoclet
+ * @see org.asciidoctor.asciidoclet.Asciidoclet
  * @since 0.1.0
  * @serial (or @serialField or @serialData)
  */
-package org.asciidoctor;
+package org.asciidoctor.asciidoclet;

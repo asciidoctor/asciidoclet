@@ -1,5 +1,5 @@
-/**
- * Copyright 2013-2015 John Ericksen
+/*
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,57 +15,98 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.base.Charsets;
+import jdk.javadoc.doclet.Reporter;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
-import static org.asciidoctor.asciidoclet.DocletOptions.*;
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class DocletOptionsTest {
+@SuppressWarnings( "OptionalGetWithoutIsPresent" )
+public class DocletOptionsTest
+{
+    private Reporter reporter;
 
-    @Test
-    public void testGetBaseDir() {
-        assertFalse(DocletOptions.NONE.baseDir().isPresent());
-        assertEquals("test", new DocletOptions(new String[][]{{BASEDIR, "test"}}).baseDir().get().getName());
+    @Before
+    public void setUp()
+    {
+        reporter = new StubReporter();
     }
 
     @Test
-    public void testEncoding() {
-        assertEquals(Charset.defaultCharset(), DocletOptions.NONE.encoding());
-        assertEquals(Charsets.UTF_8, new DocletOptions(new String[][]{{ENCODING, "UTF-8"}}).encoding());
-        assertEquals(Charsets.US_ASCII, new DocletOptions(new String[][]{{ENCODING, "US-ASCII"}}).encoding());
-        assertEquals(Charsets.ISO_8859_1, new DocletOptions(new String[][]{{ENCODING, "ISO-8859-1"}}).encoding());
+    public void testGetBaseDir()
+    {
+        assertFalse( new DocletOptions( reporter ).baseDir().isPresent() );
+
+        DocletOptions options = new DocletOptions( reporter );
+        options.collect( AsciidocletOptions.BASEDIR, List.of( "test" ) );
+        options.validateOptions();
+        assertEquals( "test", options.baseDir().get().getName() );
     }
 
     @Test
-    public void testOverview() {
-        assertFalse(DocletOptions.NONE.overview().isPresent());
-        assertEquals("test.adoc", new DocletOptions(new String[][]{{OVERVIEW, "test.adoc"}}).overview().get().getName());
+    public void testEncoding()
+    {
+        assertEquals( Charset.defaultCharset(), new DocletOptions( reporter ).encoding() );
+
+        DocletOptions options = new DocletOptions( reporter );
+        options.collect( AsciidocletOptions.ENCODING, List.of( "UTF-8" ) );
+        options.validateOptions();
+        assertEquals( StandardCharsets.UTF_8, options.encoding() );
+
+        options = new DocletOptions( reporter );
+        options.collect( AsciidocletOptions.ENCODING, List.of( "US-ASCII" ) );
+        options.validateOptions();
+        assertEquals( StandardCharsets.US_ASCII, options.encoding() );
+
+        options = new DocletOptions( reporter );
+        options.collect( AsciidocletOptions.ENCODING, List.of( "ISO-8859-1" ) );
+        options.validateOptions();
+        assertEquals( StandardCharsets.ISO_8859_1, options.encoding() );
     }
 
     @Test
-    public void testStylesheetFile() {
-        assertFalse(DocletOptions.NONE.stylesheet().isPresent());
-        assertEquals("foo.css", new DocletOptions(new String[][]{{STYLESHEET, "foo.css"}}).stylesheet().get().getName());
+    public void testOverview()
+    {
+        assertFalse( new DocletOptions( reporter ).overview().isPresent() );
+
+        DocletOptions options = new DocletOptions( reporter );
+        options.collect( AsciidocletOptions.OVERVIEW, List.of( "test.adoc" ) );
+        options.validateOptions();
+        assertEquals( "test.adoc", options.overview().get().getName() );
     }
 
     @Test
-    public void testDestDir() {
-        assertFalse(DocletOptions.NONE.destDir().isPresent());
-        assertEquals("target", new DocletOptions(new String[][]{{DESTDIR, "target"}}).destDir().get().getName());
+    public void testStylesheetFile()
+    {
+        assertFalse( new DocletOptions( reporter ).stylesheet().isPresent() );
+
+        DocletOptions options = new DocletOptions( reporter );
+        options.collect( AsciidocletOptions.STYLESHEET, List.of( "foo.css" ) );
+        options.validateOptions();
+        assertEquals( "foo.css", options.stylesheet().get().getName() );
     }
 
     @Test
-    public void testRequires() {
-        assertTrue(DocletOptions.NONE.requires().isEmpty());
-        assertThat(new DocletOptions(new String[][]{{REQUIRE, "foo"}, {REQUIRE, "bar"}}).requires(), contains("foo", "bar"));
-        assertThat(new DocletOptions(new String[][]{
-                {REQUIRE, "a , diagrams/awesome"},
-                {REQUIRE_LONG, "bar"},
-                {REQUIRE_LONG, "baz,noddy"}}).requires(),
-                contains("a", "diagrams/awesome", "bar", "baz", "noddy"));
+    public void testRequires()
+    {
+        assertTrue( new DocletOptions( reporter ).requires().isEmpty() );
+
+        DocletOptions options = new DocletOptions( reporter );
+        options.collect( AsciidocletOptions.REQUIRE, List.of( "foo", "bar" ) );
+        options.validateOptions();
+        assertEquals( options.requires(), List.of( "foo", "bar" ) );
+
+        options = new DocletOptions( reporter );
+        options.collect( AsciidocletOptions.REQUIRE, List.of( "a", "diagrams/awesome" ) );
+        options.collect( AsciidocletOptions.REQUIRE_LONG, List.of( "bar" ) );
+        options.collect( AsciidocletOptions.REQUIRE_LONG, List.of( "baz,noddy" ) );
+        options.validateOptions();
+        assertEquals( options.requires(), List.of( "a", "diagrams/awesome", "bar", "baz", "noddy" ) );
     }
 }

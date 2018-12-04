@@ -31,6 +31,8 @@ endif::[]
 
 ifdef::badges[]
 image:https://img.shields.io/badge/javadoc.io-{asciidoclet-version}-blue.svg[Javadoc, link={asciidoclet-javadoc-ref}]
+image:http://img.shields.io/travis/asciidoctor/asciidoclet/master.svg["Build Status", link="https://travis-ci.org/asciidoctor/asciidoclet"]
+image:https://img.shields.io/badge/javadoc.io-1.5.4-blue.svg[Javadoc, link=http://www.javadoc.io/doc/org.asciidoctor/asciidoclet/1.5.4]
 endif::[]
 
 {asciidoclet-src-ref}[Asciidoclet] is a Javadoc Doclet based on Asciidoctor that lets you write Javadoc in the AsciiDoc syntax.
@@ -120,10 +122,14 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-javadoc-plugin</artifactId>
-    <version>2.9</version>
+    <version>3.6.3</version>
     <configuration>
-        <source>1.7</source>
-        <doclet>org.asciidoctor.Asciidoclet</doclet>
+        <source>11</source>
+        <additionalJOptions>
+            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption> // <1>
+            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption> // <2>
+        </additionalJOptions>
+        <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
         <docletArtifact>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoclet</artifactId>
@@ -139,6 +145,10 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
     </configuration>
 </plugin>
 ----
+<1> For the asciidoclet to work, it needs access to the internals of the `javadoc` tool.
+This incantation makes that access possible on moduler JDKs.
+<2> Asciidoctor may generate HTML that produces doclint errors, which can cause the build to fail.
+To work around that, we have to disable these doclint categories.
 
 === Gradle
 
@@ -156,7 +166,7 @@ dependencies {
 
 javadoc {
     options.docletpath = configurations.asciidoclet.files.asType(List)
-    options.doclet = 'org.asciidoctor.Asciidoclet'
+    options.doclet = 'org.asciidoctor.asciidoclet.Asciidoclet'
     options.overview = "src/main/java/overview.adoc"
     options.addStringOption "-base-dir", "${projectDir}" // <1>
     options.addStringOption "-attribute", // <2>
@@ -179,7 +189,7 @@ Asciidoclet may be used via a doclet element in Ant's `javadoc` task:
 <javadoc destdir="target/javadoc"
          sourcepath="src"
          overview="src/overview.adoc">
-  <doclet name="org.asciidoctor.Asciidoclet" pathref="asciidoclet.classpath"> <!--1-->
+  <doclet name="org.asciidoctor.asciidoclet.Asciidoclet" pathref="asciidoclet.classpath"> <!--1-->
     <param name="--base-dir" value="${basedir}"/>
     <param name="--attribute" value="name=${ant.project.name}"/>
     <param name="--attribute" value="version=${version}"/>

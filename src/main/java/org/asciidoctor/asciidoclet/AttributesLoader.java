@@ -1,5 +1,5 @@
-/**
- * Copyright 2013-2015 John Ericksen
+/*
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,7 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
-import com.sun.javadoc.DocErrorReporter;
+import jdk.javadoc.doclet.Reporter;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
 import org.asciidoctor.OptionsBuilder;
@@ -26,17 +23,21 @@ import org.asciidoctor.SafeMode;
 
 import java.io.File;
 import java.io.Reader;
+import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import javax.tools.Diagnostic;
 
 class AttributesLoader {
     private final Asciidoctor asciidoctor;
     private final DocletOptions docletOptions;
-    private final DocErrorReporter errorReporter;
+    private final Reporter errorReporter;
 
-    AttributesLoader(Asciidoctor asciidoctor, DocletOptions docletOptions, DocErrorReporter errorReporter) {
+    AttributesLoader(Asciidoctor asciidoctor, DocletOptions docletOptions, Reporter errorReporter) {
         this.asciidoctor = asciidoctor;
         this.docletOptions = docletOptions;
         this.errorReporter = errorReporter;
@@ -65,15 +66,15 @@ class AttributesLoader {
     }
 
     private Map<String, Object> parseCmdLineAttributes(List<String> attributeArgs) {
-        return new Attributes(attributeArgs.toArray(new String[attributeArgs.size()])).map();
+        return new Attributes(attributeArgs.toArray( new String[0] )).map();
     }
 
-    private Map<String, Object> parseAttributesFile(Optional<File> attrsFile, Map<String, Object> cmdlineAttrs) {
+    private Map<String, Object> parseAttributesFile( Optional<File> attrsFile, Map<String, Object> cmdlineAttrs) {
         if (attrsFile.isPresent()) {
-            try {
-                return parseAttributes(Files.newReader(attrsFile.get(), docletOptions.encoding()), cmdlineAttrs);
+            try ( Reader reader = Files.newBufferedReader( attrsFile.get().toPath(), docletOptions.encoding() ) ) {
+                return parseAttributes( reader, cmdlineAttrs);
             } catch (Exception e) {
-                errorReporter.printWarning("Cannot read attributes file: " + e);
+                errorReporter.print( Diagnostic.Kind.WARNING, "Cannot read attributes file: " + e);
             }
         }
         return cmdlineAttrs;
@@ -88,18 +89,18 @@ class AttributesLoader {
         }
         Map<String, Object> parsed = asciidoctor.readDocumentStructure(in, options.get().map()).getHeader().getAttributes();
         // workaround for https://github.com/asciidoctor/asciidoctorj/pull/169
-        return new HashMap<String, Object>(parsed);
+        return new HashMap<>( parsed );
     }
 
     private Set<String> getUnsetAttributes(List<String> args) {
-        ImmutableSet.Builder<String> removed = ImmutableSet.builder();
+        Set<String> removed = new HashSet<>();
         for (String arg : args) {
             String key = getKey(arg);
             if (key.startsWith("!") || key.endsWith("!")) {
                 removed.add(normalizeAttrName(key));
             }
         }
-        return removed.build();
+        return Set.copyOf( removed );
     }
 
     private String getKey(String arg) {
