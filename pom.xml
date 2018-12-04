@@ -186,6 +186,9 @@
                     </properties>
                     <useDefaultExcludes>true</useDefaultExcludes>
                     <strictCheck>true</strictCheck>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
                 </configuration>
             </plugin>
             <plugin>
