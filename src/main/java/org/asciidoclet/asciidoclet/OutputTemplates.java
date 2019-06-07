@@ -19,7 +19,8 @@ import com.google.common.base.Optional;
 import com.google.common.io.ByteSink;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import com.sun.javadoc.DocErrorReporter;
+//import com.sun.javadoc.DocErrorReporter;
+import jdk.javadoc.doclet.Reporter;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +42,10 @@ public class OutputTemplates {
         this.templateDir = templateDir;
     }
 
-    static Optional<OutputTemplates> create(DocErrorReporter errorReporter) {
-        File dir = prepareTemplateDir(errorReporter);
-        return dir == null ? Optional.<OutputTemplates>absent() : Optional.of(new OutputTemplates(dir));
+    static Optional<OutputTemplates> create( Reporter errorReporter) {
+//        File dir = prepareTemplateDir(errorReporter);
+//        return dir == null ? Optional.<OutputTemplates>absent() : Optional.of(new OutputTemplates(dir));
+        return Optional.absent();
     }
 
     File templateDir() {
@@ -57,19 +59,19 @@ public class OutputTemplates {
         templateDir.delete();
     }
 
-    private static File prepareTemplateDir(DocErrorReporter errorReporter) {
-        // copy our template resources to the templateDir so Asciidoctor can use them.
-        File templateDir = Files.createTempDir();
-        try {
-            for (String templateName : TEMPLATE_NAMES) {
-                prepareTemplate(templateDir, templateName);
-            }
-            return templateDir;
-        } catch (IOException e) {
-            errorReporter.printWarning("Failed to prepare templates: " + e.getLocalizedMessage());
-            return null;
-        }
-    }
+//    private static File prepareTemplateDir(DocErrorReporter errorReporter) {
+//        // copy our template resources to the templateDir so Asciidoctor can use them.
+//        File templateDir = Files.createTempDir();
+//        try {
+//            for (String templateName : TEMPLATE_NAMES) {
+//                prepareTemplate(templateDir, templateName);
+//            }
+//            return templateDir;
+//        } catch (IOException e) {
+//            errorReporter.printWarning("Failed to prepare templates: " + e.getLocalizedMessage());
+//            return null;
+//        }
+//    }
 
     private static void prepareTemplate(File templateDir, String template) throws IOException {
         URL src = OutputTemplates.class.getClassLoader().getResource("templates/" + template);

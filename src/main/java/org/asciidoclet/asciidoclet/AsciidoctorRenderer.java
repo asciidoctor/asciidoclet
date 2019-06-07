@@ -17,10 +17,15 @@ package org.asciidoclet.asciidoclet;
 
 import com.google.common.base.Optional;
 import com.sun.javadoc.Doc;
-import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.Tag;
-import org.asciidoctor.*;
+import jdk.javadoc.doclet.Reporter;
+import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.Attributes;
+import org.asciidoctor.AttributesBuilder;
+import org.asciidoctor.Options;
+import org.asciidoctor.OptionsBuilder;
+import org.asciidoctor.SafeMode;
 
 import static org.asciidoctor.Asciidoctor.Factory.create;
 
@@ -29,7 +34,7 @@ import static org.asciidoctor.Asciidoctor.Factory.create;
  *
  * @author John Ericksen
  */
-public class AsciidoctorRenderer implements DocletRenderer {
+public class AsciidoctorRenderer {
 
     private static AttributesBuilder defaultAttributes() {
         return AttributesBuilder.attributes()
@@ -58,20 +63,20 @@ public class AsciidoctorRenderer implements DocletRenderer {
     private final Optional<OutputTemplates> templates;
     private final Options options;
 
-    public AsciidoctorRenderer(DocletOptions docletOptions, DocErrorReporter errorReporter) {
+    public AsciidoctorRenderer(DocletOptions docletOptions, Reporter errorReporter) {
         this(docletOptions, errorReporter, OutputTemplates.create(errorReporter), create(docletOptions.gemPath()));
     }
 
     /**
      * Constructor used directly for testing purposes only.
      */
-    protected AsciidoctorRenderer(DocletOptions docletOptions, DocErrorReporter errorReporter, Optional<OutputTemplates> templates, Asciidoctor asciidoctor) {
+    protected AsciidoctorRenderer(DocletOptions docletOptions, Reporter errorReporter, Optional<OutputTemplates> templates, Asciidoctor asciidoctor) {
         this.asciidoctor = asciidoctor;
         this.templates = templates;
         this.options = buildOptions(docletOptions, errorReporter);
     }
 
-    private Options buildOptions(DocletOptions docletOptions, DocErrorReporter errorReporter) {
+    private Options buildOptions(DocletOptions docletOptions, Reporter errorReporter) {
         OptionsBuilder opts = defaultOptions();
         if (docletOptions.baseDir().isPresent()) {
             opts.baseDir(docletOptions.baseDir().get());
@@ -88,7 +93,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
         return opts.get();
     }
 
-    private Attributes buildAttributes(DocletOptions docletOptions, DocErrorReporter errorReporter) {
+    private Attributes buildAttributes(DocletOptions docletOptions, Reporter errorReporter) {
         return defaultAttributes()
                 .attributes(new AttributesLoader(asciidoctor, docletOptions, errorReporter).load())
                 .get();
@@ -99,7 +104,6 @@ public class AsciidoctorRenderer implements DocletRenderer {
      *
      * @param doc input
      */
-    @Override
     public void renderDoc(Doc doc) {
         // hide text that looks like tags (such as annotations in source code) from Javadoc
         doc.setRawCommentText(doc.getRawCommentText().replaceAll("@([A-Z])", "{@literal @}$1"));
@@ -152,7 +156,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
      * @param input AsciiDoc source
      * @return content rendered by Asciidoctor
      */
-    private String render(String input, boolean inline) {
+    public String render(String input, boolean inline) {
         if (input.trim().isEmpty()) {
             return "";
         }

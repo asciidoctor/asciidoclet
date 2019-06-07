@@ -15,10 +15,9 @@
  */
 package org.asciidoclet.asciidoclet;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
-import com.sun.javadoc.DocErrorReporter;
+import jdk.javadoc.doclet.Reporter;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
 import org.asciidoctor.OptionsBuilder;
@@ -29,17 +28,18 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 class AttributesLoader {
     private final Asciidoctor asciidoctor;
     private final DocletOptions docletOptions;
-    private final DocErrorReporter errorReporter;
+//    private final DocErrorReporter errorReporter;
 
-    AttributesLoader(Asciidoctor asciidoctor, DocletOptions docletOptions, DocErrorReporter errorReporter) {
+    AttributesLoader(Asciidoctor asciidoctor, DocletOptions docletOptions, Reporter errorReporter) {
         this.asciidoctor = asciidoctor;
         this.docletOptions = docletOptions;
-        this.errorReporter = errorReporter;
+//        this.errorReporter = errorReporter;
     }
 
     Map<String, Object> load() {
@@ -68,12 +68,12 @@ class AttributesLoader {
         return new Attributes(attributeArgs.toArray(new String[attributeArgs.size()])).map();
     }
 
-    private Map<String, Object> parseAttributesFile(Optional<File> attrsFile, Map<String, Object> cmdlineAttrs) {
+    private Map<String, Object> parseAttributesFile( Optional<File> attrsFile, Map<String, Object> cmdlineAttrs) {
         if (attrsFile.isPresent()) {
             try {
                 return parseAttributes(Files.newReader(attrsFile.get(), docletOptions.encoding()), cmdlineAttrs);
             } catch (Exception e) {
-                errorReporter.printWarning("Cannot read attributes file: " + e);
+//                errorReporter.printWarning("Cannot read attributes file: " + e);
             }
         }
         return cmdlineAttrs;
@@ -88,7 +88,7 @@ class AttributesLoader {
         }
         Map<String, Object> parsed = asciidoctor.readDocumentStructure(in, options.get().map()).getHeader().getAttributes();
         // workaround for https://github.com/asciidoctor/asciidoctorj/pull/169
-        return new HashMap<String, Object>(parsed);
+        return new HashMap<>( parsed );
     }
 
     private Set<String> getUnsetAttributes(List<String> args) {

@@ -15,15 +15,21 @@
  */
 package org.asciidoclet;
 
-import com.sun.javadoc.DocErrorReporter;
-import com.sun.javadoc.Doclet;
-import com.sun.javadoc.LanguageVersion;
-import com.sun.javadoc.RootDoc;
+import jdk.javadoc.doclet.Doclet;
+import jdk.javadoc.doclet.DocletEnvironment;
+import jdk.javadoc.doclet.Reporter;
+import jdk.javadoc.doclet.StandardDoclet;
+import org.asciidoclet.asciidoclet.AsciidocletOptions;
+import org.asciidoclet.asciidoclet.AsciidoctorFilteredEnvironment;
 import org.asciidoclet.asciidoclet.AsciidoctorRenderer;
-import org.asciidoclet.asciidoclet.DocletIterator;
 import org.asciidoclet.asciidoclet.DocletOptions;
-import org.asciidoclet.asciidoclet.StandardAdapter;
 import org.asciidoclet.asciidoclet.Stylesheets;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+import javax.lang.model.SourceVersion;
 
 /**
  * = Asciidoclet
@@ -171,116 +177,60 @@ import org.asciidoclet.asciidoclet.Stylesheets;
  * @since 0.1.0
  * @serial (or @serialField or @serialData)
  */
-public class Asciidoclet extends Doclet {
+public class Asciidoclet implements Doclet
+{
 
-    private final RootDoc rootDoc;
-    private final DocletOptions docletOptions;
-    private final DocletIterator iterator;
-    private final Stylesheets stylesheets;
+    private StandardDoclet standardDoclet;
+    private DocletOptions docletOptions;
+    private Stylesheets stylesheets;
+    private Locale locale;
+    private Reporter reporter;
 
-    public Asciidoclet(RootDoc rootDoc) {
-        this.rootDoc = rootDoc;
-        this.docletOptions = new DocletOptions(rootDoc);
-        this.iterator = new DocletIterator(docletOptions);
-        this.stylesheets = new Stylesheets(docletOptions, rootDoc);
+    public Asciidoclet() {
+        standardDoclet = new StandardDoclet();
     }
 
-    // test use
-    Asciidoclet(RootDoc rootDoc, DocletIterator iterator, Stylesheets stylesheets) {
-        this.rootDoc = rootDoc;
-        this.docletOptions = new DocletOptions(rootDoc);
-        this.iterator = iterator;
-        this.stylesheets = stylesheets;
+    @Override
+    public void init( Locale locale, Reporter reporter )
+    {
+        this.locale = locale;
+        this.reporter = reporter;
+        standardDoclet.init( locale, reporter );
+        this.docletOptions = new DocletOptions( reporter );
+        this.stylesheets = new Stylesheets(docletOptions, reporter);
     }
 
-    /**
-     * .Example usage
-     * [source,java]
-     * exampleDeprecated("do not use");
-     *
-     * @deprecated for example purposes
-     * @exception Exception example
-     * @throws RuntimeException example
-     * @serialData something else
-     * @link Asciidoclet
-     */
-    public static void exampleDeprecated(String field) throws Exception {
-        //noop
+    @Override
+    public String getName()
+    {
+        return "Asciidoclet";
     }
 
-    /**
-     * Sets the language version to Java 5.
-     *
-     * _Javadoc spec requirement._
-     *
-     * @return language version number
-     */
-    @SuppressWarnings("UnusedDeclaration")
-    public static LanguageVersion languageVersion() {
-        return LanguageVersion.JAVA_1_5;
+    @Override
+    public Set<? extends Option> getSupportedOptions()
+    {
+        Set<Option> options = new HashSet<>( standardDoclet.getSupportedOptions() );
+        Arrays.stream( AsciidocletOptions.values() ).map( o -> new OptionProcessor( o, docletOptions ) ).forEach( options::add );
+        return options;
     }
 
-    /**
-     * Sets the option length to the standard Javadoc option length.
-     *
-     * _Javadoc spec requirement._
-     *
-     * @param option input option
-     * @return length of required parameters
-     */
-    @SuppressWarnings("UnusedDeclaration")
-    public static int optionLength(String option) {
-        return optionLength(option, new StandardAdapter());
+    @Override
+    public SourceVersion getSupportedSourceVersion()
+    {
+        return SourceVersion.RELEASE_5;
     }
 
-    /**
-     * The starting point of Javadoc render.
-     *
-     * _Javadoc spec requirement._
-     *
-     * @param rootDoc input class documents
-     * @return success
-     */
-    @SuppressWarnings("UnusedDeclaration")
-    public static boolean start(RootDoc rootDoc) {
-        return new Asciidoclet(rootDoc).start(new StandardAdapter());
-    }
-
-    /**
-     * Processes the input options by delegating to the standard handler.
-     *
-     * _Javadoc spec requirement._
-     *
-     * @param options input option array
-     * @param errorReporter error handling
-     * @return success
-     */
-    @SuppressWarnings("UnusedDeclaration")
-    public static boolean validOptions(String[][] options, DocErrorReporter errorReporter) {
-        return validOptions(options, errorReporter, new StandardAdapter());
-    }
-
-    static int optionLength(String option, StandardAdapter standardDoclet) {
-        return DocletOptions.optionLength(option, standardDoclet);
-    }
-
-    static boolean validOptions(String[][] options, DocErrorReporter errorReporter, StandardAdapter standardDoclet) {
-        return DocletOptions.validOptions(options, errorReporter, standardDoclet);
-    }
-
-    boolean start(StandardAdapter standardDoclet) {
-        return run(standardDoclet)
-                && postProcess();
-    }
-
-    private boolean run(StandardAdapter standardDoclet) {
-        AsciidoctorRenderer renderer = new AsciidoctorRenderer(docletOptions, rootDoc);
-        try {
-            return iterator.render(rootDoc, renderer) &&
-                    standardDoclet.start(rootDoc);
-        } finally {
-            renderer.cleanup();
+    @Override
+    public boolean run( DocletEnvironment environment )
+    {
+        docletOptions.validateOptions();
+        AsciidoctorRenderer renderer = new AsciidoctorRenderer( docletOptions, reporter );
+        boolean result;
+        try ( AsciidoctorFilteredEnvironment env = new AsciidoctorFilteredEnvironment( environment, reporter, renderer ) )
+        {
+            result = standardDoclet.run( env );
         }
+        return result && postProcess();
     }
 
     private boolean postProcess() {

@@ -16,11 +16,12 @@
 package org.asciidoclet.asciidoclet;
 
 import com.google.common.io.Resources;
-import com.sun.javadoc.DocErrorReporter;
+import jdk.javadoc.doclet.Reporter;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import javax.tools.Diagnostic;
 
 /**
  * Responsible for copying the appropriate stylesheet to the javadoc
@@ -34,17 +35,17 @@ public class Stylesheets {
     static final String OUTPUT_STYLESHEET = "stylesheet.css";
 
     private final DocletOptions docletOptions;
-    private final DocErrorReporter errorReporter;
+    private final Reporter errorReporter;
 
-    public Stylesheets(DocletOptions options, DocErrorReporter errorReporter) {
+    public Stylesheets(DocletOptions options, Reporter errorReporter) {
         this.docletOptions = options;
         this.errorReporter = errorReporter;
     }
 
     public boolean copy() {
-        if (!docletOptions.destDir().isPresent()) {
+        if ( docletOptions.destDir().isEmpty() ) {
             // standard doclet must have checked this by the time we are called
-            errorReporter.printError("Destination directory not specified, cannot copy stylesheet");
+            errorReporter.print( Diagnostic.Kind.ERROR, "Destination directory not specified, cannot copy stylesheet");
             return false;
         }
         String stylesheet = selectStylesheet(System.getProperty("java.version"));
@@ -54,7 +55,7 @@ public class Stylesheets {
             Resources.copy(Resources.getResource(CODERAY_STYLESHEET), new FileOutputStream(new File(destDir, CODERAY_STYLESHEET)));
             return true;
         } catch (IOException e) {
-            errorReporter.printError(e.getLocalizedMessage());
+            errorReporter.print( Diagnostic.Kind.ERROR, e.getLocalizedMessage());
             return false;
         }
     }
@@ -69,7 +70,7 @@ public class Stylesheets {
         if (javaVersion.matches("^(9|10)(\\.)?.*")) {
             return JAVA9_STYLESHEET;
         }
-        errorReporter.printWarning("Unrecognized Java version " + javaVersion + ", using Java 9 stylesheet");
+        errorReporter.print( Diagnostic.Kind.WARNING, "Unrecognized Java version " + javaVersion + ", using Java 9 stylesheet");
         // TODO: review this when Java 11 becomes available and/or make more configurable!
         return JAVA9_STYLESHEET;
     }
