@@ -16,7 +16,6 @@
 package org.asciidoclet.asciidoclet;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
 import jdk.javadoc.doclet.Reporter;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
@@ -25,21 +24,23 @@ import org.asciidoctor.SafeMode;
 
 import java.io.File;
 import java.io.Reader;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import javax.tools.Diagnostic;
 
 class AttributesLoader {
     private final Asciidoctor asciidoctor;
     private final DocletOptions docletOptions;
-//    private final DocErrorReporter errorReporter;
+    private final Reporter errorReporter;
 
     AttributesLoader(Asciidoctor asciidoctor, DocletOptions docletOptions, Reporter errorReporter) {
         this.asciidoctor = asciidoctor;
         this.docletOptions = docletOptions;
-//        this.errorReporter = errorReporter;
+        this.errorReporter = errorReporter;
     }
 
     Map<String, Object> load() {
@@ -65,15 +66,15 @@ class AttributesLoader {
     }
 
     private Map<String, Object> parseCmdLineAttributes(List<String> attributeArgs) {
-        return new Attributes(attributeArgs.toArray(new String[attributeArgs.size()])).map();
+        return new Attributes(attributeArgs.toArray( new String[0] )).map();
     }
 
     private Map<String, Object> parseAttributesFile( Optional<File> attrsFile, Map<String, Object> cmdlineAttrs) {
         if (attrsFile.isPresent()) {
-            try {
-                return parseAttributes(Files.newReader(attrsFile.get(), docletOptions.encoding()), cmdlineAttrs);
+            try ( Reader reader = Files.newBufferedReader( attrsFile.get().toPath(), docletOptions.encoding() ) ) {
+                return parseAttributes( reader, cmdlineAttrs);
             } catch (Exception e) {
-//                errorReporter.printWarning("Cannot read attributes file: " + e);
+                errorReporter.print( Diagnostic.Kind.WARNING, "Cannot read attributes file: " + e);
             }
         }
         return cmdlineAttrs;
