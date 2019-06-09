@@ -15,12 +15,14 @@
  */
 package org.asciidoclet.asciidoclet;
 
-import com.google.common.io.Resources;
 import jdk.javadoc.doclet.Reporter;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import javax.tools.Diagnostic;
 
 /**
@@ -50,14 +52,32 @@ public class Stylesheets {
         }
         String stylesheet = selectStylesheet(System.getProperty("java.version"));
         File destDir = docletOptions.destDir().get();
-        try {
-            Resources.copy(Resources.getResource(stylesheet), new FileOutputStream(new File(destDir, OUTPUT_STYLESHEET)));
-            Resources.copy(Resources.getResource(CODERAY_STYLESHEET), new FileOutputStream(new File(destDir, CODERAY_STYLESHEET)));
+        try ( InputStream stylesheetIn = getResource( stylesheet );
+              InputStream coderayStylesheetIn = getResource( CODERAY_STYLESHEET );
+              OutputStream stylesheetOut = new FileOutputStream( new File(destDir, OUTPUT_STYLESHEET ) );
+              OutputStream coderayStylesheetOut = new FileOutputStream(new File(destDir, CODERAY_STYLESHEET)) ) {
+            stylesheetIn.transferTo( stylesheetOut );
+            coderayStylesheetIn.transferTo( coderayStylesheetOut );
             return true;
         } catch (IOException e) {
             errorReporter.print( Diagnostic.Kind.ERROR, e.getLocalizedMessage());
             return false;
         }
+    }
+
+    private InputStream getResource( String name ) throws IOException
+    {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if ( loader == null )
+        {
+            loader = Stylesheets.class.getClassLoader();
+        }
+        URL resource = loader.getResource( name );
+        if ( resource == null )
+        {
+            throw new IllegalArgumentException( "No such resource: " + name );
+        }
+        return resource.openStream();
     }
 
     String selectStylesheet(String javaVersion) {

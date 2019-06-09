@@ -56,4 +56,9 @@ class StubReporter implements Reporter
             fail( "Expected to not have any print calls, but got the following: " + callsString );
         }
     }
+
+    List<Object> pullCall()
+    {
+        return calls.remove( 0 );
+    }
 }
