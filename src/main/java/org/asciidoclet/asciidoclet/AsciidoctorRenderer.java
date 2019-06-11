@@ -15,7 +15,6 @@
  */
 package org.asciidoclet.asciidoclet;
 
-import com.google.common.base.Optional;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.Tag;
@@ -26,6 +25,9 @@ import org.asciidoctor.AttributesBuilder;
 import org.asciidoctor.Options;
 import org.asciidoctor.OptionsBuilder;
 import org.asciidoctor.SafeMode;
+
+import java.io.IOException;
+import java.util.Optional;
 
 import static org.asciidoctor.Asciidoctor.Factory.create;
 
@@ -63,8 +65,8 @@ public class AsciidoctorRenderer {
     private final Optional<OutputTemplates> templates;
     private final Options options;
 
-    public AsciidoctorRenderer(DocletOptions docletOptions, Reporter errorReporter) {
-        this(docletOptions, errorReporter, OutputTemplates.create(errorReporter), create(docletOptions.gemPath()));
+    public AsciidoctorRenderer(DocletOptions docletOptions, Reporter reporter) {
+        this(docletOptions, reporter, OutputTemplates.create( reporter ), create( docletOptions.gemPath() ) );
     }
 
     /**
@@ -82,7 +84,7 @@ public class AsciidoctorRenderer {
             opts.baseDir(docletOptions.baseDir().get());
         }
         if (templates.isPresent()) {
-            opts.templateDir(templates.get().templateDir());
+            opts.templateDir(templates.get().templateDir().toFile());
         }
         opts.attributes(buildAttributes(docletOptions, errorReporter));
         if (docletOptions.requires().size() > 0) {
@@ -118,7 +120,8 @@ public class AsciidoctorRenderer {
         doc.setRawCommentText(buffer.toString());
     }
 
-    public void cleanup() {
+    public void cleanup() throws IOException
+    {
         if (templates.isPresent()) {
             templates.get().delete();
         }

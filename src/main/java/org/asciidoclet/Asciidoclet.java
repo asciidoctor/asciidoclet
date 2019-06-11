@@ -25,6 +25,8 @@ import org.asciidoclet.asciidoclet.AsciidoctorRenderer;
 import org.asciidoclet.asciidoclet.DocletOptions;
 import org.asciidoclet.asciidoclet.Stylesheets;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
@@ -229,6 +231,10 @@ public class Asciidoclet implements Doclet
         try ( AsciidoctorFilteredEnvironment env = new AsciidoctorFilteredEnvironment( environment, reporter, renderer ) )
         {
             result = standardDoclet.run( env );
+        }
+        catch ( IOException e )
+        {
+            throw new UncheckedIOException( e );
         }
         return result && postProcess();
     }

@@ -86,7 +86,7 @@ public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements Doclet
     }
 
     @Override
-    public void close()
+    public void close() throws IOException
     {
         renderer.cleanup();
     }
