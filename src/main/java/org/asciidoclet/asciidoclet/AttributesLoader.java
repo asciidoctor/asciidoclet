@@ -15,7 +15,6 @@
  */
 package org.asciidoclet.asciidoclet;
 
-import com.google.common.collect.ImmutableSet;
 import jdk.javadoc.doclet.Reporter;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
@@ -26,6 +25,7 @@ import java.io.File;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -93,14 +93,14 @@ class AttributesLoader {
     }
 
     private Set<String> getUnsetAttributes(List<String> args) {
-        ImmutableSet.Builder<String> removed = ImmutableSet.builder();
+        Set<String> removed = new HashSet<>();
         for (String arg : args) {
             String key = getKey(arg);
             if (key.startsWith("!") || key.endsWith("!")) {
                 removed.add(normalizeAttrName(key));
             }
         }
-        return removed.build();
+        return Set.copyOf( removed );
     }
 
     private String getKey(String arg) {

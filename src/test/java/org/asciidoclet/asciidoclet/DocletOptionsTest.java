@@ -15,12 +15,12 @@
  */
 package org.asciidoclet.asciidoclet;
 
-import com.google.common.base.Charsets;
 import jdk.javadoc.doclet.Reporter;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -57,17 +57,17 @@ public class DocletOptionsTest
         DocletOptions options = new DocletOptions( reporter );
         options.collect( AsciidocletOptions.ENCODING, List.of( "UTF-8" ) );
         options.validateOptions();
-        assertEquals( Charsets.UTF_8, options.encoding() );
+        assertEquals( StandardCharsets.UTF_8, options.encoding() );
 
         options = new DocletOptions( reporter );
         options.collect( AsciidocletOptions.ENCODING, List.of( "US-ASCII" ) );
         options.validateOptions();
-        assertEquals( Charsets.US_ASCII, options.encoding() );
+        assertEquals( StandardCharsets.US_ASCII, options.encoding() );
 
         options = new DocletOptions( reporter );
         options.collect( AsciidocletOptions.ENCODING, List.of( "ISO-8859-1" ) );
         options.validateOptions();
-        assertEquals( Charsets.ISO_8859_1, options.encoding() );
+        assertEquals( StandardCharsets.ISO_8859_1, options.encoding() );
     }
 
     @Test
