@@ -161,10 +161,10 @@ public class AsciidoctorRenderer {
             return "";
         }
         options.setDocType(inline ? INLINE_DOCTYPE : null);
-        return asciidoctor.render(cleanJavadocInput(input), options);
+        return asciidoctor.render( cleanJavadocInput( input ), options );
     }
 
-    protected static String cleanJavadocInput(String input) {
+    private static String cleanJavadocInput(String input) {
         return input.trim()
             .replaceAll("\n ", "\n") // Newline space to accommodate javadoc newlines.
             .replaceAll("\\{at}", "&#64;") // {at} is translated into @.

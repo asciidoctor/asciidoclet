@@ -15,12 +15,14 @@
  */
 package org.asciidoclet;
 
+import org.asciidoclet.asciidoclet.StubReporter;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-//import static org.mockito.Mockito.*;
+import java.util.Locale;
+import javax.lang.model.SourceVersion;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author John Ericksen
@@ -29,20 +31,24 @@ public class AsciidocletTest {
 //    private StandardAdapter mockAdapter;
 //    private DocletIterator mockIterator;
 //    private Stylesheets mockStylesheets;
-//
-//    @Before
-//    public void setup() {
+    private Asciidoclet asciidoclet;
+    private StubReporter reporter;
+
+    @Before
+    public void setup() {
+        asciidoclet = new Asciidoclet();
+        asciidoclet.init( Locale.getDefault(), reporter );
 //        mockAdapter = mock(StandardAdapter.class);
 //        mockIterator = mock(DocletIterator.class);
 //        mockStylesheets = mock(Stylesheets.class);
 //        when(mockIterator.render(any(RootDoc.class), any( DocletRenderer.class))).thenReturn(true);
 //        when(mockStylesheets.copy()).thenReturn(true);
-//    }
-//
-//    @Test
-//    public void testVersion() {
-//        assertEquals(LanguageVersion.JAVA_1_5, Asciidoclet.languageVersion());
-//    }
+    }
+
+    @Test
+    public void testVersion() {
+        assertEquals( SourceVersion.RELEASE_11, asciidoclet.getSupportedSourceVersion());
+    }
 //
 //    @Test
 //    public void testIncludeBaseDirOptionLength() {

@@ -124,6 +124,8 @@
                         <arg>jdk.compiler/com.sun.tools.javac.parser=asciidoclet</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.compiler/com.sun.tools.javac.tree=asciidoclet</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.compiler/com.sun.tools.javac.model=asciidoclet</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>

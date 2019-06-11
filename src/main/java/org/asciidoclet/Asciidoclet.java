@@ -217,7 +217,7 @@ public class Asciidoclet implements Doclet
     @Override
     public SourceVersion getSupportedSourceVersion()
     {
-        return SourceVersion.RELEASE_5;
+        return SourceVersion.RELEASE_11;
     }
 
     @Override

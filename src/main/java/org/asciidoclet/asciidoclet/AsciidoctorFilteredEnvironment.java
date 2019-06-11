@@ -28,13 +28,24 @@ import com.sun.source.util.DocTreeFactory;
 import com.sun.source.util.DocTreePath;
 import com.sun.source.util.DocTrees;
 import com.sun.source.util.TreePath;
+import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.parser.Tokens;
 import com.sun.tools.javac.tree.JCTree;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
 import jdk.javadoc.internal.tool.DocEnvImpl;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+import java.lang.reflect.Field;
+import java.net.URI;
+import java.nio.charset.Charset;
 import java.text.BreakIterator;
 import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
@@ -48,6 +59,9 @@ import javax.lang.model.type.ErrorType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
+import javax.tools.JavaFileManager;
+
+import static javax.tools.StandardLocation.SOURCE_PATH;
 
 public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements DocletEnvironment, AutoCloseable
 {
@@ -80,15 +94,33 @@ public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements Doclet
     private class AsciiDocTrees extends DocTrees
     {
         private final DocTrees docTrees;
+        private final Field elementsField;
+        private final Field fileManagerField;
 
         AsciiDocTrees( DocTrees docTrees )
         {
             this.docTrees = docTrees;
+            try
+            {
+                this.elementsField = docTrees.getClass().getDeclaredField( "elements" );
+                this.elementsField.setAccessible( true );
+                this.fileManagerField = docTrees.getClass().getDeclaredField( "fileManager" );
+                this.fileManagerField.setAccessible( true );
+            }
+            catch ( Exception e )
+            {
+                throw new RuntimeException( e );
+            }
         }
 
         public BreakIterator getBreakIterator()
         {
             return docTrees.getBreakIterator();
+        }
+
+        public String getDocComment( TreePath path )
+        {
+            return renderer.render( docTrees.getDocComment( path ), false );
         }
 
         public DocCommentTree getDocCommentTree( TreePath path )
@@ -111,17 +143,58 @@ public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements Doclet
 
         public DocCommentTree getDocCommentTree( Element e )
         {
-            return docTrees.getDocCommentTree( e );
+            TreePath path = getPath( e );
+            if ( path == null )
+            {
+                return null;
+            }
+            return getDocCommentTree( path );
         }
 
         public DocCommentTree getDocCommentTree( FileObject fileObject )
         {
+            // Empty names are used for built-in headers and footers, which need no asciidoctor processing anyway.
+            if ( !fileObject.getName().isEmpty() )
+            {
+                return docTrees.getDocCommentTree( new AsciidocFileView( fileObject ) );
+            }
             return docTrees.getDocCommentTree( fileObject );
         }
 
         public DocCommentTree getDocCommentTree( Element e, String relativePath ) throws IOException
         {
-            return docTrees.getDocCommentTree( e, relativePath );
+            PackageElement pkg = getElements().getPackageOf( e );
+            JavaFileManager fileManager = getFileManager();
+            FileObject input = fileManager.getFileForInput( SOURCE_PATH, pkg.getQualifiedName().toString(), relativePath );
+            if ( input == null )
+            {
+                throw new FileNotFoundException( relativePath );
+            }
+            return getDocCommentTree( input );
+        }
+
+        private JavacElements getElements()
+        {
+            try
+            {
+                return (JavacElements) elementsField.get( docTrees );
+            }
+            catch ( Exception e )
+            {
+                throw new RuntimeException( e );
+            }
+        }
+
+        private JavaFileManager getFileManager()
+        {
+            try
+            {
+                return (JavaFileManager) fileManagerField.get( docTrees );
+            }
+            catch ( Exception e )
+            {
+                throw new RuntimeException( e );
+            }
         }
 
         public DocTreePath getDocTreePath( FileObject fileObject, PackageElement packageElement )
@@ -219,11 +292,6 @@ public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements Doclet
             return docTrees.getScope( path );
         }
 
-        public String getDocComment( TreePath path )
-        {
-            return docTrees.getDocComment( path );
-        }
-
         public boolean isAccessible( Scope scope, TypeElement type )
         {
             return docTrees.isAccessible( scope, type );
@@ -284,6 +352,70 @@ public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements Doclet
         public boolean isDeprecated()
         {
             return comment.isDeprecated();
+        }
+    }
+
+    private class AsciidocFileView implements FileObject
+    {
+        private final FileObject fileObject;
+
+        AsciidocFileView( FileObject fileObject )
+        {
+            this.fileObject = fileObject;
+        }
+
+        @Override
+        public URI toUri()
+        {
+            return fileObject.toUri();
+        }
+
+        @Override
+        public String getName()
+        {
+            return fileObject.getName();
+        }
+
+        @Override
+        public InputStream openInputStream() throws IOException
+        {
+            return new ByteArrayInputStream( getCharContent( true ).getBytes( Charset.defaultCharset() ) );
+        }
+
+        @Override
+        public OutputStream openOutputStream() throws IOException
+        {
+            return fileObject.openOutputStream();
+        }
+
+        @Override
+        public Reader openReader( boolean ignoreEncodingErrors ) throws IOException
+        {
+            return new StringReader( getCharContent( ignoreEncodingErrors ) );
+        }
+
+        @Override
+        public String getCharContent( boolean ignoreEncodingErrors ) throws IOException
+        {
+            return renderer.render( fileObject.getCharContent( ignoreEncodingErrors ).toString(), false );
+        }
+
+        @Override
+        public Writer openWriter() throws IOException
+        {
+            return fileObject.openWriter();
+        }
+
+        @Override
+        public long getLastModified()
+        {
+            return fileObject.getLastModified();
+        }
+
+        @Override
+        public boolean delete()
+        {
+            return fileObject.delete();
         }
     }
 }

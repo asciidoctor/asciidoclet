@@ -26,7 +26,7 @@ import javax.tools.Diagnostic;
 
 import static org.junit.Assert.fail;
 
-class StubReporter implements Reporter
+public class StubReporter implements Reporter
 {
     private List<List<Object>> calls = new ArrayList<>();
 
