@@ -61,7 +61,7 @@ public enum AsciidocletOptions implements Doclet.Option
     @Override
     public List<String> getNames()
     {
-        return List.of( name );
+        return List.of( "--" + name );
     }
 
     @Override

@@ -17,7 +17,14 @@ package org.asciidoclet;
 
 import org.junit.Test;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -32,6 +39,8 @@ public class AsciidocletIntegrationTest
     {
         Method execute = Class.forName( "jdk.javadoc.internal.tool.Main" ).getMethod( "execute", String[].class );
         execute.setAccessible( true );
+        String outputDirectory = "target/javadoc-output";
+        deleteRecursively( outputDirectory );
         execute.invoke( null, (Object) new String[] {
                 "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet",
                 "--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet",
@@ -42,9 +51,34 @@ public class AsciidocletIntegrationTest
                 "--class-path", classpath(),
                 "-doclet", "org.asciidoclet.Asciidoclet",
                 "--source-path", "src/main/java",
-                "-d", "target/javadoc-output",
+                "-d", outputDirectory,
+                "--base-dir", ".",
                 "org.asciidoclet",
         } );
+    }
+
+    private void deleteRecursively( String outputDirectory ) throws IOException
+    {
+        Path outputPath = Paths.get( outputDirectory );
+        if ( Files.exists( outputPath ) )
+        {
+            Files.walkFileTree( outputPath, new SimpleFileVisitor<>()
+            {
+                @Override
+                public FileVisitResult visitFile( Path file, BasicFileAttributes attrs ) throws IOException
+                {
+                    Files.deleteIfExists( file );
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory( Path dir, IOException exc ) throws IOException
+                {
+                    Files.deleteIfExists( dir );
+                    return FileVisitResult.CONTINUE;
+                }
+            } );
+        }
     }
 
     private String classpath()
