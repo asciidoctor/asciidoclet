@@ -43,7 +43,7 @@ class OutputTemplates
     static Optional<OutputTemplates> create( Reporter errorReporter )
     {
         Path dir = prepareTemplateDir( errorReporter );
-        return dir == null ? Optional.empty() : Optional.of( new OutputTemplates( dir ) );
+        return Optional.ofNullable( dir ).map( OutputTemplates::new );
     }
 
     Path templateDir()

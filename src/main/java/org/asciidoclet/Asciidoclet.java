@@ -185,7 +185,6 @@ public class Asciidoclet implements Doclet
     private StandardDoclet standardDoclet;
     private DocletOptions docletOptions;
     private Stylesheets stylesheets;
-    private Locale locale;
     private Reporter reporter;
 
     public Asciidoclet() {
@@ -195,7 +194,6 @@ public class Asciidoclet implements Doclet
     @Override
     public void init( Locale locale, Reporter reporter )
     {
-        this.locale = locale;
         this.reporter = reporter;
         standardDoclet.init( locale, reporter );
         this.docletOptions = new DocletOptions( reporter );

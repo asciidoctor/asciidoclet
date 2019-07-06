@@ -120,7 +120,7 @@ public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements Doclet
 
         public String getDocComment( TreePath path )
         {
-            return renderer.render( docTrees.getDocComment( path ), false );
+            return renderer.renderDoc( docTrees.getDocComment( path ) );
         }
 
         public DocCommentTree getDocCommentTree( TreePath path )
@@ -136,7 +136,7 @@ public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements Doclet
         private Tokens.Comment convertToAsciidoctor( Tokens.Comment comment )
         {
             String javadoc = comment.getText();
-            String asciidoc = renderer.render( javadoc, false );
+            String asciidoc = renderer.renderDoc( javadoc );
             AsciidocComment result = new AsciidocComment( asciidoc, comment );;
             return result;
         }
@@ -397,7 +397,7 @@ public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements Doclet
         @Override
         public String getCharContent( boolean ignoreEncodingErrors ) throws IOException
         {
-            return renderer.render( fileObject.getCharContent( ignoreEncodingErrors ).toString(), false );
+            return renderer.renderDoc( fileObject.getCharContent( ignoreEncodingErrors ).toString() );
         }
 
         @Override
