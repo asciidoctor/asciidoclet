@@ -37,7 +37,7 @@ import static org.asciidoctor.Asciidoctor.Factory.create;
  */
 public class AsciidoctorRenderer {
 
-    public static final String ASCIIDOC_MARKER = "<!--ASCIIDOC-->";
+    public static final String MARKER = "<!--ASCIIDOC-->";
 
     private static AttributesBuilder defaultAttributes() {
         return AttributesBuilder.attributes()
@@ -108,13 +108,12 @@ public class AsciidoctorRenderer {
      */
     public String renderDoc(String doc)
     {
-        if (doc.startsWith( ASCIIDOC_MARKER ))
+        if (doc.startsWith( MARKER ))
         {
             return doc;
         }
-        new Exception( "### rendering :: " + doc).printStackTrace();
         JavadocParser javadocParser = new JavadocParser( doc );
-        StringBuilder buffer = new StringBuilder( ASCIIDOC_MARKER );
+        StringBuilder buffer = new StringBuilder( MARKER );
         buffer.append( render( javadocParser.getCommentBody(), false));
         buffer.append( System.lineSeparator() );
         for ( JavadocParser.Tag tag : javadocParser.tags() )
@@ -122,9 +121,7 @@ public class AsciidoctorRenderer {
             renderTag(tag, buffer);
             buffer.append( System.lineSeparator() );
         }
-        String output = buffer.toString();
-        System.err.println("### output :: " + output);
-        return output;
+        return buffer.toString();
     }
 
     public void cleanup() throws IOException
@@ -141,7 +138,6 @@ public class AsciidoctorRenderer {
      * @param buffer output buffer
      */
     private void renderTag( JavadocParser.Tag tag, StringBuilder buffer) {
-        buffer.append( System.lineSeparator() );
         buffer.append( tag.tagName ).append( ' ' );
 
         // Special handling for @param <T> tags

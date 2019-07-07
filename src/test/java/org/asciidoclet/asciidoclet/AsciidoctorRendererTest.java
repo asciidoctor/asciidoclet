@@ -18,6 +18,7 @@ package org.asciidoclet.asciidoclet;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.asciidoclet.asciidoclet.AsciidoctorRenderer.MARKER;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -36,13 +37,13 @@ public class AsciidoctorRendererTest {
 
     @Test
     public void testAtLiteralRender() {
-        assertEquals("<p>{@literal @}Test</p>\n", renderer.renderDoc( "{@literal @}Test" ));
+        assertEquals(MARKER + "<p>{@literal @}Test</p>\n", renderer.renderDoc( "{@literal @}Test" ));
     }
 
     @Test
     public void testTagRender() {
         String rendered = renderer.renderDoc( "input\n@tagName tagText" );
-        assertEquals("<p>input</p>\n@tagName tagText\n", rendered);
+        assertEquals(MARKER + "<p>input</p>\n@tagName tagText\n", rendered);
     }
 
     @Test
@@ -63,6 +64,6 @@ public class AsciidoctorRendererTest {
         String param2Text = "<" + param2Name + "> " + param2Desc;
         String sourceText = commentText + "\n@param " + param1Text + "\n@param " + param2Text;
 
-        assertEquals( "<p>comment</p>\n@param <T>\n@param <X> description\n", renderer.renderDoc( sourceText ) );
+        assertEquals(MARKER + "<p>comment</p>\n@param <T>\n@param <X> description\n", renderer.renderDoc( sourceText ) );
     }
 }
