@@ -33,9 +33,9 @@
  *   <version>2.9</version>
  *   <configuration>
  *     <source>1.7</source>
- *     <doclet>org.asciidoclet.Asciidoclet</doclet>
+ *     <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
  *     <docletArtifact>
- *       <groupId>org.asciidoclet</groupId>
+ *       <groupId>org.asciidoctor</groupId>
  *       <artifactId>asciidoclet</artifactId>
  *       <version>${asciidoclet.version}</version>
  *     </docletArtifact>
@@ -173,8 +173,8 @@
  *
  * @author https://github.com/johncarl81[John Ericksen]
  * @version 0.1.0
- * @see org.asciidoclet.Asciidoclet
+ * @see org.asciidoctor.asciidoclet.Asciidoclet
  * @since 0.1.0
  * @serial (or @serialField or @serialData)
  */
-package org.asciidoclet;
+package org.asciidoctor.asciidoclet;

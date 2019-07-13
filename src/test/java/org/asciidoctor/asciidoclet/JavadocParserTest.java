@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoclet.asciidoclet;
+package org.asciidoctor.asciidoclet;
 
-import org.asciidoclet.asciidoclet.JavadocParser.Tag;
+import org.asciidoctor.asciidoclet.JavadocParser.Tag;
 import org.junit.Test;
 
 import java.util.List;

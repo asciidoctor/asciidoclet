@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoclet.asciidoclet;
+package org.asciidoctor.asciidoclet;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.asciidoclet.asciidoclet.AsciidoctorRenderer.MARKER;
+import static org.asciidoctor.asciidoclet.AsciidoctorRenderer.MARKER;
 import static org.junit.Assert.assertEquals;
 
 /**

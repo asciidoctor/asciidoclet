@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoclet.asciidoclet;
+package org.asciidoctor.asciidoclet;
 
 import com.sun.tools.javac.parser.LazyDocCommentTable;
 import com.sun.tools.javac.parser.Tokens.Comment;

@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoclet;
+package org.asciidoctor.asciidoclet;
 
 import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
 import jdk.javadoc.doclet.StandardDoclet;
-import org.asciidoclet.asciidoclet.AsciidocletOptions;
-import org.asciidoclet.asciidoclet.AsciidoctorFilteredEnvironment;
-import org.asciidoclet.asciidoclet.AsciidoctorRenderer;
-import org.asciidoclet.asciidoclet.DocletOptions;
-import org.asciidoclet.asciidoclet.Stylesheets;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

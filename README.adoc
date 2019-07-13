@@ -123,7 +123,7 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
     <version>2.9</version>
     <configuration>
         <source>1.7</source>
-        <doclet>org.asciidoctor.Asciidoclet</doclet>
+        <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
         <docletArtifact>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoclet</artifactId>
@@ -179,7 +179,7 @@ Asciidoclet may be used via a doclet element in Ant's `javadoc` task:
 <javadoc destdir="target/javadoc"
          sourcepath="src"
          overview="src/overview.adoc">
-  <doclet name="org.asciidoctor.Asciidoclet" pathref="asciidoclet.classpath"> <!--1-->
+  <doclet name="org.asciidoctor.asciidoclet.Asciidoclet" pathref="asciidoclet.classpath"> <!--1-->
     <param name="--base-dir" value="${basedir}"/>
     <param name="--attribute" value="name=${ant.project.name}"/>
     <param name="--attribute" value="version=${version}"/>

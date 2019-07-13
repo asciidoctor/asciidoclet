@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoclet.asciidoclet;
+package org.asciidoctor.asciidoclet;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.tools.Diagnostic;
 
-import static org.asciidoclet.asciidoclet.Stylesheets.JAVA6_STYLESHEET;
-import static org.asciidoclet.asciidoclet.Stylesheets.JAVA8_STYLESHEET;
-import static org.asciidoclet.asciidoclet.Stylesheets.JAVA9_STYLESHEET;
+import static org.asciidoctor.asciidoclet.Stylesheets.JAVA6_STYLESHEET;
+import static org.asciidoctor.asciidoclet.Stylesheets.JAVA8_STYLESHEET;
+import static org.asciidoctor.asciidoclet.Stylesheets.JAVA9_STYLESHEET;
 import static org.junit.Assert.assertEquals;
 
 public class StylesheetsTest {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoclet.asciidoclet;
+package org.asciidoctor.asciidoclet;
 
 import com.sun.source.util.DocTreePath;
 import jdk.javadoc.doclet.Reporter;

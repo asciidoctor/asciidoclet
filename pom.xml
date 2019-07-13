@@ -134,7 +134,7 @@
                 <configuration>
                     <source>11</source>
                     <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
-                    <doclet>org.asciidoclet.Asciidoclet</doclet>
+                    <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
                     <docletArtifact>
                         <groupId>org.asciidoctor</groupId>
                         <artifactId>asciidoclet</artifactId>

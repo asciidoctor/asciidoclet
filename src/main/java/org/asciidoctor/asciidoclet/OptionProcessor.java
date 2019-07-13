@@ -13,66 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoclet.asciidoclet;
+package org.asciidoctor.asciidoclet;
 
 import jdk.javadoc.doclet.Doclet;
+import org.asciidoctor.asciidoclet.AsciidocletOptions;
+import org.asciidoctor.asciidoclet.DocletOptions;
 
 import java.util.List;
 
-public enum AsciidocletOptions implements Doclet.Option
+class OptionProcessor implements Doclet.Option
 {
-    ENCODING( "encoding" ),
-    OVERVIEW( "overview" ),
-    BASEDIR( "base-dir" ),
-    STYLESHEET( "stylesheetfile" ),
-    DESTDIR( "d" ),
-    ATTRIBUTE( "a" ),
-    ATTRIBUTE_LONG( "attribute" ),
-    ATTRIBUTES_FILE( "attributes-file" ),
-    GEM_PATH( "gem-path" ),
-    REQUIRE( "r" ),
-    REQUIRE_LONG( "require" );
+    private final AsciidocletOptions prototype;
+    private final DocletOptions collector;
 
-    private final String name;
-
-    AsciidocletOptions( String name )
+    OptionProcessor( AsciidocletOptions prototype, DocletOptions collector )
     {
-        this.name = name;
+        this.prototype = prototype;
+        this.collector = collector;
     }
 
     @Override
     public int getArgumentCount()
     {
-        return 1;
+        return prototype.getArgumentCount();
     }
 
     @Override
     public String getDescription()
     {
-        return name;
+        return prototype.getDescription();
     }
 
     @Override
     public Kind getKind()
     {
-        return Kind.STANDARD;
+        return prototype.getKind();
     }
 
     @Override
     public List<String> getNames()
     {
-        return List.of( "--" + name );
+        return prototype.getNames();
     }
 
     @Override
     public String getParameters()
     {
-        return "<>";
+        return prototype.getParameters();
     }
 
     @Override
     public boolean process( String option, List<String> arguments )
     {
+        collector.collect( prototype, arguments );
         return true;
     }
 }

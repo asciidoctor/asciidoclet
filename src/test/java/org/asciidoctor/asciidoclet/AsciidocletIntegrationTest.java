@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.asciidoclet;
+package org.asciidoctor.asciidoclet;
 
 import org.junit.Test;
 
@@ -49,11 +49,11 @@ public class AsciidocletIntegrationTest
                 "--module-path", classpath(),
                 "--limit-modules", "asciidoclet,java.base,jdk.javadoc,asciidoctorj",
                 "--class-path", classpath(),
-                "-doclet", "org.asciidoclet.Asciidoclet",
+                "-doclet", "org.asciidoctor.asciidoclet.Asciidoclet",
                 "--source-path", "src/main/java",
                 "-d", outputDirectory,
                 "--base-dir", ".",
-                "org.asciidoclet",
+                "org.asciidoctor.asciidoclet",
         } );
     }
 
