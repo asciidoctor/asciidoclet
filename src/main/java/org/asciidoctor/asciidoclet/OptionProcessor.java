@@ -16,8 +16,6 @@
 package org.asciidoctor.asciidoclet;
 
 import jdk.javadoc.doclet.Doclet;
-import org.asciidoctor.asciidoclet.AsciidocletOptions;
-import org.asciidoctor.asciidoclet.DocletOptions;
 
 import java.util.List;
 

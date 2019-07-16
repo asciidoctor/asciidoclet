@@ -118,7 +118,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- tag::pom_include[] -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -133,24 +132,32 @@
                 </executions>
                 <configuration>
                     <source>11</source>
-                    <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+                    <additionalJOptions>
+                        <additionalJOption>--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</additionalJOption>
+                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
+                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet</additionalJOption>
+                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
+                    </additionalJOptions>
                     <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
                     <docletArtifact>
-                        <groupId>org.asciidoctor</groupId>
-                        <artifactId>asciidoclet</artifactId>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
                         <version>${project.version}</version>
                     </docletArtifact>
-                    <additionalOptions> <!--1-->
+                    <additionalOptions>
                       --base-dir ${project.basedir}
                       --attribute "project_name=${project.name}"
                       --attribute "project_version=${project.version}"
                       --attribute "project_desc=${project.description}"
                     </additionalOptions>
                     <linksource>true</linksource>
-                    <overview>src/main/java/overview.adoc</overview> <!--2-->
+                    <overview>src/main/java/org/asciidoctor/asciidoclet/overview.adoc</overview>
                 </configuration>
             </plugin>
-            <!-- end::pom_include[] -->
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>

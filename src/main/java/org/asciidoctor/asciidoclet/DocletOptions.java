@@ -15,6 +15,7 @@
  */
 package org.asciidoctor.asciidoclet;
 
+import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
 
 import java.io.File;
@@ -51,7 +52,7 @@ public class DocletOptions {
         attributes = new ArrayList<>();
     }
 
-    public void collect( AsciidocletOptions option, List<String> list )
+    void collect( AsciidocletOptions option, List<String> list )
     {
         switch ( option )
         {
@@ -76,7 +77,7 @@ public class DocletOptions {
                 .filter( s -> !s.isEmpty() );
     }
 
-    public void validateOptions() {
+    void validateOptions() {
         if ( baseDir().isEmpty() ) {
             reporter.print( WARNING, AsciidocletOptions.BASEDIR + " must be present for includes or file reference features to work properly.");
         }
@@ -87,27 +88,27 @@ public class DocletOptions {
         }
     }
 
-    public Optional<File> overview() {
+    Optional<File> overview() {
         return Optional.ofNullable( overview );
     }
 
-    public Optional<File> stylesheet() {
+    Optional<File> stylesheet() {
         return Optional.ofNullable( stylesheet );
     }
 
-    public Optional<File> baseDir() {
+    Optional<File> baseDir() {
         return Optional.ofNullable( basedir );
     }
 
-    public Optional<File> destDir() {
+    Optional<File> destDir() {
         return Optional.ofNullable( destdir );
     }
 
-    public Charset encoding() {
+    Charset encoding() {
         return encoding;
     }
 
-    public List<String> attributes() {
+    List<String> attributes() {
         return attributes;
     }
 
@@ -121,11 +122,19 @@ public class DocletOptions {
         return Optional.of( attributesFile );
     }
 
-    public String gemPath() {
+    String gemPath() {
         return gemPath;
     }
 
-    public List<String> requires() {
+    List<String> requires() {
         return requires;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "DocletOptions{" + "reporter=" + reporter + ", basedir=" + basedir + ", overview=" + overview + ", stylesheet=" + stylesheet + ", destdir=" +
+                destdir + ", attributesFile=" + attributesFile + ", gemPath='" + gemPath + '\'' + ", requires=" + requires + ", encoding=" + encoding +
+                ", attributes=" + attributes + '}';
     }
 }

@@ -373,7 +373,7 @@ public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements Doclet
         @Override
         public String getName()
         {
-            return fileObject.getName();
+            return fileObject.getName() + ".html";
         }
 
         @Override

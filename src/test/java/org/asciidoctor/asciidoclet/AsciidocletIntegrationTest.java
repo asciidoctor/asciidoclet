@@ -47,8 +47,6 @@ public class AsciidocletIntegrationTest
                 "--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet",
                 "--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet",
                 "--module-path", classpath(),
-                "--limit-modules", "asciidoclet,java.base,jdk.javadoc,asciidoctorj",
-                "--class-path", classpath(),
                 "-doclet", "org.asciidoctor.asciidoclet.Asciidoclet",
                 "--source-path", "src/main/java",
                 "-d", outputDirectory,

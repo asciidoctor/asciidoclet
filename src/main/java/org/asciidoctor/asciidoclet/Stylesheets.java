@@ -47,7 +47,7 @@ public class Stylesheets {
     public boolean copy() {
         if ( docletOptions.destDir().isEmpty() ) {
             // standard doclet must have checked this by the time we are called
-            errorReporter.print( Diagnostic.Kind.ERROR, "Destination directory not specified, cannot copy stylesheet");
+            errorReporter.print( Diagnostic.Kind.ERROR, "Destination directory not specified, cannot copy stylesheet. Doclet options were " + docletOptions);
             return false;
         }
         String stylesheet = selectStylesheet(System.getProperty("java.version"));
