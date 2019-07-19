@@ -93,17 +93,6 @@ public class DocletOptionsTest
     }
 
     @Test
-    public void testDestDir()
-    {
-        assertFalse( new DocletOptions( reporter ).destDir().isPresent() );
-
-        DocletOptions options = new DocletOptions( reporter );
-        options.collect( AsciidocletOptions.DESTDIR, List.of( "target" ) );
-        options.validateOptions();
-        assertEquals( "target", options.destDir().get().getName() );
-    }
-
-    @Test
     public void testRequires()
     {
         assertTrue( new DocletOptions( reporter ).requires().isEmpty() );

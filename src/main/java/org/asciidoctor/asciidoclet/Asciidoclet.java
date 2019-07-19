@@ -192,7 +192,7 @@ public class Asciidoclet implements Doclet
         this.reporter = reporter;
         standardDoclet.init( locale, reporter );
         this.docletOptions = new DocletOptions( reporter );
-        this.stylesheets = new Stylesheets(docletOptions, reporter);
+        this.stylesheets = new Stylesheets( reporter );
     }
 
     @Override
@@ -229,13 +229,13 @@ public class Asciidoclet implements Doclet
         {
             throw new UncheckedIOException( e );
         }
-        return result && postProcess();
+        return result && postProcess( environment );
     }
 
-    private boolean postProcess() {
+    private boolean postProcess( DocletEnvironment environment ) {
         if (docletOptions.stylesheet().isPresent()) {
             return true;
         }
-        return stylesheets.copy();
+        return stylesheets.copy( environment );
     }
 }

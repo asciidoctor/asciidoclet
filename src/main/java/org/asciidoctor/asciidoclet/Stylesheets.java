@@ -15,54 +15,59 @@
  */
 package org.asciidoctor.asciidoclet;
 
+import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import javax.tools.Diagnostic;
+import javax.tools.DocumentationTool;
+import javax.tools.JavaFileManager;
 
 /**
  * Responsible for copying the appropriate stylesheet to the javadoc
  * output directory.
  */
-public class Stylesheets {
+public class Stylesheets
+{
+    static final String JAVA11_STYLESHEET = "stylesheet11.css";
     static final String JAVA9_STYLESHEET = "stylesheet9.css";
     static final String JAVA8_STYLESHEET = "stylesheet8.css";
     static final String JAVA6_STYLESHEET = "stylesheet6.css";
-    static final String CODERAY_STYLESHEET = "coderay-asciidoctor.css";
-    static final String OUTPUT_STYLESHEET = "stylesheet.css";
+    private static final String CODERAY_STYLESHEET = "coderay-asciidoctor.css";
+    private static final String OUTPUT_STYLESHEET = "stylesheet.css";
 
-    private final DocletOptions docletOptions;
     private final Reporter errorReporter;
 
-    public Stylesheets(DocletOptions options, Reporter errorReporter) {
-        this.docletOptions = options;
+    Stylesheets( Reporter errorReporter )
+    {
         this.errorReporter = errorReporter;
     }
 
-    public boolean copy() {
-        if ( docletOptions.destDir().isEmpty() ) {
-            // standard doclet must have checked this by the time we are called
-            errorReporter.print( Diagnostic.Kind.ERROR, "Destination directory not specified, cannot copy stylesheet. Doclet options were " + docletOptions);
-            return false;
-        }
-        String stylesheet = selectStylesheet(System.getProperty("java.version"));
-        File destDir = docletOptions.destDir().get();
+    public boolean copy( DocletEnvironment environment )
+    {
+        String stylesheet = selectStylesheet( System.getProperty( "java.version" ) );
+        JavaFileManager fm = environment.getJavaFileManager();
         try ( InputStream stylesheetIn = getResource( stylesheet );
               InputStream coderayStylesheetIn = getResource( CODERAY_STYLESHEET );
-              OutputStream stylesheetOut = new FileOutputStream( new File(destDir, OUTPUT_STYLESHEET ) );
-              OutputStream coderayStylesheetOut = new FileOutputStream(new File(destDir, CODERAY_STYLESHEET)) ) {
+              OutputStream stylesheetOut = openOutputStream( fm, OUTPUT_STYLESHEET );
+              OutputStream coderayStylesheetOut = openOutputStream( fm, CODERAY_STYLESHEET ) )
+        {
             stylesheetIn.transferTo( stylesheetOut );
             coderayStylesheetIn.transferTo( coderayStylesheetOut );
             return true;
-        } catch (IOException e) {
-            errorReporter.print( Diagnostic.Kind.ERROR, e.getLocalizedMessage());
+        }
+        catch ( IOException e )
+        {
+            errorReporter.print( Diagnostic.Kind.ERROR, e.getLocalizedMessage() );
             return false;
         }
+    }
+
+    private OutputStream openOutputStream( JavaFileManager fm, String filename ) throws IOException
+    {
+        return fm.getFileForOutput( DocumentationTool.Location.DOCUMENTATION_OUTPUT, "", filename, null ).openOutputStream();
     }
 
     private InputStream getResource( String name ) throws IOException
@@ -72,26 +77,44 @@ public class Stylesheets {
         {
             loader = Stylesheets.class.getClassLoader();
         }
-        URL resource = loader.getResource( name );
-        if ( resource == null )
+        InputStream stream = loader.getResourceAsStream( name );
+        if ( stream != null )
         {
-            throw new IllegalArgumentException( "No such resource: " + name );
+            return stream;
         }
-        return resource.openStream();
+
+        Module module = Stylesheets.class.getModule();
+        if ( module != null )
+        {
+            stream = module.getResourceAsStream( name );
+            if ( stream != null )
+            {
+                return stream;
+            }
+        }
+
+        throw new IllegalArgumentException( "No such resource: " + name );
     }
 
-    String selectStylesheet(String javaVersion) {
-        if (javaVersion.matches("^1\\.[56]\\D.*")) {
+    String selectStylesheet( String javaVersion )
+    {
+        if ( javaVersion.matches( "^1\\.[56]\\D.*" ) )
+        {
             return JAVA6_STYLESHEET;
         }
-        if (javaVersion.matches("^1\\.[78]\\D.*")) {
+        if ( javaVersion.matches( "^1\\.[78]\\D.*" ) )
+        {
             return JAVA8_STYLESHEET;
         }
-        if (javaVersion.matches("^(9|10)(\\.)?.*")) {
+        if ( javaVersion.matches( "^(9|10)(\\.)?.*" ) )
+        {
             return JAVA9_STYLESHEET;
         }
-        errorReporter.print( Diagnostic.Kind.WARNING, "Unrecognized Java version " + javaVersion + ", using Java 9 stylesheet");
-        // TODO: review this when Java 11 becomes available and/or make more configurable!
-        return JAVA9_STYLESHEET;
+        if ( javaVersion.matches( "^(11)(\\.)?.*" ) )
+        {
+            return JAVA11_STYLESHEET;
+        }
+        errorReporter.print( Diagnostic.Kind.WARNING, "Unrecognized Java version " + javaVersion + ", using Java 11 stylesheet" );
+        return JAVA11_STYLESHEET;
     }
 }

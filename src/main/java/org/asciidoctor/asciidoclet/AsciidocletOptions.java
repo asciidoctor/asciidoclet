@@ -25,7 +25,6 @@ public enum AsciidocletOptions implements Doclet.Option
     OVERVIEW( "overview" ),
     BASEDIR( "base-dir" ),
     STYLESHEET( "stylesheetfile" ),
-    DESTDIR( "d" ),
     ATTRIBUTE( "a" ),
     ATTRIBUTE_LONG( "attribute" ),
     ATTRIBUTES_FILE( "attributes-file" ),
