@@ -28,6 +28,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertEquals;
+
 public class AsciidocletIntegrationTest
 {
     /**
@@ -41,7 +43,7 @@ public class AsciidocletIntegrationTest
         execute.setAccessible( true );
         String outputDirectory = "target/javadoc-output";
         deleteRecursively( outputDirectory );
-        execute.invoke( null, (Object) new String[] {
+        int result = (int) execute.invoke( null, (Object) new String[] {
                 "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet",
                 "--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet",
                 "--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet",
@@ -50,9 +52,11 @@ public class AsciidocletIntegrationTest
                 "-doclet", "org.asciidoctor.asciidoclet.Asciidoclet",
                 "--source-path", "src/main/java",
                 "-d", outputDirectory,
+                "-Xdoclint:none", // TODO We should ideally generate valid HTML5.
                 "--base-dir", ".",
                 "org.asciidoctor.asciidoclet",
         } );
+        assertEquals( 0, result );
     }
 
     private void deleteRecursively( String outputDirectory ) throws IOException
