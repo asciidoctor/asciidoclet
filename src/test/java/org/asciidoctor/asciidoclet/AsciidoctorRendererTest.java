@@ -55,6 +55,14 @@ public class AsciidoctorRendererTest {
     }
 
     @Test
+    public void testParameterWithoutTypeTag()
+    {
+        assertEquals( MARKER + "<p>comment</p>\n@param p description\n", renderer.renderDoc( "comment\n@param p description" ) );
+        assertEquals( MARKER + "<p>comment</p>\n@param p\n", renderer.renderDoc( "comment\n@param p" ) );
+        assertEquals( MARKER + "<p>comment</p>\n@param \n", renderer.renderDoc( "comment\n@param" ) );
+    }
+
+    @Test
     public void testParamTagWithTypeParameter() {
         String commentText = "comment";
         String param1Name = "T";

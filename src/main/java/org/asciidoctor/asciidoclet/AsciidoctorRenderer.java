@@ -35,9 +35,9 @@ import static org.asciidoctor.Asciidoctor.Factory.create;
  *
  * @author John Ericksen
  */
-public class AsciidoctorRenderer {
+class AsciidoctorRenderer {
 
-    public static final String MARKER = "<!--ASCIIDOC-->";
+    static final String MARKER = " \t \t";
 
     private static AttributesBuilder defaultAttributes() {
         return AttributesBuilder.attributes()
@@ -67,14 +67,14 @@ public class AsciidoctorRenderer {
     private final Optional<OutputTemplates> templates;
     private final Options options;
 
-    public AsciidoctorRenderer(DocletOptions docletOptions, Reporter reporter) {
+    AsciidoctorRenderer( DocletOptions docletOptions, Reporter reporter ) {
         this(docletOptions, reporter, OutputTemplates.create( reporter ), create( docletOptions.gemPath() ) );
     }
 
     /**
      * Constructor used directly for testing purposes only.
      */
-    protected AsciidoctorRenderer(DocletOptions docletOptions, Reporter errorReporter, Optional<OutputTemplates> templates, Asciidoctor asciidoctor) {
+    private AsciidoctorRenderer( DocletOptions docletOptions, Reporter errorReporter, Optional<OutputTemplates> templates, Asciidoctor asciidoctor ) {
         this.asciidoctor = asciidoctor;
         this.templates = templates;
         this.options = buildOptions(docletOptions, errorReporter);
@@ -106,7 +106,7 @@ public class AsciidoctorRenderer {
      *
      * @param doc input
      */
-    public String renderDoc(String doc)
+    String renderDoc( String doc )
     {
         if (doc.startsWith( MARKER ))
         {
@@ -114,7 +114,7 @@ public class AsciidoctorRenderer {
         }
         JavadocParser javadocParser = new JavadocParser( doc );
         StringBuilder buffer = new StringBuilder( MARKER );
-        buffer.append( render( javadocParser.getCommentBody(), false));
+        buffer.append( render( javadocParser.getCommentBody(), false ) );
         buffer.append( System.lineSeparator() );
         for ( JavadocParser.Tag tag : javadocParser.tags() )
         {
@@ -124,7 +124,7 @@ public class AsciidoctorRenderer {
         return buffer.toString();
     }
 
-    public void cleanup() throws IOException
+    void cleanup() throws IOException
     {
         if (templates.isPresent()) {
             templates.get().delete();
@@ -155,6 +155,10 @@ public class AsciidoctorRenderer {
                 }
                 buffer.append( render( text, true ) );
             }
+            else
+            {
+                buffer.append( render( tag.tagText, true ) );
+            }
         }
         else
         {
@@ -172,7 +176,7 @@ public class AsciidoctorRenderer {
      * @param input AsciiDoc source
      * @return content rendered by Asciidoctor
      */
-    public String render(String input, boolean inline) {
+    private String render( String input, boolean inline ) {
         if (input.trim().isEmpty()) {
             return "";
         }

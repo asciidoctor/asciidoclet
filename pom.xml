@@ -141,7 +141,7 @@
                         <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>-Xdoclint:none</additionalJOption>
+                        <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
                     </additionalJOptions>
                     <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
                     <docletArtifact>
@@ -156,7 +156,7 @@
                       --attribute "project_desc=${project.description}"
                     </additionalOptions>
                     <linksource>true</linksource>
-                    <overview>src/main/java/org/asciidoctor/asciidoclet/overview.adoc</overview>
+                    <overview>src/main/java/overview.adoc</overview>
                 </configuration>
             </plugin>
             <plugin>

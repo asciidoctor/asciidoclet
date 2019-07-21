@@ -107,7 +107,7 @@ The result is readable source and beautifully rendered Javadocs, the best of bot
 // tag::usage[]
 == Usage
 
-Run Javadoc with the `org.asciidoctor.Asciidoclet` doclet class.
+Run Javadoc with the `org.asciidoctor.asciidoclet.Asciidoclet` doclet class.
 Some examples for common build systems are shown below.
 See <<doclet-options>> for supported options.
 
@@ -122,7 +122,18 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
     <artifactId>maven-javadoc-plugin</artifactId>
     <version>2.9</version>
     <configuration>
-        <source>1.7</source>
+        <source>11</source>
+        <additionalJOptions>
+            <additionalJOption>--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</additionalJOption>
+            <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
+            <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet</additionalJOption>
+            <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
+        </additionalJOptions>
         <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
         <docletArtifact>
             <groupId>org.asciidoctor</groupId>
@@ -156,13 +167,13 @@ dependencies {
 
 javadoc {
     options.docletpath = configurations.asciidoclet.files.asType(List)
-    options.doclet = 'org.asciidoctor.Asciidoclet'
+    options.doclet = 'org.asciidoctor.asciidoclet.Asciidoclet'
     options.overview = "src/main/java/overview.adoc"
     options.addStringOption "-base-dir", "${projectDir}" // <1>
     options.addStringOption "-attribute", // <2>
             "name=${project.name}," +
             "version=${project.version}," +
-            "title-link=http://example.com[${project.name} ${project.version}]")
+            "title-link=http://example.com[${project.name} ${project.version}]"
 }
 ----
 <1> Option names passed to Gradle's `javadoc` task must omit the leading "-", so here "-base-dir" means "--base-dir".

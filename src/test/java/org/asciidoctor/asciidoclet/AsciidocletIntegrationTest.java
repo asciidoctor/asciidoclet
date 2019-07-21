@@ -52,7 +52,8 @@ public class AsciidocletIntegrationTest
                 "-doclet", "org.asciidoctor.asciidoclet.Asciidoclet",
                 "--source-path", "src/main/java",
                 "-d", outputDirectory,
-                "-Xdoclint:none", // TODO We should ideally generate valid HTML5.
+                "-Xdoclint:all,-html,-accessibility", // TODO We should ideally generate valid HTML5.
+                "-overview", "src/main/java/overview.adoc",
                 "--base-dir", ".",
                 "org.asciidoctor.asciidoclet",
         } );

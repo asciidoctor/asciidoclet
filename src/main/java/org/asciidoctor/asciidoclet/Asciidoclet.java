@@ -221,7 +221,7 @@ public class Asciidoclet implements Doclet
         docletOptions.validateOptions();
         AsciidoctorRenderer renderer = new AsciidoctorRenderer( docletOptions, reporter );
         boolean result;
-        try ( AsciidoctorFilteredEnvironment env = new AsciidoctorFilteredEnvironment( environment, reporter, renderer ) )
+        try ( AsciidoctorFilteredEnvironment env = new AsciidoctorFilteredEnvironment( environment, renderer ) )
         {
             result = standardDoclet.run( env );
         }
