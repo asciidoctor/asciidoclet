@@ -124,15 +124,8 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
     <configuration>
         <source>11</source>
         <additionalJOptions>
-            <additionalJOption>--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</additionalJOption>
-            <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
-            <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet</additionalJOption>
-            <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet</additionalJOption>
-            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
-            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
-            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
-            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
-            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption> // <1>
+            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption> // <2>
         </additionalJOptions>
         <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
         <docletArtifact>
@@ -150,6 +143,10 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
     </configuration>
 </plugin>
 ----
+<1> For the asciidoclet to work, it needs access to the internals of the `javadoc` tool.
+This incantation makes that access possible on moduler JDKs.
+<2> Asciidoctor may generate HTML that produces doclint errors, which can cause the build to fail.
+To work around that, we have to disable these doclint categories.
 
 === Gradle
 
