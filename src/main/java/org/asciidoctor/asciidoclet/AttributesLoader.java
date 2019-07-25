@@ -22,13 +22,11 @@ import org.asciidoctor.OptionsBuilder;
 import org.asciidoctor.SafeMode;
 
 import java.io.File;
-import java.io.Reader;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import javax.tools.Diagnostic;
 
@@ -51,7 +49,7 @@ class AttributesLoader {
         Map<String, Object> cmdlineAttrs = parseCmdLineAttributes(attributeArgs);
 
         // Parse the attributes file, passing in any command-line attrs already set
-        Map<String, Object> attrs = parseAttributesFile(docletOptions.attributesFile(), cmdlineAttrs);
+        Map<String, Object> attrs = docletOptions.attributesFile().map( f -> parseAttributesFile( f, cmdlineAttrs ) ).orElse( cmdlineAttrs );
 
         // Remove any attributes that were set in the file but removed by the -attributes option
         attrs.keySet().removeAll(unset);
@@ -69,25 +67,24 @@ class AttributesLoader {
         return new Attributes(attributeArgs.toArray( new String[0] )).map();
     }
 
-    private Map<String, Object> parseAttributesFile( Optional<File> attrsFile, Map<String, Object> cmdlineAttrs) {
-        if (attrsFile.isPresent()) {
-            try ( Reader reader = Files.newBufferedReader( attrsFile.get().toPath(), docletOptions.encoding() ) ) {
-                return parseAttributes( reader, cmdlineAttrs);
-            } catch (Exception e) {
-                errorReporter.print( Diagnostic.Kind.WARNING, "Cannot read attributes file: " + e);
-            }
+    private Map<String, Object> parseAttributesFile( File attrsFile, Map<String, Object> cmdlineAttrs) {
+        try
+        {
+            return parseAttributes( Files.readString( attrsFile.toPath(), docletOptions.encoding() ), cmdlineAttrs );
+        } catch (Exception e) {
+            errorReporter.print( Diagnostic.Kind.WARNING, "Cannot read attributes file: " + e);
         }
         return cmdlineAttrs;
     }
 
-    private Map<String, Object> parseAttributes(Reader in, Map<String, Object> existingAttrs) {
+    private Map<String, Object> parseAttributes(String in, Map<String, Object> existingAttrs) {
         OptionsBuilder options = OptionsBuilder.options()
                 .safe(SafeMode.SAFE)
                 .attributes(existingAttrs);
         if (docletOptions.baseDir().isPresent()) {
             options.baseDir(docletOptions.baseDir().get());
         }
-        Map<String, Object> parsed = asciidoctor.readDocumentStructure(in, options.get().map()).getHeader().getAttributes();
+        Map<String, Object> parsed = asciidoctor.load(in, options.get().map()).getAttributes();
         // workaround for https://github.com/asciidoctor/asciidoctorj/pull/169
         return new HashMap<>( parsed );
     }

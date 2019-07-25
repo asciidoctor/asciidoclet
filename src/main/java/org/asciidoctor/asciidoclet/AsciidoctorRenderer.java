@@ -68,7 +68,7 @@ class AsciidoctorRenderer {
     private final Options options;
 
     AsciidoctorRenderer( DocletOptions docletOptions, Reporter reporter ) {
-        this(docletOptions, reporter, OutputTemplates.create( reporter ), create( docletOptions.gemPath() ) );
+        this(docletOptions, reporter, OutputTemplates.create( reporter ), create( /*docletOptions.gemPath()*/ ) );
     }
 
     /**
@@ -181,7 +181,7 @@ class AsciidoctorRenderer {
             return "";
         }
         options.setDocType(inline ? INLINE_DOCTYPE : null);
-        return asciidoctor.render( cleanJavadocInput( input ), options );
+        return asciidoctor.convert( cleanJavadocInput( input ), options );
     }
 
     static String cleanJavadocInput( String input ) {

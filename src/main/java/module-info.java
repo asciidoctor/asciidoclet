@@ -16,6 +16,7 @@
 module asciidoclet {
     requires java.base;
     requires jdk.javadoc;
-    requires asciidoctorj;
+//    requires asciidoctorj;
+    requires asciidoctorj.api;
     exports org.asciidoctor.asciidoclet;
 }
