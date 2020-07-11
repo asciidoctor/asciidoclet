@@ -15,10 +15,11 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.base.Charsets;
+import org.jcodings.spi.Charsets;
 import org.junit.Test;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import static org.asciidoctor.asciidoclet.DocletOptions.*;
 import static org.hamcrest.Matchers.contains;
@@ -35,9 +36,9 @@ public class DocletOptionsTest {
     @Test
     public void testEncoding() {
         assertEquals(Charset.defaultCharset(), DocletOptions.NONE.encoding());
-        assertEquals(Charsets.UTF_8, new DocletOptions(new String[][]{{ENCODING, "UTF-8"}}).encoding());
-        assertEquals(Charsets.US_ASCII, new DocletOptions(new String[][]{{ENCODING, "US-ASCII"}}).encoding());
-        assertEquals(Charsets.ISO_8859_1, new DocletOptions(new String[][]{{ENCODING, "ISO-8859-1"}}).encoding());
+        assertEquals(StandardCharsets.UTF_8, new DocletOptions(new String[][]{{ENCODING, "UTF-8"}}).encoding());
+        assertEquals(StandardCharsets.US_ASCII, new DocletOptions(new String[][]{{ENCODING, "US-ASCII"}}).encoding());
+        assertEquals(StandardCharsets.ISO_8859_1, new DocletOptions(new String[][]{{ENCODING, "ISO-8859-1"}}).encoding());
     }
 
     @Test

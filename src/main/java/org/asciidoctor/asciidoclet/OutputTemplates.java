@@ -15,14 +15,13 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.base.Optional;
-import com.google.common.io.ByteSink;
-import com.google.common.io.Files;
-import com.google.common.io.Resources;
 import com.sun.javadoc.DocErrorReporter;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 
 /**
@@ -59,7 +58,7 @@ public class OutputTemplates {
 
     private static File prepareTemplateDir(DocErrorReporter errorReporter) {
         // copy our template resources to the templateDir so Asciidoctor can use them.
-        File templateDir = Files.createTempDir();
+        File templateDir = Resources.createTempDir();
         try {
             for (String templateName : TEMPLATE_NAMES) {
                 prepareTemplate(templateDir, templateName);
@@ -72,12 +71,12 @@ public class OutputTemplates {
     }
 
     private static void prepareTemplate(File templateDir, String template) throws IOException {
-        URL src = OutputTemplates.class.getClassLoader().getResource("templates/" + template);
+        InputStream src = OutputTemplates.class.getClassLoader().getResourceAsStream("templates/" + template);
         if (src == null) {
             throw new IOException("Could not find template " + template);
         }
-        ByteSink dest = Files.asByteSink(new File(templateDir, template));
-        Resources.asByteSource(src).copyTo(dest);
+        OutputStream dest = new FileOutputStream(new File(templateDir, template));
+        Resources.copy(src, dest);
     }
 
 }

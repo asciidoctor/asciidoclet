@@ -15,7 +15,6 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.base.Optional;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.ParamTag;

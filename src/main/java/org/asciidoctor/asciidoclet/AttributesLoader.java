@@ -15,9 +15,6 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
 import com.sun.javadoc.DocErrorReporter;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
@@ -26,7 +23,9 @@ import org.asciidoctor.SafeMode;
 
 import java.io.File;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,7 +70,7 @@ class AttributesLoader {
     private Map<String, Object> parseAttributesFile(Optional<File> attrsFile, Map<String, Object> cmdlineAttrs) {
         if (attrsFile.isPresent()) {
             try {
-                return parseAttributes(Files.newReader(attrsFile.get(), docletOptions.encoding()), cmdlineAttrs);
+                return parseAttributes(Resources.newReader(attrsFile.get(), docletOptions.encoding()), cmdlineAttrs);
             } catch (Exception e) {
                 errorReporter.printWarning("Cannot read attributes file: " + e);
             }
@@ -92,14 +91,14 @@ class AttributesLoader {
     }
 
     private Set<String> getUnsetAttributes(List<String> args) {
-        ImmutableSet.Builder<String> removed = ImmutableSet.builder();
+        Set<String> removed = new HashSet<String>();
         for (String arg : args) {
             String key = getKey(arg);
             if (key.startsWith("!") || key.endsWith("!")) {
                 removed.add(normalizeAttrName(key));
             }
         }
-        return removed.build();
+        return Collections.unmodifiableSet(removed);
     }
 
     private String getKey(String arg) {
