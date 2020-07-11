@@ -18,8 +18,9 @@ ifdef::env-github[]
 :!toc-title:
 endif::[]
 // Refs
+:asciidoclet-version: 1.5.6
 :asciidoclet-src-ref: https://github.com/asciidoctor/asciidoclet
-:asciidoclet-javadoc-ref: https://oss.sonatype.org/service/local/repositories/releases/archive/org/asciidoctor/asciidoclet/1.5.2/asciidoclet-1.5.2-javadoc.jar/!/index.html
+:asciidoclet-javadoc-ref: https://www.javadoc.io/doc/org.asciidoctor/asciidoclet/{asciidoclet-version}
 :asciidoclet-release-ref: http://asciidoctor.org/news/2014/09/09/asciidoclet-1.5.0-released/
 :asciidoc-ref: http://asciidoc.org
 :asciidoctor-java-ref: http://asciidoctor.org/docs/install-and-use-asciidoctor-java-integration/
@@ -30,7 +31,7 @@ endif::[]
 
 ifdef::badges[]
 image:http://img.shields.io/travis/asciidoctor/asciidoclet/master.svg["Build Status", link="https://travis-ci.org/asciidoctor/asciidoclet"]
-image:https://img.shields.io/badge/javadoc.io-1.5.4-blue.svg[Javadoc, link=http://www.javadoc.io/doc/org.asciidoctor/asciidoclet/1.5.4]
+image:https://img.shields.io/badge/javadoc.io-{asciidoclet-version}-blue.svg[Javadoc, link={asciidoclet-javadoc-ref}]
 endif::[]
 
 {asciidoclet-src-ref}[Asciidoclet] is a Javadoc Doclet based on Asciidoctor that lets you write Javadoc in the AsciiDoc syntax.
