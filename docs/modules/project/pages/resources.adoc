@@ -1,0 +1,12 @@
+= Resources and help
+
+For more information:
+
+* {asciidoclet-release-ref}[Asciidoclet 1.5.0 Release Notes]
+* {asciidoclet-src-ref}[Asciidoclet Source Code]
+* {asciidoclet-javadoc-ref}[Asciidoclet JavaDoc]
+* {asciidoclet-issues-ref}[Asciidoclet Issue Tracker]
+* {asciidoctor-src-ref}[Asciidoctor Source Code]
+* {asciidoctor-java-src-ref}[Asciidoctor Java Integration Source Code]
+
+If you have questions or would like to help develop this project, please join the {discuss-ref}[Asciidoctor discussion list].

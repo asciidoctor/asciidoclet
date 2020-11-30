@@ -1,0 +1,47 @@
+= Doclet Options
+:url-asciidoctor-attributes: https://asciidoctor.org/docs/user-manual/#attributes
+
+--base-dir <dir>::
+Sets the base directory that will be used to resolve relative path names in Asciidoc `include::` directives.
+This should be set to the project's root directory.
+
+-a, --attribute "name[=value], ..."::
+Sets {url-asciidoctor-attributes}[document attributes^] that will be expanded in Javadoc comments.
+The argument is a string containing a single attribute, or multiple attributes separated by commas.
++
+This option may be used more than once, for example: `-a name=foo -a version=1`.
++
+Attributes use the same syntax as Asciidoctor command-line attributes:
++
+--
+* `name` sets the attribute (with an empty value)
+* `name=value` assigns `value` to the attribute. Occurrences of `\{name}` in the Javadoc will be replaced by this value.
+* `name=value@` assigns `value` to the attribute, unless the attribute is defined in the attributes file or Javadoc.
+* `name!` unsets the attribute.
+--
++
+The document attribute `javadoc` is set automatically by the doclet.
+This can be used for conditionally selecting content when using the same Asciidoc file for Javadoc and other documentation.
+
+--attributes-file <file>::
+Reads {url-asciidoctor-attributes}[document attributes^] from an Asciidoc file.
+The attributes will be expanded in Javadoc comments.
++
+If `<file>` is a relative path name, it is assumed to be relative to the `--base-dir` directory.
++
+Attributes set by the `-a`/`--attribute` option take precedence over those in the attributes file.
+
+-r, --require <library>,...::
+Make the specified RubyGems library available to Asciidoctor's JRuby runtime, for example `-r asciidoctor-diagram`.
++
+This option may be specified more than once.
+Alternatively multiple library names may be specified in a single argument, separated by commas.
+
+--gem-path <path>::
+Sets the `GEM_PATH` for Asciidoctor's JRuby runtime.
+This option is only needed when using the `--require` option to load additional gems on the `GEM_PATH`.
+
+-overview <file>::
+Overview documentation can be generated from an Asciidoc file using the standard `-overview` option.
+Files matching [x-]`*.adoc`, [x-]`*.ad`, [x-]`*.asciidoc` or [x-]`*.txt` are processed by Asciidoclet.
+Other files are assumed to be HTML and will be processed by the standard doclet.

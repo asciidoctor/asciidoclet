@@ -1,0 +1,3 @@
+== Additional Features
+
+Make sure to see {asciidoclet-release-ref}[Asciidoclet 1.5.0 Release Notes] for additional features not documented here.
