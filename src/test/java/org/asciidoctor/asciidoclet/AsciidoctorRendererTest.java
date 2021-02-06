@@ -53,11 +53,11 @@ public class AsciidoctorRendererTest {
         when(mockDoc.getRawCommentText()).thenReturn(rawText);
         when(mockDoc.commentText()).thenReturn("input");
         when(mockDoc.tags()).thenReturn(new Tag[]{});
-        when(mockAsciidoctor.render(anyString(), any(Options.class))).thenReturn("input");
+        when(mockAsciidoctor.convert(anyString(), any(Options.class))).thenReturn("input");
 
         renderer.renderDoc(mockDoc);
         verify(mockDoc).setRawCommentText("{@literal @}" + convertedText);
-        verify(mockAsciidoctor).render(anyString(), any(Options.class));
+        verify(mockAsciidoctor).convert(anyString(), any(Options.class));
     }
 
     @Test
@@ -76,13 +76,13 @@ public class AsciidoctorRendererTest {
         when(mockDoc.commentText()).thenReturn("input");
         when(mockDoc.tags()).thenReturn(new Tag[]{mockTag});
 
-        when(mockAsciidoctor.render(eq("input"), argThat(new OptionsMatcher(false)))).thenReturn("input");
-        when(mockAsciidoctor.render(eq(tagText), argThat(new OptionsMatcher(true)))).thenReturn(asciidoctorRenderedString);
+        when(mockAsciidoctor.convert(eq("input"), argThat(new OptionsMatcher(false)))).thenReturn("input");
+        when(mockAsciidoctor.convert(eq(tagText), argThat(new OptionsMatcher(true)))).thenReturn(asciidoctorRenderedString);
 
         renderer.renderDoc(mockDoc);
 
-        verify(mockAsciidoctor).render(eq("input"), argThat(new OptionsMatcher(false)));
-        verify(mockAsciidoctor).render(eq(tagText), argThat(new OptionsMatcher(true)));
+        verify(mockAsciidoctor).convert(eq("input"), argThat(new OptionsMatcher(false)));
+        verify(mockAsciidoctor).convert(eq(tagText), argThat(new OptionsMatcher(true)));
         verify(mockDoc).setRawCommentText("input");
         verify(mockDoc).setRawCommentText("input\n" + tagName + " " + asciidoctorRenderedString + "\n");
     }
@@ -124,13 +124,13 @@ public class AsciidoctorRendererTest {
         when(mockTag2.parameterComment()).thenReturn(param2Desc);
         tags[1] = mockTag2;
         when(mockDoc.tags()).thenReturn(tags);
-        when(mockAsciidoctor.render(eq(commentText), any(Options.class))).thenReturn(commentText);
-        when(mockAsciidoctor.render(eq(param2Desc), any(Options.class))).thenReturn(param2Desc);
+        when(mockAsciidoctor.convert(eq(commentText), any(Options.class))).thenReturn(commentText);
+        when(mockAsciidoctor.convert(eq(param2Desc), any(Options.class))).thenReturn(param2Desc);
 
         renderer.renderDoc(mockDoc);
 
-        verify(mockAsciidoctor).render(eq(commentText), argThat(new OptionsMatcher(false)));
-        verify(mockAsciidoctor).render(eq(param2Desc), argThat(new OptionsMatcher(true)));
+        verify(mockAsciidoctor).convert(eq(commentText), argThat(new OptionsMatcher(false)));
+        verify(mockAsciidoctor).convert(eq(param2Desc), argThat(new OptionsMatcher(true)));
         // fixture step
         verify(mockDoc).setRawCommentText(eq(sourceText));
         // result step
