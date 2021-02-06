@@ -87,10 +87,7 @@ class AttributesLoader {
         if (docletOptions.baseDir().isPresent()) {
             options.baseDir(docletOptions.baseDir().get());
         }
-    	;
-
         Map<String, Object> parsed = asciidoctor.load(IOUtils.readFull(in), options.asMap()).getAttributes();
-        		//asciidoctor.readDocumentStructure(in, options.get().map()).getHeader().getAttributes();
         // workaround for https://github.com/asciidoctor/asciidoctorj/pull/169
         return new HashMap<String, Object>(parsed);
     }
