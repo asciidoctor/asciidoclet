@@ -22,7 +22,10 @@ import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.Tag;
 import org.asciidoctor.*;
 
-import static org.asciidoctor.Asciidoctor.Factory.create;
+import static org.asciidoctor.jruby.AsciidoctorJRuby.Factory.create;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Doclet renderer using and configuring Asciidoctor.
@@ -52,7 +55,7 @@ public class AsciidoctorRenderer implements DocletRenderer {
                 .backend("html5");
     }
 
-    protected static final String INLINE_DOCTYPE = "inline";
+    protected static final String INLINE_DOCTYPE = "Inline";
 
     private final Asciidoctor asciidoctor;
     private final Optional<OutputTemplates> templates;
@@ -156,8 +159,9 @@ public class AsciidoctorRenderer implements DocletRenderer {
         if (input.trim().isEmpty()) {
             return "";
         }
-        options.setDocType(inline ? INLINE_DOCTYPE : null);
-        return asciidoctor.render(cleanJavadocInput(input), options);
+        if (inline)
+			options.setDocType(INLINE_DOCTYPE);
+        return asciidoctor.convert(cleanJavadocInput(input), options);
     }
 
     protected static String cleanJavadocInput(String input) {
