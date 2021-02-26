@@ -141,10 +141,10 @@
                         <version>${project.version}</version>
                     </docletArtifact>
                     <additionalparam> <!--1-->
-                      --base-dir ${project.basedir}
-                      --attribute "project_name=${project.name}"
-                      --attribute "project_version=${project.version}"
-                      --attribute "project_desc=${project.description}"
+                        --base-dir ${project.basedir}
+                        --attribute "project_name=${project.name}"
+                        --attribute "project_version=${project.version}"
+                        --attribute "project_desc=${project.description}"
                     </additionalparam>
                     <linksource>true</linksource>
                     <overview>src/main/java/overview.adoc</overview> <!--2-->

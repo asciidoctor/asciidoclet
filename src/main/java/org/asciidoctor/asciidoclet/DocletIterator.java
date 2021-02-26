@@ -21,8 +21,7 @@ import com.sun.javadoc.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -32,12 +31,15 @@ import java.util.regex.Pattern;
  */
 public class DocletIterator {
 
+    private static final String ASCIIDOCLET_TAG = "@asciidoclet";
     private static final Pattern ASCIIDOC_FILE_PATTERN = Pattern.compile("(.*\\.(ad|adoc|txt|asciidoc))");
 
     private final DocletOptions docletOptions;
+    private final AntPathMatcher pathMatcher;
 
     public DocletIterator(DocletOptions docletOptions) {
         this.docletOptions = docletOptions;
+        pathMatcher = new AntPathMatcher.Builder().withTrimTokens().build();
     }
 
     /**
@@ -53,12 +55,41 @@ public class DocletIterator {
         Set<PackageDoc> packages = new HashSet<PackageDoc>();
         for (ClassDoc doc : rootDoc.classes()) {
             packages.add(doc.containingPackage());
-            renderClass(doc, renderer);
+            if(included(doc.qualifiedName(), doc)) {
+                renderClass(doc, renderer);
+            }
         }
         for (PackageDoc doc : packages) {
-            renderer.renderDoc(doc);
+            if(included(doc.name(), doc)) {
+                renderer.renderDoc(doc);
+            }
         }
         return true;
+    }
+
+    private boolean included(String name, Doc doc) {
+        List<String> includeFilters = docletOptions.getIncludeFilters();
+        List<String> excludeFilters = docletOptions.getExcludeFilters();
+        boolean includedMatched = matches(includeFilters, name);
+        boolean exclutedMatched = matches(excludeFilters, name);;
+
+        boolean result = (includeFilters.isEmpty() || includedMatched) &&
+                (excludeFilters.isEmpty() || !exclutedMatched);
+
+        for (Tag tag : doc.tags()) {
+            result |= ASCIIDOCLET_TAG.equals(tag.name());
+        }
+
+        return result;
+    }
+
+    private boolean matches(List<String> patterns, String name) {
+        for(String pattern : patterns) {
+            if(pathMatcher.isMatch(pattern, name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -82,8 +113,10 @@ public class DocletIterator {
             renderer.renderDoc(member);
         }
         if (doc instanceof AnnotationTypeDoc) {
-            for (MemberDoc member : ((AnnotationTypeDoc)doc).elements()) {
-                renderer.renderDoc(member);
+            if(!ASCIIDOCLET_TAG.equals(doc.name())) {
+                for (MemberDoc member : ((AnnotationTypeDoc) doc).elements()) {
+                    renderer.renderDoc(member);
+                }
             }
         }
     }

@@ -16,8 +16,11 @@
 package org.asciidoctor.asciidoclet;
 
 import com.sun.javadoc.*;
+import com.sun.tools.corba.se.idl.constExpr.Times;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.verification.VerificationMode;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -43,6 +46,7 @@ public class DocletIteratorTest {
 
         mockDoc = mock(RootDoc.class);
         mockPackageDoc = mock(PackageDoc.class);
+        when(mockPackageDoc.tags()).thenReturn(new Tag[]{});
         mockFieldDoc = mock(FieldDoc.class);
         mockEnumFieldDoc = mock(FieldDoc.class);
         mockConstructorDoc = mock(ConstructorDoc.class);
@@ -60,6 +64,7 @@ public class DocletIteratorTest {
         when(classDoc.constructors()).thenReturn(new ConstructorDoc[]{constructorDoc});
         when(classDoc.methods()).thenReturn(new MethodDoc[]{methodDoc});
         when(classDoc.enumConstants()).thenReturn(new FieldDoc[]{enumConstants});
+        when(classDoc.tags()).thenReturn(new Tag[]{});
         return classDoc;
     }
 
@@ -82,6 +87,7 @@ public class DocletIteratorTest {
 
         when(mockDoc.classes()).thenReturn(new ClassDoc[]{mockClassDoc});
         when(mockClassDoc.elements()).thenReturn(new AnnotationTypeElementDoc[]{mockAnnotationElement});
+        when(mockClassDoc.name()).thenReturn("@foo");
 
         new DocletIterator(DocletOptions.NONE).render(mockDoc, mockRenderer);
 
@@ -109,5 +115,71 @@ public class DocletIteratorTest {
         DocletIterator iterator = new DocletIterator(new DocletOptions(new String[][] {{DocletOptions.OVERVIEW, "src/main/java/overview.adoc"}}));
         assertTrue(iterator.render(mockDoc, mockRenderer));
         verify(mockRenderer).renderDoc(mockDoc);
+    }
+
+    @Test
+    public void testInclude() {
+        DocletIterator iterator = new DocletIterator(new DocletOptions(new String[][] {
+                {DocletOptions.OVERVIEW, "foo.html"},
+                {DocletOptions.INCLUDE_FILTER, "org.asciidoctor.test.*"}}));
+
+        when(mockClassDoc.qualifiedName()).thenReturn("org.asciidoctor.test.MockClass");
+        when(mockPackageDoc.name()).thenReturn("org.asciidoctor.test");
+        when(mockClassDoc.containingPackage()).thenReturn(mockPackageDoc);
+
+        iterator.render(mockDoc, mockRenderer);
+
+        verify(mockRenderer).renderDoc(mockClassDoc);
+
+        reset(mockRenderer);
+
+        when(mockClassDoc.qualifiedName()).thenReturn("org.asciidoctor.outsidefilter.MockClass");
+        when(mockPackageDoc.name()).thenReturn("org.asciidoctor.outsidefilter");
+        when(mockClassDoc.containingPackage()).thenReturn(mockPackageDoc);
+
+        verify(mockRenderer, never()).renderDoc(mockClassDoc);
+    }
+
+    @Test
+    public void testExclude() {
+        DocletIterator iterator = new DocletIterator(new DocletOptions(new String[][] {
+                {DocletOptions.OVERVIEW, "foo.html"},
+                {DocletOptions.EXCLUDE_FILTER, "org.asciidoctor.test.*"}}));
+
+        when(mockClassDoc.qualifiedName()).thenReturn("org.asciidoctor.test.MockClass");
+        when(mockPackageDoc.name()).thenReturn("org.asciidoctor.test");
+        when(mockClassDoc.containingPackage()).thenReturn(mockPackageDoc);
+
+        iterator.render(mockDoc, mockRenderer);
+
+        verify(mockRenderer, never()).renderDoc(mockClassDoc);
+
+        reset(mockRenderer);
+
+        when(mockClassDoc.qualifiedName()).thenReturn("org.asciidoctor.outsidefilter.MockClass");
+        when(mockPackageDoc.name()).thenReturn("org.asciidoctor.outsidefilter");
+        when(mockClassDoc.containingPackage()).thenReturn(mockPackageDoc);
+
+        iterator.render(mockDoc, mockRenderer);
+
+        verify(mockRenderer).renderDoc(mockClassDoc);
+    }
+
+    @Test
+    public void testAsciidocletTag() {
+        DocletIterator iterator = new DocletIterator(new DocletOptions(new String[][] {
+                {DocletOptions.OVERVIEW, "foo.html"},
+                {DocletOptions.EXCLUDE_FILTER, "*"}}));
+
+        when(mockClassDoc.qualifiedName()).thenReturn("org.asciidoctor.test.MockClass");
+        when(mockPackageDoc.name()).thenReturn("org.asciidoctor.test");
+        when(mockClassDoc.containingPackage()).thenReturn(mockPackageDoc);
+        Tag asciidocletTag = mock(Tag.class);
+        when(asciidocletTag.name()).thenReturn("@asciidoclet");
+        when(mockClassDoc.tags()).thenReturn(new Tag[]{asciidocletTag});
+
+        iterator.render(mockDoc, mockRenderer);
+
+        verify(mockRenderer).renderDoc(mockClassDoc);
     }
 }

@@ -24,6 +24,7 @@ import com.sun.javadoc.RootDoc;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.regex.*;
 
 /**
  * Provides an interface to the doclet options we are interested in.
@@ -35,6 +36,8 @@ public class DocletOptions {
 
     public static final String ENCODING = "-encoding";
     public static final String OVERVIEW = "-overview";
+    public static final String INCLUDE_FILTER = "--include-asciidoclet-process";
+    public static final String EXCLUDE_FILTER = "--exclude-asciidoclet-process";
     public static final String BASEDIR = "--base-dir";
     public static final String STYLESHEET = "-stylesheetfile";
     public static final String DESTDIR = "-d";
@@ -52,6 +55,8 @@ public class DocletOptions {
     private final Optional<File> stylesheet;
     private final Optional<File> destdir;
     private final Optional<File> attributesFile;
+    private final List<String> includeFilters;
+    private final List<String> excludeFilters;
     private final String gemPath;
     private final List<String> requires;
     private final Charset encoding;
@@ -68,6 +73,8 @@ public class DocletOptions {
         File destdir = null;
         File attrsFile = null;
         String gemPath = null;
+        ImmutableList.Builder<String> includeFilters = ImmutableList.builder();
+        ImmutableList.Builder<String> excludeFilters = ImmutableList.builder();
         ImmutableList.Builder<String> requires = ImmutableList.builder();
         Charset encoding = Charset.defaultCharset();
         ImmutableList.Builder<String> attrs = ImmutableList.builder();
@@ -75,30 +82,26 @@ public class DocletOptions {
             if (option.length > 0) {
                 if (BASEDIR.equals(option[0])) {
                     basedir = new File(option[1]);
-                }
-                else if (OVERVIEW.equals(option[0])) {
+                } else if (OVERVIEW.equals(option[0])) {
                     overview = new File(option[1]);
-                }
-                else if (STYLESHEET.equals(option[0])) {
+                } else if (STYLESHEET.equals(option[0])) {
                     stylesheet = new File(option[1]);
-                }
-                else if (DESTDIR.equals(option[0])) {
+                } else if (DESTDIR.equals(option[0])) {
                     destdir = new File(option[1]);
-                }
-                else if (ENCODING.equals(option[0])) {
+                } else if (ENCODING.equals(option[0])) {
                     encoding = Charset.forName(option[1]);
-                }
-                else if (ATTRIBUTE.equals(option[0]) || ATTRIBUTE_LONG.equals(option[0])) {
+                } else if (ATTRIBUTE.equals(option[0]) || ATTRIBUTE_LONG.equals(option[0])) {
                     attrs.addAll(COMMA_WS.split(option[1]));
-                }
-                else if (ATTRIBUTES_FILE.equals(option[0])) {
+                } else if (ATTRIBUTES_FILE.equals(option[0])) {
                     attrsFile = new File(option[1]);
-                }
-                else if (GEM_PATH.equals(option[0])) {
+                } else if (GEM_PATH.equals(option[0])) {
                     gemPath = option[1];
-                }
-                else if (REQUIRE.equals(option[0]) || REQUIRE_LONG.equals(option[0])) {
+                } else if (REQUIRE.equals(option[0]) || REQUIRE_LONG.equals(option[0])) {
                     requires.addAll(COMMA_WS.split(option[1]));
+                } else if (INCLUDE_FILTER.equals(option[0])) {
+                    includeFilters.add(option[1]);
+                } else if (EXCLUDE_FILTER.equals(option[0])) {
+                    excludeFilters.add(option[1]);
                 }
             }
         }
@@ -112,6 +115,8 @@ public class DocletOptions {
         this.attributesFile = Optional.fromNullable(attrsFile);
         this.gemPath = gemPath;
         this.requires = requires.build();
+        this.includeFilters = includeFilters.build();
+        this.excludeFilters = excludeFilters.build();
     }
 
     public Optional<File> overview() {
@@ -136,6 +141,14 @@ public class DocletOptions {
 
     public List<String> attributes() {
         return attributes;
+    }
+
+    public List<String> getIncludeFilters() {
+        return includeFilters;
+    }
+
+    public List<String> getExcludeFilters() {
+        return excludeFilters;
     }
 
     Optional<File> attributesFile() {
@@ -186,6 +199,9 @@ public class DocletOptions {
             return 2;
         }
         if (REQUIRE.equals(option) || REQUIRE_LONG.equals(option)) {
+            return 2;
+        }
+        if (INCLUDE_FILTER.equals(option) || EXCLUDE_FILTER.equals(option)) {
             return 2;
         }
         return standardDoclet.optionLength(option);
