@@ -15,8 +15,6 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.base.Optional;
-import com.google.common.io.Files;
 import com.sun.javadoc.*;
 
 import java.io.File;
@@ -94,7 +92,7 @@ public class DocletIterator {
             File overviewFile = overview.get();
             if (isAsciidocFile(overviewFile.getName())) {
                 try {
-                    String overviewContent = Files.toString(overviewFile, docletOptions.encoding());
+                    String overviewContent = Resources.toString(overviewFile);
                     rootDoc.setRawCommentText(overviewContent);
                     renderer.renderDoc(rootDoc);
                 } catch (IOException e) {

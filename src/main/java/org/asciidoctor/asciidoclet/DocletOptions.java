@@ -15,23 +15,20 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.RootDoc;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Provides an interface to the doclet options we are interested in.
  */
 public class DocletOptions {
-
-    // Split on comma with optional whitespace
-    private static final Splitter COMMA_WS = Splitter.onPattern("\\s*,\\s*").omitEmptyStrings().trimResults();
 
     public static final String ENCODING = "-encoding";
     public static final String OVERVIEW = "-overview";
@@ -68,9 +65,9 @@ public class DocletOptions {
         File destdir = null;
         File attrsFile = null;
         String gemPath = null;
-        ImmutableList.Builder<String> requires = ImmutableList.builder();
+        List<String> requires = new ArrayList<String>();
         Charset encoding = Charset.defaultCharset();
-        ImmutableList.Builder<String> attrs = ImmutableList.builder();
+        List<String> attrs = new ArrayList<String>();
         for (String[] option : options) {
             if (option.length > 0) {
                 if (BASEDIR.equals(option[0])) {
@@ -89,7 +86,7 @@ public class DocletOptions {
                     encoding = Charset.forName(option[1]);
                 }
                 else if (ATTRIBUTE.equals(option[0]) || ATTRIBUTE_LONG.equals(option[0])) {
-                    attrs.addAll(COMMA_WS.split(option[1]));
+                    attrs.addAll(commaSplit(option[1]));
                 }
                 else if (ATTRIBUTES_FILE.equals(option[0])) {
                     attrsFile = new File(option[1]);
@@ -98,7 +95,7 @@ public class DocletOptions {
                     gemPath = option[1];
                 }
                 else if (REQUIRE.equals(option[0]) || REQUIRE_LONG.equals(option[0])) {
-                    requires.addAll(COMMA_WS.split(option[1]));
+                    requires.addAll(commaSplit(option[1]));
                 }
             }
         }
@@ -108,10 +105,22 @@ public class DocletOptions {
         this.stylesheet = Optional.fromNullable(stylesheet);
         this.destdir = Optional.fromNullable(destdir);
         this.encoding = encoding;
-        this.attributes = attrs.build();
+        this.attributes = Collections.unmodifiableList(attrs);
         this.attributesFile = Optional.fromNullable(attrsFile);
         this.gemPath = gemPath;
-        this.requires = requires.build();
+        this.requires = Collections.unmodifiableList(requires);
+    }
+
+    private Collection<? extends String> commaSplit(String input) {
+        List<String> output = new ArrayList<String>();
+
+        for(String part : input.split("\\s*,\\s*")) {
+            String trimmed = part.trim();
+            if(!trimmed.isEmpty()) {
+                output.add(trimmed);
+            }
+        }
+        return output;
     }
 
     public Optional<File> overview() {

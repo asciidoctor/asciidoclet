@@ -15,8 +15,6 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import com.sun.javadoc.DocErrorReporter;
 import org.asciidoctor.Asciidoctor;
 import org.hamcrest.Matchers;
@@ -24,7 +22,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -175,14 +175,14 @@ public class AttributesLoaderTest {
 
     private File createTempFile(String name, String content) throws IOException {
         File f = tmpDir.newFile(name);
-        Files.asCharSink(f, Charsets.UTF_8).write(content);
+        Resources.copy(new ByteArrayInputStream(content.getBytes()), new FileOutputStream(f));
         return f;
     }
 
     private File createTempFile(String dir, String name, String content) throws IOException {
         File d = tmpDir.newFolder(dir);
         File f = new File(d, name);
-        Files.asCharSink(f, Charsets.UTF_8).write(content);
+        Resources.copy(new ByteArrayInputStream(content.getBytes()), new FileOutputStream(f));
         return f;
     }
 

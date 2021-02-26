@@ -15,7 +15,6 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.io.Resources;
 import com.sun.javadoc.DocErrorReporter;
 
 import java.io.File;
