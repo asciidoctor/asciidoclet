@@ -41,6 +41,8 @@ AsciiDoc straddles the line between readable markup and beautifully rendered con
 
 Asciidoclet incorporates an AsciiDoc renderer (Asciidoctor via the {asciidoctor-java-ref}[Asciidoctor Java integration] library) into a simple Doclet that enables AsciiDoc formatting within Javadoc comments and tags.
 
+See the {asciidoclet-docs-ref}[full documentation] for more details.
+
 == Example
 
 Here's an example of a class with traditional Javadoc.
