@@ -36,8 +36,8 @@ public class DocletOptions {
 
     public static final String ENCODING = "-encoding";
     public static final String OVERVIEW = "-overview";
-    public static final String INCLUDE_FILTER = "--include-asciidoclet-process";
-    public static final String EXCLUDE_FILTER = "--exclude-asciidoclet-process";
+    public static final String INCLUDE_FILTER = "--asciidoclet-include";
+    public static final String EXCLUDE_FILTER = "--asciidoclet-exclude";
     public static final String BASEDIR = "--base-dir";
     public static final String STYLESHEET = "-stylesheetfile";
     public static final String DESTDIR = "-d";
