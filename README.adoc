@@ -240,6 +240,17 @@ Overview documentation can be generated from an Asciidoc file using the standard
 Files matching [x-]`*.adoc`, [x-]`*.ad`, [x-]`*.asciidoc` or [x-]`*.txt` are processed by Asciidoclet.
 Other files are assumed to be HTML and will be processed by the standard doclet.
 
+--asciidoclet-include <filter>::
+--asciidoclet-exclude <filter>::
+Explicitly include or exclude classes from being processed as Asciidoc comments by ant-style path matching (see https://github.com/azagniotov/ant-style-path-matcher[ant-style-path-matcher]).
+If `--asciidoclet-include` is specified, only classes and packages matching the include filter are processed.
+Likewise, if `--include` is unspecified, all classes are processed.
+If `--asciidoclet-exclude` is specified, classes specifically matching the filter are not processed.
+`--asciidoclet-include` and `--asciidoclet-exclude` can be mixed.
+In addition, classes excluded with `--asciidoclet-exclude` or not matching a specified `--asciidoclet-include` may be included by annotating the class level javadoc with `@asciidoclet`.
+Doing so allows the ability to write one class at a time while respecting refactors.
+This feature allows the migration of documentation from HTML to Asciidoc in a piecemeal way
+
 // end::doclet-options[]
 // end::usage[]
 
