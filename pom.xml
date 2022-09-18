@@ -104,9 +104,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration combine.self="override">
-				</configuration>
-			</plugin>			
+				<configuration combine.self="override"></configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -203,9 +202,9 @@
 
 
 	<scm>
-		<url>http://github.com/asciidoctor/asciidoclet</url>
-		<connection>scm:git:git@github.com:asciidoctor/asciidoclet.git</connection>
-		<developerConnection>scm:git:git@github.com:asciidoctor/asciidoclet.git</developerConnection>
+		<url>http://github.com/devlauer/asciidoclet</url>
+		<connection>scm:git:git@github.com:devlauer/asciidoclet.git</connection>
+		<developerConnection>scm:git:git@github.com:devlauer/asciidoclet.git</developerConnection>
 	</scm>
 
 </project>
