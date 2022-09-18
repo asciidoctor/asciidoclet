@@ -12,7 +12,7 @@
 	<groupId>de.elnarion.asciidoc</groupId>
 	<artifactId>asciidoclet</artifactId>
 	<packaging>jar</packaging>
-	<version>1.5.7-SNAPSHOT</version>
+	<version>2.5.5-SNAPSHOT</version>
 
 	<name>AsciiDoc Javadoc Doclet</name>
 
@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>org.asciidoctor</groupId>
 			<artifactId>asciidoctorj</artifactId>
-			<version>2.4.2</version>
+			<version>2.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -91,33 +91,25 @@
 
 	<build>
 		<plugins>
+			<!-- tag::pom_include[] -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
+				<configuration combine.self="override">
+
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- tag::pom_include[] -->
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration combine.self="override">
+				</configuration>
+			</plugin>			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -127,20 +119,19 @@
 					</execution>
 				</executions>
 				<configuration>
-					<source>1.7</source>
+					<source>1.8</source>
 					<doclet>org.asciidoctor.Asciidoclet</doclet>
 					<docletArtifact>
-						<groupId>org.asciidoctor</groupId>
+						<groupId>de.elnarion.asciidoc</groupId>
 						<artifactId>asciidoclet</artifactId>
 						<version>${project.version}</version>
 					</docletArtifact>
-					<additionalparam>
-						<!--1-->
-						--base-dir ${project.basedir}
+					<additionalOptions>
+					  --base-dir ${project.basedir}
                       --attribute "project_name=${project.name}"
                       --attribute "project_version=${project.version}"
                       --attribute "project_desc=${project.description}"
-					</additionalparam>
+					</additionalOptions>
 					<linksource>true</linksource>
 					<overview>src/main/java/overview.adoc</overview> <!--2-->
 				</configuration>
