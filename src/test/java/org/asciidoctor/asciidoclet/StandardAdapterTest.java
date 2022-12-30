@@ -53,7 +53,7 @@ public class StandardAdapterTest {
 
         assertEquals(optionsLength, adapter.optionLength(options));
 
-        PowerMockito.verifyStatic();
+        PowerMockito.verifyStatic(Standard.class);
         Standard.optionLength(options);
     }
 
@@ -65,7 +65,7 @@ public class StandardAdapterTest {
 
         assertTrue(adapter.start(mockDoc));
 
-        PowerMockito.verifyStatic();
+        PowerMockito.verifyStatic(Standard.class);
         Standard.start(mockDoc);
     }
 
@@ -78,7 +78,7 @@ public class StandardAdapterTest {
 
         assertTrue(adapter.validOptions(options, mockReporter));
 
-        PowerMockito.verifyStatic();
+        PowerMockito.verifyStatic(Standard.class);
         Standard.validOptions(options, mockReporter);
     }
 }

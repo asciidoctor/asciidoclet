@@ -137,7 +137,7 @@ public class AsciidoctorRendererTest {
         verify(mockDoc).setRawCommentText(eq(sourceText));
     }
 
-    private static final class OptionsMatcher extends ArgumentMatcher<Options> {
+    private static final class OptionsMatcher implements ArgumentMatcher<Options> {
 
         private final boolean inline;
 
@@ -145,10 +145,9 @@ public class AsciidoctorRendererTest {
             this.inline = inline;
         }
 
-        @Override
-        public boolean matches(Object input) {
-            Options options = (Options) input;
+		@Override
+		public boolean matches(Options options) {
             return !inline || (options.map().get(Options.DOCTYPE).equals(AsciidoctorRenderer.INLINE_DOCTYPE));
-        }
+		}
     }
 }
