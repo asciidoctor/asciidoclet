@@ -87,24 +87,19 @@ public class DocletIterator {
 		// handle the various parts of the Class doc
 		renderer.renderDoc(doc);
 		for (MemberDoc member : doc.fields()) {
-			System.out.println("  fielddoc " + doc.name());
 			renderer.renderDoc(member);
 		}
 		for (MemberDoc member : doc.constructors()) {
-			System.out.println("  constructordoc " + doc.name());
 			renderer.renderDoc(member);
 		}
 		for (MemberDoc member : doc.methods()) {
-			System.out.println("  methoddoc " + doc.name());
 			renderer.renderDoc(member);
 		}
 		for (MemberDoc member : doc.enumConstants()) {
-			System.out.println("  enumdoc " + doc.name());
 			renderer.renderDoc(member);
 		}
 		if (doc instanceof AnnotationTypeDoc) {
 			for (MemberDoc member : ((AnnotationTypeDoc) doc).elements()) {
-				System.out.println("  annotationdoc " + doc.name());
 				renderer.renderDoc(member);
 			}
 		}
