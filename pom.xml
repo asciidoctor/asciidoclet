@@ -79,6 +79,16 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jruby</groupId>
+				<artifactId>jruby</artifactId>
+				<version>9.4.1.0</version>
+				<scope>compile</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<build>
 		<plugins>
 			<!-- tag::pom_include[] -->
@@ -212,6 +222,6 @@
 		<url>http://github.com/devlauer/asciidoclet</url>
 		<connection>scm:git:git@github.com:devlauer/asciidoclet.git</connection>
 		<developerConnection>scm:git:git@github.com:devlauer/asciidoclet.git</developerConnection>
-	  <tag>asciidoclet-2.0.3</tag>
-  </scm>
+		<tag>asciidoclet-2.0.3</tag>
+	</scm>
 </project>
