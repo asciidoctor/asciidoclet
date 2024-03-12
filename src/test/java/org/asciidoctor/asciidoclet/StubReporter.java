@@ -18,47 +18,41 @@ package org.asciidoctor.asciidoclet;
 import com.sun.source.util.DocTreePath;
 import jdk.javadoc.doclet.Reporter;
 
+import javax.lang.model.element.Element;
+import javax.tools.Diagnostic;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.lang.model.element.Element;
-import javax.tools.Diagnostic;
 
 import static org.junit.Assert.fail;
 
-public class StubReporter implements Reporter
-{
+public class StubReporter implements Reporter {
+
     private List<List<Object>> calls = new ArrayList<>();
 
     @Override
-    public void print( Diagnostic.Kind kind, String msg )
-    {
-        calls.add( List.of( kind, msg ) );
+    public void print(Diagnostic.Kind kind, String msg) {
+        calls.add(List.of(kind, msg));
     }
 
     @Override
-    public void print( Diagnostic.Kind kind, DocTreePath path, String msg )
-    {
-        calls.add( List.of( kind, path, msg ) );
+    public void print(Diagnostic.Kind kind, DocTreePath path, String msg) {
+        calls.add(List.of(kind, path, msg));
     }
 
     @Override
-    public void print( Diagnostic.Kind kind, Element e, String msg )
-    {
-        calls.add( List.of( kind, e, msg ) );
+    public void print(Diagnostic.Kind kind, Element e, String msg) {
+        calls.add(List.of(kind, e, msg));
     }
 
-    void assertNoMoreInteractions()
-    {
-        if ( !calls.isEmpty() )
-        {
-            String callsString = calls.stream().map( Object::toString ).collect( Collectors.joining( "\n\t", "\n\t", "" ) );
-            fail( "Expected to not have any print calls, but got the following: " + callsString );
+    void assertNoMoreInteractions() {
+        if (!calls.isEmpty()) {
+            String callsString = calls.stream().map(Object::toString).collect(Collectors.joining("\n\t", "\n\t", ""));
+            fail("Expected to not have any print calls, but got the following: " + callsString);
         }
     }
 
-    List<Object> pullCall()
-    {
-        return calls.remove( 0 );
+    List<Object> pullCall() {
+        return calls.remove(0);
     }
 }

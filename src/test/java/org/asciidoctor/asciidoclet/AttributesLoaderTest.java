@@ -34,8 +34,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class AttributesLoaderTest {
-    static final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
 
+    private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
     private final StubReporter reporter = new StubReporter();
 
     @Rule
@@ -43,7 +43,7 @@ public class AttributesLoaderTest {
 
     @Test
     public void testNoAttributes() {
-        DocletOptions options = new DocletOptions( reporter );
+        DocletOptions options = new DocletOptions(reporter);
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = loader.load();
@@ -54,139 +54,133 @@ public class AttributesLoaderTest {
 
     @Test
     public void testOnlyCommandLineAttributes() {
-        DocletOptions options = new DocletOptions( reporter );
-        options.collect( AsciidocletOptions.ATTRIBUTE, List.of( "foo=bar, foo2=foo-two, not!, override=override@" ) );
+        DocletOptions options = new DocletOptions(reporter);
+        options.collect(AsciidocletOptions.ATTRIBUTE, List.of("foo=bar, foo2=foo-two, not!, override=override@"));
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = loader.load();
 
-        assertEquals( attrs.get( "foo" ), "bar" );
-        assertEquals( attrs.get( "foo2" ), "foo-two" );
-        assertEquals( attrs.get( "override" ), "override@" );
-        assertFalse( attrs.containsKey( "not" ) );
-        assertTrue( attrs.containsKey( "not!" ) );
+        assertEquals(attrs.get("foo"), "bar");
+        assertEquals(attrs.get("foo2"), "foo-two");
+        assertEquals(attrs.get("override"), "override@");
+        assertFalse(attrs.containsKey("not"));
+        assertTrue(attrs.containsKey("not!"));
         reporter.assertNoMoreInteractions();
     }
 
     @Test
     public void testOnlyCommandLineAttributesMulti() {
-        DocletOptions options = new DocletOptions( reporter );
-        options.collect( AsciidocletOptions.ATTRIBUTE, List.of(
-                "foo=bar", "foo2=foo two", "not!", "override=override@" ) );
+        DocletOptions options = new DocletOptions(reporter);
+        options.collect(AsciidocletOptions.ATTRIBUTE, List.of(
+                "foo=bar", "foo2=foo two", "not!", "override=override@"));
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = loader.load();
 
-        assertEquals( attrs.get( "foo" ), "bar" );
-        assertEquals( attrs.get( "foo2" ), "foo two" );
-        assertEquals( attrs.get( "override" ), "override@" );
-        assertFalse( attrs.containsKey( "not" ) );
-        assertTrue( attrs.containsKey( "not!" ) );
+        assertEquals(attrs.get("foo"), "bar");
+        assertEquals(attrs.get("foo2"), "foo two");
+        assertEquals(attrs.get("override"), "override@");
+        assertFalse(attrs.containsKey("not"));
+        assertTrue(attrs.containsKey("not!"));
         reporter.assertNoMoreInteractions();
     }
 
     @Test
-    public void testOnlyAttributesFile() throws IOException
-    {
+    public void testOnlyAttributesFile() throws IOException {
         File attrsFile = createTempFile("attrs.adoc", ATTRS);
 
-        DocletOptions options = new DocletOptions( reporter );
-        options.collect( AsciidocletOptions.ATTRIBUTES_FILE, List.of( attrsFile.getAbsolutePath() ) );
+        DocletOptions options = new DocletOptions(reporter);
+        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.getAbsolutePath()));
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = loader.load();
 
-        assertEquals( attrs.get( "foo" ), "BAR" );
-        assertEquals( attrs.get( "foo2" ), "BAR-TWO" );
-        assertEquals( attrs.get( "override" ), "OVERRIDE" );
-        assertTrue( attrs.containsKey( "not" ) );
+        assertEquals(attrs.get("foo"), "BAR");
+        assertEquals(attrs.get("foo2"), "BAR-TWO");
+        assertEquals(attrs.get("override"), "OVERRIDE");
+        assertTrue(attrs.containsKey("not"));
         reporter.assertNoMoreInteractions();
     }
 
     @Test
-    public void testCommandLineAndAttributesFile() throws IOException
-    {
+    public void testCommandLineAndAttributesFile() throws IOException {
         File attrsFile = createTempFile("attrs.adoc", ATTRS);
 
-        DocletOptions options = new DocletOptions( reporter );
-        options.collect( AsciidocletOptions.ATTRIBUTE, List.of( "foo=bar, not!, override=override@" ) );
-        options.collect( AsciidocletOptions.ATTRIBUTES_FILE, List.of( attrsFile.getAbsolutePath() ) );
+        DocletOptions options = new DocletOptions(reporter);
+        options.collect(AsciidocletOptions.ATTRIBUTE, List.of("foo=bar, not!, override=override@"));
+        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.getAbsolutePath()));
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = new HashMap<>(loader.load());
 
-        assertEquals( attrs.get( "foo" ), "bar" );
-        assertEquals( attrs.get( "foo2" ), "bar-TWO" );
-        assertEquals( attrs.get( "override" ), "OVERRIDE" );
-        assertFalse( attrs.containsKey( "not" ) );
-        assertTrue( attrs.containsKey( "not!" ) );
+        assertEquals(attrs.get("foo"), "bar");
+        assertEquals(attrs.get("foo2"), "bar-TWO");
+        assertEquals(attrs.get("override"), "OVERRIDE");
+        assertFalse(attrs.containsKey("not"));
+        assertTrue(attrs.containsKey("not!"));
         reporter.assertNoMoreInteractions();
     }
 
     @Test
-    public void testAttributesFileIncludeFromBaseDir() throws IOException
-    {
+    public void testAttributesFileIncludeFromBaseDir() throws IOException {
         File attrsFile = createTempFile("attrs.adoc", "include::attrs-include.adoc[]");
         createTempFile("attrs-include.adoc", ATTRS);
 
-        DocletOptions options = new DocletOptions( reporter );
-        options.collect( AsciidocletOptions.ATTRIBUTES_FILE, List.of( attrsFile.getAbsolutePath() ) );
-        options.collect( AsciidocletOptions.BASEDIR, List.of( attrsFile.getParentFile().getAbsolutePath()) );
-        AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter );
-
-        Map<String, Object> attrs = loader.load();
-
-        assertEquals(attrs.get( "foo" ), "BAR" );
-        assertEquals(attrs.get( "foo2" ), "BAR-TWO" );
-        assertEquals(attrs.get( "override" ), "OVERRIDE" );
-        assertTrue( attrs.containsKey( "not" ) );
-        reporter.assertNoMoreInteractions();
-    }
-
-    @Test
-    public void testAttributesFileIncludeFromOtherDir() throws IOException
-    {
-        File attrsFile = createTempFile("attrs.adoc", "include::{includedir}/attrs-include.adoc[]");
-        createTempFile("foo", "attrs-include.adoc", ATTRS);
-
-        DocletOptions options = new DocletOptions( reporter );
-        options.collect( AsciidocletOptions.ATTRIBUTES_FILE, List.of( attrsFile.getAbsolutePath() ) );
-        options.collect( AsciidocletOptions.BASEDIR, List.of( attrsFile.getParentFile().getAbsolutePath() ) );
-        options.collect( AsciidocletOptions.ATTRIBUTE, List.of( "includedir=foo" ) );
+        DocletOptions options = new DocletOptions(reporter);
+        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.getAbsolutePath()));
+        options.collect(AsciidocletOptions.BASEDIR, List.of(attrsFile.getParentFile().getAbsolutePath()));
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = loader.load();
 
-        assertEquals(attrs.get( "foo" ), "BAR" );
-        assertEquals(attrs.get( "foo2" ), "BAR-TWO" );
-        assertEquals(attrs.get( "override" ), "OVERRIDE" );
-        assertTrue( attrs.containsKey( "not" ) );
+        assertEquals(attrs.get("foo"), "BAR");
+        assertEquals(attrs.get("foo2"), "BAR-TWO");
+        assertEquals(attrs.get("override"), "OVERRIDE");
+        assertTrue(attrs.containsKey("not"));
         reporter.assertNoMoreInteractions();
     }
 
-    private File createTempFile(String name, String content) throws IOException
-    {
+    @Test
+    public void testAttributesFileIncludeFromOtherDir() throws IOException {
+        File attrsFile = createTempFile("attrs.adoc", "include::{includedir}/attrs-include.adoc[]");
+        createTempFile("foo", "attrs-include.adoc", ATTRS);
+
+        DocletOptions options = new DocletOptions(reporter);
+        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.getAbsolutePath()));
+        options.collect(AsciidocletOptions.BASEDIR, List.of(attrsFile.getParentFile().getAbsolutePath()));
+        options.collect(AsciidocletOptions.ATTRIBUTE, List.of("includedir=foo"));
+        AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
+
+        Map<String, Object> attrs = loader.load();
+
+        assertEquals(attrs.get("foo"), "BAR");
+        assertEquals(attrs.get("foo2"), "BAR-TWO");
+        assertEquals(attrs.get("override"), "OVERRIDE");
+        assertTrue(attrs.containsKey("not"));
+        reporter.assertNoMoreInteractions();
+    }
+
+    private File createTempFile(String name, String content) throws IOException {
         File file = tmpDir.newFile(name);
-        writeFile( content, file );
+        writeFile(content, file);
         return file;
     }
 
     private File createTempFile(String dir, String name, String content) throws IOException {
         File directory = tmpDir.newFolder(dir);
         File file = new File(directory, name);
-        writeFile( content, file );
+        writeFile(content, file);
         return file;
     }
 
-    private void writeFile( String content, File file ) throws IOException
-    {
-        byte[] bytes = content.getBytes( StandardCharsets.UTF_8 );
-        Files.write( file.toPath(), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING );
+    private void writeFile(String content, File file) throws IOException {
+        byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+        Files.write(file.toPath(), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     static final String ATTRS =
             ":foo: BAR\n" +
-            ":foo2: {foo}-TWO\n" +
-            ":not: FOO\n" +
-            ":override: OVERRIDE\n";
+                    ":foo2: {foo}-TWO\n" +
+                    ":not: FOO\n" +
+                    ":override: OVERRIDE\n";
 }

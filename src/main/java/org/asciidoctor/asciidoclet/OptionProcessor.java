@@ -19,51 +19,44 @@ import jdk.javadoc.doclet.Doclet;
 
 import java.util.List;
 
-class OptionProcessor implements Doclet.Option
-{
+class OptionProcessor implements Doclet.Option {
+
     private final AsciidocletOptions prototype;
     private final DocletOptions collector;
 
-    OptionProcessor( AsciidocletOptions prototype, DocletOptions collector )
-    {
+    OptionProcessor(AsciidocletOptions prototype, DocletOptions collector) {
         this.prototype = prototype;
         this.collector = collector;
     }
 
     @Override
-    public int getArgumentCount()
-    {
+    public int getArgumentCount() {
         return prototype.getArgumentCount();
     }
 
     @Override
-    public String getDescription()
-    {
+    public String getDescription() {
         return prototype.getDescription();
     }
 
     @Override
-    public Kind getKind()
-    {
+    public Kind getKind() {
         return prototype.getKind();
     }
 
     @Override
-    public List<String> getNames()
-    {
+    public List<String> getNames() {
         return prototype.getNames();
     }
 
     @Override
-    public String getParameters()
-    {
+    public String getParameters() {
         return prototype.getParameters();
     }
 
     @Override
-    public boolean process( String option, List<String> arguments )
-    {
-        collector.collect( prototype, arguments );
+    public boolean process(String option, List<String> arguments) {
+        collector.collect(prototype, arguments);
         return true;
     }
 }

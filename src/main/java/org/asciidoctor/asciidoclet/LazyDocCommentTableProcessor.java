@@ -24,52 +24,42 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.function.Function;
 
-class LazyDocCommentTableProcessor
-{
-    @SuppressWarnings( "unchecked" )
-    static void processComments( DocCommentTable table, Function<Comment,Comment> mapper )
-    {
+class LazyDocCommentTableProcessor {
+
+    @SuppressWarnings("unchecked")
+    static void processComments(DocCommentTable table, Function<Comment, Comment> mapper) {
         // Use heckin' raw-types because LazyDocCommentTable.Entry has private access, so we
         // cannot statically express its type here.
         Map map;
-        Function<Object,Object> converter;
-        try
-        {
-            Field tableField = LazyDocCommentTable.class.getDeclaredField( "table" );
-            tableField.setAccessible( true );
-            map = (Map) tableField.get( table );
+        Function<Object, Object> converter;
+        try {
+            Field tableField = LazyDocCommentTable.class.getDeclaredField("table");
+            tableField.setAccessible(true);
+            map = (Map) tableField.get(table);
 
-            Class<?> entryClass = Class.forName( "com.sun.tools.javac.parser.LazyDocCommentTable$Entry" );
-            Constructor<?> ctor = entryClass.getDeclaredConstructor( Comment.class );
-            ctor.setAccessible( true );
-            Field commentField = entryClass.getDeclaredField( "comment" );
-            commentField.setAccessible( true );
-            Function<Object,Comment> fieldGetter = entry -> {
-                try
-                {
-                    return (Comment) commentField.get( entry );
-                }
-                catch ( Exception e )
-                {
-                    throw new RuntimeException( e );
+            Class<?> entryClass = Class.forName("com.sun.tools.javac.parser.LazyDocCommentTable$Entry");
+            Constructor<?> ctor = entryClass.getDeclaredConstructor(Comment.class);
+            ctor.setAccessible(true);
+            Field commentField = entryClass.getDeclaredField("comment");
+            commentField.setAccessible(true);
+            Function<Object, Comment> fieldGetter = entry -> {
+                try {
+                    return (Comment) commentField.get(entry);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             };
-            Function<Comment,Object> instantiator = comment -> {
-                try
-                {
-                    return ctor.newInstance( comment );
-                }
-                catch ( Exception e )
-                {
-                    throw new RuntimeException( e );
+            Function<Comment, Object> instantiator = comment -> {
+                try {
+                    return ctor.newInstance(comment);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             };
-            converter = fieldGetter.andThen( mapper ).andThen( instantiator );
+            converter = fieldGetter.andThen(mapper).andThen(instantiator);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e );
-        }
-        map.replaceAll( ( jcTree, entry ) -> converter.apply( entry ) );
+        map.replaceAll((jcTree, entry) -> converter.apply(entry));
     }
 }

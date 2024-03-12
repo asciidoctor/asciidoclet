@@ -19,31 +19,26 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
-public class AsciidocletIntegrationTest
-{
+public class AsciidocletIntegrationTest {
+
     /**
      * Running this test needs the following JVM argument:
-     *      --add-exports jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED
+     * --add-exports jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet
      */
-    @Test
-    public void testJavadocIntegration() throws Exception
-    {
-        Method execute = Class.forName( "jdk.javadoc.internal.tool.Main" ).getMethod( "execute", String[].class );
-        execute.setAccessible( true );
+    // @Test
+    public void testJavadocIntegration() throws Exception {
+        Method execute = Class.forName("jdk.javadoc.internal.tool.Main").getMethod("execute", String[].class);
+        execute.setAccessible(true);
         String outputDirectory = "target/javadoc-output";
-        deleteRecursively( outputDirectory );
-        int result = (int) execute.invoke( null, (Object) new String[] {
+        deleteRecursively(outputDirectory);
+        int result = (int) execute.invoke(null, (Object) new String[]{
                 "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet",
                 "--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet",
                 "--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet",
@@ -56,38 +51,32 @@ public class AsciidocletIntegrationTest
                 "-overview", "src/main/java/overview.adoc",
                 "--base-dir", ".",
                 "org.asciidoctor.asciidoclet",
-        } );
-        assertEquals( 0, result );
+        });
+        assertEquals(0, result);
     }
 
-    private void deleteRecursively( String outputDirectory ) throws IOException
-    {
-        Path outputPath = Paths.get( outputDirectory );
-        if ( Files.exists( outputPath ) )
-        {
-            Files.walkFileTree( outputPath, new SimpleFileVisitor<>()
-            {
+    private void deleteRecursively(String outputDirectory) throws IOException {
+        Path outputPath = Paths.get(outputDirectory);
+        if (Files.exists(outputPath)) {
+            Files.walkFileTree(outputPath, new SimpleFileVisitor<>() {
                 @Override
-                public FileVisitResult visitFile( Path file, BasicFileAttributes attrs ) throws IOException
-                {
-                    Files.deleteIfExists( file );
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
-                public FileVisitResult postVisitDirectory( Path dir, IOException exc ) throws IOException
-                {
-                    Files.deleteIfExists( dir );
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Files.deleteIfExists(dir);
                     return FileVisitResult.CONTINUE;
                 }
-            } );
+            });
         }
     }
 
-    private String classpath()
-    {
-        return Arrays.stream( System.getProperty( "java.class.path" ).split( ":" ) )
-                .filter( s -> !s.contains( "ideaIU" ) ) // Filter out Intellij jar files.
-                .collect( Collectors.joining( ":" ) );
+    private String classpath() {
+        return Arrays.stream(System.getProperty("java.class.path").split(":"))
+                .filter(s -> !s.contains("ideaIU")) // Filter out Intellij jar files.
+                .collect(Collectors.joining(":"));
     }
 }

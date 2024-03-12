@@ -17,39 +17,34 @@ package org.asciidoctor.asciidoclet;
 
 import com.sun.tools.javac.parser.Tokens;
 
-class AsciidocComment implements Tokens.Comment
-{
+class AsciidocComment implements Tokens.Comment {
+
     private final String asciidoc;
     private final Tokens.Comment comment;
 
-    AsciidocComment( String asciidoc, Tokens.Comment comment )
-    {
+    AsciidocComment(String asciidoc, Tokens.Comment comment) {
         this.asciidoc = asciidoc;
         this.comment = comment;
     }
 
     @Override
-    public String getText()
-    {
+    public String getText() {
         return asciidoc;
     }
 
     @Override
-    public int getSourcePos( int index )
-    {
+    public int getSourcePos(int index) {
         // can we somehow map positions in the asciidoctor back to positions in the source javadoc?
-        return comment.getSourcePos( 0 );
+        return comment.getSourcePos(0);
     }
 
     @Override
-    public CommentStyle getStyle()
-    {
+    public CommentStyle getStyle() {
         return comment.getStyle();
     }
 
     @Override
-    public boolean isDeprecated()
-    {
+    public boolean isDeprecated() {
         return comment.isDeprecated();
     }
 }

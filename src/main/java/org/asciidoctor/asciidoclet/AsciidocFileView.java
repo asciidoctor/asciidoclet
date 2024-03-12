@@ -15,6 +15,10 @@
  */
 package org.asciidoctor.asciidoclet;
 
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.NestingKind;
+import javax.tools.FileObject;
+import javax.tools.JavaFileObject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,135 +29,109 @@ import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.NestingKind;
-import javax.tools.FileObject;
-import javax.tools.JavaFileObject;
 
-class AsciidocFileView implements JavaFileObject
-{
-    private final AsciidoctorRenderer renderer;
+/**
+ * Handles other documents like the overview.
+ */
+class AsciidocFileView implements JavaFileObject {
+
+    private final AsciidoctorConverter converter;
     private final FileObject fileObject;
     private String renderedContents;
 
-    AsciidocFileView( AsciidoctorRenderer renderer, FileObject fileObject )
-    {
-        this.renderer = renderer;
+    AsciidocFileView(AsciidoctorConverter converter, FileObject fileObject) {
+        this.converter = converter;
         this.fileObject = fileObject;
     }
 
     @Override
-    public URI toUri()
-    {
-        try
-        {
-            URI uri = fileObject.toUri();
-            uri = new URI( maskFileExtension( uri.toString() ) );
-            return uri;
-        }
-        catch ( URISyntaxException e )
-        {
-            throw new RuntimeException( e );
+    public URI toUri() {
+        try {
+            return new URI(maskFileExtension(fileObject.toUri().toString()));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public String getName()
-    {
-        return maskFileExtension( fileObject.getName() );
+    public String getName() {
+        return maskFileExtension(fileObject.getName());
     }
 
-    private String maskFileExtension( String name )
-    {
-        if ( isAsciidoctorFile( name ) )
-        {
-            name = name.substring( 0, name.lastIndexOf( '.' ) ) + ".html";
+    private String maskFileExtension(String name) {
+        if (isAsciidoctorFile(name)) {
+            name = name.substring(0, name.lastIndexOf('.')) + ".html";
         }
         return name;
     }
 
-    private boolean isAsciidoctorFile( String name )
-    {
-        return name.endsWith( ".adoc" ) || name.endsWith( ".ad" ) || name.endsWith( ".asciidoc" ) || name.endsWith( ".txt" );
+    private boolean isAsciidoctorFile(String name) {
+        return name.endsWith(".adoc") || name.endsWith(".ad") || name.endsWith(".asciidoc") || name.endsWith(".txt");
     }
 
     @Override
-    public InputStream openInputStream() throws IOException
-    {
-        return new ByteArrayInputStream( getCharContent( true ).getBytes( Charset.defaultCharset() ) );
+    public InputStream openInputStream() throws IOException {
+        return new ByteArrayInputStream(getCharContent(true).getBytes(Charset.defaultCharset()));
     }
 
     @Override
-    public OutputStream openOutputStream() throws IOException
-    {
+    public OutputStream openOutputStream() throws IOException {
         return fileObject.openOutputStream();
     }
 
     @Override
-    public Reader openReader( boolean ignoreEncodingErrors ) throws IOException
-    {
-        return new StringReader( getCharContent( ignoreEncodingErrors ) );
+    public Reader openReader(boolean ignoreEncodingErrors) throws IOException {
+        return new StringReader(getCharContent(ignoreEncodingErrors));
     }
 
     @Override
-    public String getCharContent( boolean ignoreEncodingErrors ) throws IOException
-    {
-        if ( renderedContents == null )
-        {
-            renderedContents = fileObject.getCharContent( ignoreEncodingErrors ).toString();
-            if ( isAsciidoctorFile( fileObject.getName() ) )
-            {
-                renderedContents = "<body>" + renderer.renderDoc( renderedContents ) + "</body>";
+    public String getCharContent(boolean ignoreEncodingErrors) throws IOException {
+        if (renderedContents == null) {
+            renderedContents = fileObject.getCharContent(ignoreEncodingErrors).toString();
+            if (isAsciidoctorFile(fileObject.getName())) {
+                renderedContents = "<body>" + converter.convert(renderedContents) + "</body>";
             }
         }
         return renderedContents;
     }
 
     @Override
-    public Writer openWriter() throws IOException
-    {
+    public Writer openWriter() throws IOException {
         return fileObject.openWriter();
     }
 
     @Override
-    public long getLastModified()
-    {
+    public long getLastModified() {
         return fileObject.getLastModified();
     }
 
     @Override
-    public boolean delete()
-    {
+    public boolean delete() {
         return fileObject.delete();
     }
 
     @Override
-    public Kind getKind()
-    {
+    public Kind getKind() {
         return ((JavaFileObject) fileObject).getKind();
     }
 
     @Override
-    public boolean isNameCompatible( String simpleName, Kind kind )
-    {
-        return ((JavaFileObject) fileObject).isNameCompatible( simpleName, kind );
+    public boolean isNameCompatible(String simpleName, Kind kind) {
+        return ((JavaFileObject) fileObject).isNameCompatible(simpleName, kind);
     }
 
     @Override
-    public NestingKind getNestingKind()
-    {
+    public NestingKind getNestingKind() {
         return ((JavaFileObject) fileObject).getNestingKind();
     }
 
     @Override
-    public Modifier getAccessLevel()
-    {
+    public Modifier getAccessLevel() {
         return ((JavaFileObject) fileObject).getAccessLevel();
     }
 
-    @SuppressWarnings( "unchecked" )
-    <T extends FileObject> T unwrap()
-    {
+    @SuppressWarnings("unchecked")
+    <T extends FileObject> T unwrap() {
         return (T) fileObject;
     }
 }

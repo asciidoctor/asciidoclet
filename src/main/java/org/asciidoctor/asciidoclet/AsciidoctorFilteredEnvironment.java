@@ -19,39 +19,37 @@ import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.internal.tool.DocEnvImpl;
 
-import java.io.IOException;
 import javax.tools.JavaFileManager;
 import javax.tools.StandardJavaFileManager;
+import java.io.IOException;
 
-public class AsciidoctorFilteredEnvironment extends DocEnvImpl implements DocletEnvironment, AutoCloseable
-{
-    private final AsciidoctorRenderer renderer;
+public class AsciidoctorFilteredEnvironment
+        extends DocEnvImpl
+        implements DocletEnvironment, AutoCloseable {
+
+    private final AsciidoctorConverter converter;
     private final StandardJavaFileManager fileManager;
     private final AsciiDocTrees asciiDocTrees;
 
-    AsciidoctorFilteredEnvironment( DocletEnvironment environment, AsciidoctorRenderer renderer )
-    {
-        super( ((DocEnvImpl) environment).toolEnv, ((DocEnvImpl) environment).etable );
-        this.renderer = renderer;
-        this.fileManager = new AsciidoctorFileManager( renderer, (StandardJavaFileManager) environment.getJavaFileManager() );
-        this.asciiDocTrees = new AsciiDocTrees( renderer, fileManager, environment.getDocTrees() );
+    AsciidoctorFilteredEnvironment(DocletEnvironment environment, AsciidoctorConverter converter) {
+        super(((DocEnvImpl) environment).toolEnv, ((DocEnvImpl) environment).etable);
+        this.converter = converter;
+        this.fileManager = new AsciidoctorFileManager(converter, (StandardJavaFileManager) environment.getJavaFileManager());
+        this.asciiDocTrees = new AsciiDocTrees(converter, fileManager, environment.getDocTrees());
     }
 
     @Override
-    public JavaFileManager getJavaFileManager()
-    {
+    public JavaFileManager getJavaFileManager() {
         return fileManager;
     }
 
     @Override
-    public DocTrees getDocTrees()
-    {
+    public DocTrees getDocTrees() {
         return asciiDocTrees;
     }
 
     @Override
-    public void close() throws IOException
-    {
-        renderer.cleanup();
+    public void close() throws IOException {
+        converter.cleanup();
     }
 }

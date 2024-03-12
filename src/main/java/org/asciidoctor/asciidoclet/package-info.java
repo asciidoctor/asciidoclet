@@ -17,9 +17,9 @@
  * = Asciidoclet
  *
  * https://github.com/asciidoctor/asciidoclet[Asciidoclet] is a Javadoc Doclet
- * that uses http://asciidoctor.org[Asciidoctor] (via the
+ * that uses https://asciidoctor.org[Asciidoctor] (via the
  * https://github.com/asciidoctor/asciidoctorj[Asciidoctor Java integration])
- * to interpret http://asciidoc.org[AsciiDoc] markup within Javadoc comments.
+ * to interpret https://asciidoc.org[AsciiDoc] markup within Javadoc comments.
  *
  * == Usage
  *
@@ -30,9 +30,9 @@
  * <plugin>
  *   <groupId>org.apache.maven.plugins</groupId>
  *   <artifactId>maven-javadoc-plugin</artifactId>
- *   <version>2.9</version>
+ *   <version>3.6.3</version>
  *   <configuration>
- *     <source>1.7</source>
+ *     <source>11</source>
  *     <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
  *     <docletArtifact>
  *       <groupId>org.asciidoctor</groupId>
@@ -52,8 +52,8 @@
  * /**
  *  * = Asciidoclet
  *  *
- *  * A Javadoc Doclet that uses http://asciidoctor.org[Asciidoctor]
- *  * to render http://asciidoc.org[AsciiDoc] markup in Javadoc comments.
+ *  * A Javadoc Doclet that uses https://asciidoctor.org[Asciidoctor]
+ *  * to render https://asciidoc.org[AsciiDoc] markup in Javadoc comments.
  *  *
  *  * @author https://github.com/johncarl81[John Ericksen]
  *  *\/
@@ -93,8 +93,8 @@
  *
  * Links::
  * Doc Writer <doc@example.com> +
- * http://asciidoc.org[AsciiDoc] is a lightweight markup language. +
- * Learn more about it at http://asciidoctor.org. +
+ * https://asciidoc.org[AsciiDoc] is a lightweight markup language. +
+ * Learn more about it at https://asciidoctor.org. +
  *
  * Bullets::
  * +

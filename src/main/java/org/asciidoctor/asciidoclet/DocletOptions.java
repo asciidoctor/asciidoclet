@@ -1,5 +1,5 @@
-/**
- * Copyright 2013-2015 John Ericksen
+/*
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,165 +30,107 @@ import static javax.tools.Diagnostic.Kind.WARNING;
 /**
  * Provides an interface to the doclet options we are interested in.
  */
-public class DocletOptions
-{
+public class DocletOptions {
 
     private final Reporter reporter;
 
+    private Charset encoding;
     private File basedir;
-    private File overview;
     private File stylesheet;
     private File attributesFile;
-    private List<String> includeFilters;
-    private List<String> excludeFilters;
+    private List<String> attributes;
     private String gemPath;
     private List<String> requires;
-    private Charset encoding;
-    private List<String> attributes;
 
-    public DocletOptions( Reporter reporter )
-    {
+    public DocletOptions(Reporter reporter) {
         this.reporter = reporter;
-        requires = new ArrayList<>();
         encoding = Charset.defaultCharset();
         attributes = new ArrayList<>();
+        requires = new ArrayList<>();
     }
 
-    void collect( AsciidocletOptions option, List<String> list )
-    {
-        switch ( option )
-        {
-            case BASEDIR:
-                basedir = new File( list.get( 0 ) );
+    void collect(AsciidocletOptions option, List<String> list) {
+        switch (option) {
+            case ENCODING:
+                encoding = Charset.forName(list.get(0));
                 break;
-            case OVERVIEW:
-                overview = new File( list.get( 0 ) );
+            case BASEDIR:
+                basedir = new File(list.get(0));
                 break;
             case STYLESHEET:
-                stylesheet = new File( list.get( 0 ) );
-                break;
-            case ENCODING:
-                encoding = Charset.forName( list.get( 0 ) );
+                stylesheet = new File(list.get(0));
                 break;
             case ATTRIBUTE:
-                splitTrimStream( list ).forEach( attributes::add );
+            case ATTRIBUTE_LONG:
+                splitTrimStream(list).forEach(attributes::add);
                 break;
             case ATTRIBUTES_FILE:
-                attributesFile = new File( list.get( 0 ) );
+                attributesFile = new File(list.get(0));
                 break;
             case GEM_PATH:
-                gemPath = list.get( 0 );
+                gemPath = list.get(0);
+                break;
             case REQUIRE:
             case REQUIRE_LONG:
-                splitTrimStream( list ).forEach( requires::add );
+                splitTrimStream(list).forEach(requires::add);
                 break;
-// TODO
-//        } else if (INCLUDE_FILTER.equals(option[0])) {
-//        includeFilters.add(option[1]);
-//    } else if (EXCLUDE_FILTER.equals(option[0])) {
-//        excludeFilters.add(option[1]);
-//    }
         }
     }
 
-    private Stream<String> splitTrimStream( List<String> list )
-    {
+    private Stream<String> splitTrimStream(List<String> list) {
         return list.stream()
-                .flatMap( s -> Arrays.stream( s.split( "\\s*,\\s*" ) ) )
-                .map( String::trim )
-                .filter( s -> !s.isEmpty() );
+                .flatMap(s -> Arrays.stream(s.split("\\s*,\\s*")))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty());
     }
 
-    public Optional<File> stylesheet() {
-    Optional<File> overview()
-    {
-        return Optional.ofNullable( overview );
+    void validateOptions() {
+        if (baseDir().isEmpty()) {
+            printWarning(AsciidocletOptions.BASEDIR + " must be present for includes or file reference features to work properly");
+        }
+
+        Optional<File> attrsFile = attributesFile();
+        if (attrsFile.isPresent() && !attrsFile.get().canRead()) {
+            printWarning("Cannot read attributes file " + attrsFile.get());
+        }
     }
 
-    Optional<File> stylesheet()
-    {
-        return Optional.ofNullable( stylesheet );
+    private void printWarning(String message) {
+        reporter.print(WARNING, message);
     }
 
-    Optional<File> baseDir()
-    {
-        return Optional.ofNullable( basedir );
+    Optional<File> stylesheet() {
+        return Optional.ofNullable(stylesheet);
     }
 
-    Charset encoding()
-    {
+    Optional<File> baseDir() {
+        return Optional.ofNullable(basedir);
+    }
+
+    Charset encoding() {
         return encoding;
     }
 
-    List<String> attributes()
-    {
+    List<String> attributes() {
         return attributes;
     }
 
-         List<String> getIncludeFilters() {
-            return includeFilters;
+    Optional<File> attributesFile() {
+        if (attributesFile == null) {
+            return Optional.empty();
         }
-
-         List<String> getExcludeFilters() {
-            return excludeFilters;
+        if (!attributesFile.isAbsolute() && baseDir().isPresent()) {
+            return Optional.of(new File(baseDir().get(), attributesFile.getPath()));
         }
+        return Optional.of(attributesFile);
+    }
 
-        Optional<File> attributesFile()
-        {
-            if ( attributesFile == null )
-            {
-                return Optional.empty();
-            }
-            if ( !attributesFile.isAbsolute() && baseDir().isPresent() )
-            {
-                return Optional.of( new File( baseDir().get(), attributesFile.getPath() ) );
-            }
-            return Optional.of( attributesFile );
-        }
-
-    String gemPath()
-    {
+    String gemPath() {
         return gemPath;
     }
 
-    List<String> requires()
-    {
+    List<String> requires() {
         return requires;
     }
 
-    // TODO Needed somewhere esle?
-        // How are these validated now?
-//    public static boolean validOptions(String[][] options, DocErrorReporter errorReporter, StandardAdapter standardDoclet) {
-//        DocletOptions docletOptions = new DocletOptions(options);
-//
-//        if (!docletOptions.baseDir().isPresent()) {
-//            errorReporter.printWarning(BASEDIR + " must be present for includes or file reference features to work properly.");
-//        }
-//
-//        Optional<File> attrsFile = docletOptions.attributesFile();
-//        if (attrsFile.isPresent() && !attrsFile.get().canRead()) {
-//            errorReporter.printWarning("Cannot read attributes file " + attrsFile.get());
-//        }
-//
-//        return standardDoclet.validOptions(options, errorReporter);
-//    }
-//
-//    public static int optionLength(String option, StandardAdapter standardDoclet) {
-//        if (BASEDIR.equals(option)) {
-//            return 2;
-//        }
-//        if (ATTRIBUTE.equals(option) || ATTRIBUTE_LONG.equals(option)) {
-//            return 2;
-//        }
-//        if (ATTRIBUTES_FILE.equals(option)) {
-//            return 2;
-//        }
-//        if (GEM_PATH.equals(option)) {
-//            return 2;
-//        }
-//        if (REQUIRE.equals(option) || REQUIRE_LONG.equals(option)) {
-//            return 2;
-//        }
-//        return standardDoclet.optionLength(option);
-//    }
 }
