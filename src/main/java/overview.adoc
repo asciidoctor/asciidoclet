@@ -1,6 +1,8 @@
 = Asciidoclet
 
-include::README.adoc[tags=usage]
+include::../../../docs/modules/ROOT/pages/usage.adoc[leveloffset=+1,tags=!warning-message]
+
+include::../../../docs/modules/ROOT/pages/options.adoc[leveloffset=+1]
 
 @see https://github.com/asciidoctor/asciidoclet[Asciidoclet on Github^]
 @see http://asciidoctor.org/docs[Asciidoctor Documentation^]

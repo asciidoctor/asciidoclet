@@ -1,0 +1,68 @@
+= Getting Started
+
+Traditionally, Javadocs have mixed minor markup with HTML which, if you're writing for HTML Javadoc output, becomes unreadable and hard to write over time.
+This is where lightweight markup languages like {asciidoc-ref}[AsciiDoc] thrive.
+AsciiDoc straddles the line between readable markup and beautifully rendered content.
+
+Asciidoclet incorporates an AsciiDoc renderer (Asciidoctor via the {asciidoctor-java-ref}[Asciidoctor Java integration] library) into a simple Doclet that enables AsciiDoc formatting within Javadoc comments and tags.
+
+== Example
+
+Here's an example of a class with traditional Javadoc.
+
+[source,java]
+.A Java class with traditional Javadoc
+----
+/**
+ * <h1>Asciidoclet</h1>
+ *
+ * <p>Sample comments that include {@code source code}.</p>
+ *
+ * <pre>{@code
+ * public class Asciidoclet extends Doclet {
+ *     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+ *
+ *     {@literal @}SuppressWarnings("UnusedDeclaration")
+ *     public static boolean start(RootDoc rootDoc) {
+ *         new Asciidoclet().render(rootDoc);
+ *         return Standard.start(rootDoc);
+ *     }
+ * }
+ * }</pre>
+ *
+ * @author <a href="https://github.com/johncarl81">John Ericksen</a>
+ */
+public class Asciidoclet extends Doclet {
+}
+----
+
+This is the same class with Asciidoclet.
+
+[source,java]
+.A Java class with Asciidoclet Javadoc
+----
+/**
+ * = Asciidoclet
+ *
+ * Sample comments that include `source code`.
+ *
+ * [source,java]
+ * --
+ * public class Asciidoclet extends Doclet {
+ *     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+ *
+ *     @SuppressWarnings("UnusedDeclaration")
+ *     public static boolean start(RootDoc rootDoc) {
+ *         new Asciidoclet().render(rootDoc);
+ *         return Standard.start(rootDoc);
+ *     }
+ * }
+ * --
+ *
+ * @author https://github.com/johncarl81[John Ericksen]
+ */
+public class Asciidoclet extends Doclet {
+}
+----
+
+The result is readable source and beautifully rendered Javadocs, the best of both worlds!
