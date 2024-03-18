@@ -6,20 +6,25 @@ on:
       - '*'
   pull_request:
     branches:
-      - '*' 
+      - '*'
 
 jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        java-version: [7, 8]
+        os:
+          - ubuntu-latest
+        java-version:
+          - 8
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Java ${{ matrix.java-version }}
-      uses: actions/setup-java@v1
-      with:
-        java-version: ${{ matrix.java-version }}
-    - name: Build with Maven
-      run: mvn verify
+      - uses: actions/checkout@v4
+      - name: Set up Java ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'maven'
+          cache-dependency-path: 'pom.xml'
+      - name: Build with Maven
+        run: mvn verify -B -Prun-its
