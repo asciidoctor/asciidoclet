@@ -16,7 +16,7 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-javadoc-plugin</artifactId>
-    <version>2.9</version>
+    <version>3.6.3</version>
     <configuration>
         <source>1.7</source>
         <doclet>org.asciidoctor.Asciidoclet</doclet>
@@ -91,7 +91,7 @@ using https://ant.apache.org/ivy/[Ivy^] or similar.
 // tag::warning-message[]
 [WARNING]
 ====
-Currently there is a intermittent benign warning message that is emitted during a run of Asciidoclet stating the following:
+Currently, there is an intermittent benign warning message that is emitted during a run of Asciidoclet stating the following:
 
   WARN: tilt autoloading 'tilt/haml' in a non thread-safe way; explicit require 'tilt/haml' suggested.
 

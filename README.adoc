@@ -17,8 +17,8 @@ ifdef::env-github[]
 :badges:
 :!toc-title:
 endif::[]
+:release-version: 1.5.6
 // Refs
-:asciidoclet-version: 1.5.6
 :asciidoclet-src-ref: https://github.com/asciidoctor/asciidoclet
 :asciidoclet-javadoc-ref: https://www.javadoc.io/doc/org.asciidoctor/asciidoclet/{asciidoclet-version}
 :asciidoclet-release-ref: https://asciidoctor.org/news/2014/09/09/asciidoclet-1.5.0-released/
@@ -27,11 +27,11 @@ endif::[]
 :asciidoclet-issues-ref: https://github.com/asciidoctor/asciidoclet/issues
 :asciidoctor-src-ref: https://github.com/asciidoctor/asciidoctor
 :asciidoctor-java-src-ref: https://github.com/asciidoctor/asciidoctor-java-integration
-:discuss-ref: https://discuss.asciidoctor.org/
+:discuss-ref: https://chat.asciidoctor.org
 
 ifdef::badges[]
 image:https://img.shields.io/travis/asciidoctor/asciidoclet/master.svg["Build Status", link="https://travis-ci.org/asciidoctor/asciidoclet"]
-image:https://img.shields.io/badge/javadoc.io-{asciidoclet-version}-blue.svg[Javadoc, link={asciidoclet-javadoc-ref}]
+image:https://img.shields.io/badge/javadoc.io-{release-version}-blue.svg[Javadoc, link=https://www.javadoc.io/doc/org.asciidoctor/asciidoclet/{release-version}]
 endif::[]
 
 {asciidoclet-src-ref}[Asciidoclet] is a Javadoc Doclet based on Asciidoctor that lets you write Javadoc in the AsciiDoc syntax.
@@ -42,7 +42,7 @@ Traditionally, Javadocs have mixed minor markup with HTML which, if you're writi
 This is where lightweight markup languages like {asciidoc-ref}[AsciiDoc] thrive.
 AsciiDoc straddles the line between readable markup and beautifully rendered content.
 
-Asciidoclet incorporates an AsciiDoc renderer (Asciidoctor via the {asciidoctor-java-ref}[Asciidoctor Java integration] library) into a simple Doclet that enables AsciiDoc formatting within Javadoc comments and tags.
+Asciidoclet incorporates an AsciiDoc converter (Asciidoctor via the {asciidoctor-java-ref}[Asciidoctor Java integration] library) into a simple Doclet that enables AsciiDoc formatting within Javadoc comments and tags.
 
 == Example
 
@@ -121,7 +121,7 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-javadoc-plugin</artifactId>
-    <version>2.9</version>
+    <version>3.6.3</version>
     <configuration>
         <source>1.7</source>
         <doclet>org.asciidoctor.Asciidoclet</doclet>
@@ -140,6 +140,10 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
     </configuration>
 </plugin>
 ----
+<1> For the asciidoclet to work, it needs access to the internals of the `javadoc` tool.
+This incantation makes that access possible on moduler JDKs.
+<2> Asciidoctor may generate HTML that produces doclint errors, which can cause the build to fail.
+To work around that, we have to disable these doclint categories.
 
 === Gradle
 
@@ -243,20 +247,22 @@ Other files are assumed to be HTML and will be processed by the standard doclet.
 --asciidoclet-include <filter>::
 --asciidoclet-exclude <filter>::
 Explicitly include or exclude classes from being processed as Asciidoc comments by ant-style path matching (see https://github.com/azagniotov/ant-style-path-matcher[ant-style-path-matcher]).
++
 If `--asciidoclet-include` is specified, only classes and packages matching the include filter are processed.
 Likewise, if `--include` is unspecified, all classes are processed.
-If `--asciidoclet-exclude` is specified, classes specifically matching the filter are not processed.
-`--asciidoclet-include` and `--asciidoclet-exclude` can be mixed.
+If `--asciidoclet-exclude` is specified, classes matching the filter are not processed.
++
+Both `--asciidoclet-include` and `--asciidoclet-exclude` can be mixed.
 In addition, classes excluded with `--asciidoclet-exclude` or not matching a specified `--asciidoclet-include` may be included by annotating the class level javadoc with `@asciidoclet`.
-Doing so allows the ability to write one class at a time while respecting refactors.
-This feature allows the migration of documentation from HTML to Asciidoc in a piecemeal way
+Doing so allows writing one class at a time while respecting refactors.
+This feature allows the migration of documentation from HTML to Asciidoc in a piecemeal way.
 
 // end::doclet-options[]
 // end::usage[]
 
 === Log Warning
 
-Currently there is a intermittent benign warning message that is emitted during a run of Asciidoclet stating the following:
+Currently, there is an intermittent benign warning message that is emitted during a run of Asciidoclet stating the following:
 
 ....
 WARN: tilt autoloading 'tilt/haml' in a non thread-safe way; explicit require 'tilt/haml' suggested.
@@ -279,7 +285,7 @@ For more information:
 * {asciidoctor-src-ref}[Asciidoctor Source Code]
 * {asciidoctor-java-src-ref}[Asciidoctor Java Integration Source Code]
 
-If you have questions or would like to help develop this project, please join the {discuss-ref}[Asciidoctor discussion list].
+If you have questions or would like to help develop this project, please join the {discuss-ref}[Asciidoctor Chat].
 
 ifndef::env-site[]
 == Powered by Asciidoclet
