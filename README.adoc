@@ -30,7 +30,6 @@ endif::[]
 :discuss-ref: https://discuss.asciidoctor.org/
 
 ifdef::badges[]
-image:https://img.shields.io/travis/asciidoctor/asciidoclet/master.svg["Build Status", link="https://travis-ci.org/asciidoctor/asciidoclet"]
 image:https://img.shields.io/badge/javadoc.io-{asciidoclet-version}-blue.svg[Javadoc, link={asciidoclet-javadoc-ref}]
 endif::[]
 
