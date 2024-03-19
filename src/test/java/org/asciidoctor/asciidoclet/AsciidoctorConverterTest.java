@@ -19,12 +19,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.asciidoctor.asciidoclet.AsciidoctorConverter.MARKER;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author John Ericksen
  */
 public class AsciidoctorConverterTest {
+
+    // Asciidoctorj < v2.5.12 used OS linebreaks instead of simply \n
+    private static final String LINEBREAK = "\r?\n";
 
     private AsciidoctorConverter converter;
     private StubReporter reporter = new StubReporter();
@@ -37,13 +41,14 @@ public class AsciidoctorConverterTest {
 
     @Test
     public void testAtLiteralRender() {
-        assertEquals(MARKER + "<p>{@literal @}Test</p>\n", converter.convert("{@literal @}Test"));
+        String actual = converter.convert("{@literal @}Test");
+        assertThat(actual).matches(MARKER + "<p>\\{@literal @}Test</p>" + LINEBREAK);
     }
 
     @Test
     public void testTagRender() {
-        String rendered = converter.convert("input\n@tagName tagText");
-        assertEquals(MARKER + "<p>input</p>\n@tagName tagText\n", rendered);
+        String actual = converter.convert("input\n@tagName tagText");
+        assertThat(actual).matches(MARKER + "<p>input</p>" + LINEBREAK + "@tagName tagText" + LINEBREAK);
     }
 
     @Test
@@ -56,9 +61,12 @@ public class AsciidoctorConverterTest {
 
     @Test
     public void testParameterWithoutTypeTag() {
-        assertEquals(MARKER + "<p>comment</p>\n@param p description\n", converter.convert("comment\n@param p description"));
-        assertEquals(MARKER + "<p>comment</p>\n@param p\n", converter.convert("comment\n@param p"));
-        assertEquals(MARKER + "<p>comment</p>\n@param \n", converter.convert("comment\n@param"));
+        assertThat(converter.convert("comment\n@param p description"))
+                .matches(MARKER + "<p>comment</p>" + LINEBREAK + "@param p description" + LINEBREAK);
+        assertThat(converter.convert("comment\n@param p"))
+                .matches(MARKER + "<p>comment</p>" + LINEBREAK + "@param p" + LINEBREAK);
+        assertThat(converter.convert("comment\n@param"))
+                .matches(MARKER + "<p>comment</p>" + LINEBREAK + "@param " + LINEBREAK);
     }
 
     @Test
@@ -71,6 +79,7 @@ public class AsciidoctorConverterTest {
         String param2Text = "<" + param2Name + "> " + param2Desc;
         String sourceText = commentText + "\n@param " + param1Text + "\n@param " + param2Text;
 
-        assertEquals(MARKER + "<p>comment</p>\n@param <T>\n@param <X> description\n", converter.convert(sourceText));
+        assertThat(converter.convert(sourceText))
+                .matches(MARKER + "<p>comment</p>" + LINEBREAK + "@param <T>" + LINEBREAK + "@param <X> description" + LINEBREAK);
     }
 }
