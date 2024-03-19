@@ -20,6 +20,12 @@
     <url>https://asciidoctor.org</url>
     <description>Asciidoclet is a Javadoc Doclet that allows you to write Javadoc using the AsciiDoc format.</description>
 
+    <properties>
+        <currentYear>${maven.build.timestamp}</currentYear>
+        <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <licenses>
         <license>
             <name>Apache 2.0</name>
@@ -32,14 +38,6 @@
         <connection>scm:git:git@github.com:asciidoctor/asciidoclet.git</connection>
         <developerConnection>scm:git:git@github.com:asciidoctor/asciidoclet.git</developerConnection>
     </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>bintray-asciidoctor-maven-asciidoclet</id>
-            <name>asciidoctor-maven-asciidoclet</name>
-            <url>https://api.bintray.com/maven/asciidoctor/maven/asciidoclet</url>
-        </repository>
-    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -149,30 +147,24 @@
             </plugin>
             <!-- end::pom_include[] -->
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.10.b1</version>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>4.3</version>
                 <configuration>
                     <header>NOTICE</header>
                     <includes>
-                        <include>**/*.java</include>
-                        <include>**/*.xml</include>
+                        <include>src/**/*.java</include>
                     </includes>
                     <excludes>
-                        <exclude>**/.*/**</exclude>
-                        <exclude>target/**</exclude>
-                        <exclude>**/AndroidManifest.xml</exclude>
+                        <exclude>src/it/**/*.*</exclude>
                     </excludes>
                     <properties>
                         <startYear>2013</startYear>
-                        <currentYear>2018</currentYear>
+                        <currentYear>${currentYear}</currentYear>
                         <name>John Ericksen</name>
                     </properties>
                     <useDefaultExcludes>true</useDefaultExcludes>
                     <strictCheck>true</strictCheck>
-                    <mapping>
-                        <java>SLASHSTAR_STYLE</java>
-                    </mapping>
                 </configuration>
             </plugin>
             <plugin>
