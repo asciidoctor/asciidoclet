@@ -9,14 +9,18 @@ on:
       - '*'
 
 jobs:
-  build:
+
+  build-dev-branch:
     strategy:
       matrix:
         os:
           - ubuntu-latest
+          - windows-latest
+          - macos-latest
         java-version:
-          - 8
+          - 11
     runs-on: ${{ matrix.os }}
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
       - name: Set up Java ${{ matrix.java-version }}
@@ -26,5 +30,26 @@ jobs:
           java-version: ${{ matrix.java-version }}
           cache: 'maven'
           cache-dependency-path: 'pom.xml'
-      - name: Build with Maven
-        run: mvn verify -B -Prun-its
+      - name: Build & Test
+        run: mvn -B clean verify
+
+  build-maintenance-branch:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        java-version:
+          - 8
+    runs-on: ${{ matrix.os }}
+    if: github.ref == 'refs/heads/v1.5.x'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'maven'
+          cache-dependency-path: 'pom.xml'
+      - name: Build & Test
+        run: mvn -B -Prun-its clean verify
