@@ -1,5 +1,5 @@
-/**
- * Copyright 2013-2015 John Ericksen
+/*
+ * Copyright 2013-2018 John Ericksen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,62 +15,79 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import com.google.common.io.Resources;
-import com.sun.javadoc.DocErrorReporter;
+import jdk.javadoc.doclet.DocletEnvironment;
+import jdk.javadoc.doclet.Reporter;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import javax.tools.Diagnostic;
+import javax.tools.DocumentationTool;
+import javax.tools.JavaFileManager;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Responsible for copying the appropriate stylesheet to the javadoc
  * output directory.
  */
 public class Stylesheets {
-    static final String JAVA9_STYLESHEET = "stylesheet9.css";
-    static final String JAVA8_STYLESHEET = "stylesheet8.css";
-    static final String JAVA6_STYLESHEET = "stylesheet6.css";
-    static final String CODERAY_STYLESHEET = "coderay-asciidoctor.css";
-    static final String OUTPUT_STYLESHEET = "stylesheet.css";
 
-    private final DocletOptions docletOptions;
-    private final DocErrorReporter errorReporter;
+    static final String JAVA11_STYLESHEET = "stylesheet11.css";
 
-    public Stylesheets(DocletOptions options, DocErrorReporter errorReporter) {
-        this.docletOptions = options;
+    private static final String CODERAY_STYLESHEET = "coderay-asciidoctor.css";
+    private static final String OUTPUT_STYLESHEET = "stylesheet.css";
+
+    private final Reporter errorReporter;
+
+    Stylesheets(Reporter errorReporter) {
         this.errorReporter = errorReporter;
     }
 
-    public boolean copy() {
-        if (!docletOptions.destDir().isPresent()) {
-            // standard doclet must have checked this by the time we are called
-            errorReporter.printError("Destination directory not specified, cannot copy stylesheet");
-            return false;
-        }
+    public boolean copy(DocletEnvironment environment) {
         String stylesheet = selectStylesheet(System.getProperty("java.version"));
-        File destDir = docletOptions.destDir().get();
-        try {
-            Resources.copy(Resources.getResource(stylesheet), new FileOutputStream(new File(destDir, OUTPUT_STYLESHEET)));
-            Resources.copy(Resources.getResource(CODERAY_STYLESHEET), new FileOutputStream(new File(destDir, CODERAY_STYLESHEET)));
+        JavaFileManager fm = environment.getJavaFileManager();
+        try (InputStream stylesheetIn = getResource(stylesheet);
+             InputStream coderayStylesheetIn = getResource(CODERAY_STYLESHEET);
+             OutputStream stylesheetOut = openOutputStream(fm, OUTPUT_STYLESHEET);
+             OutputStream coderayStylesheetOut = openOutputStream(fm, CODERAY_STYLESHEET)) {
+            stylesheetIn.transferTo(stylesheetOut);
+            coderayStylesheetIn.transferTo(coderayStylesheetOut);
             return true;
         } catch (IOException e) {
-            errorReporter.printError(e.getLocalizedMessage());
+            errorReporter.print(Diagnostic.Kind.ERROR, e.getLocalizedMessage());
             return false;
         }
     }
 
+    private OutputStream openOutputStream(JavaFileManager fm, String filename) throws IOException {
+        return fm.getFileForOutput(DocumentationTool.Location.DOCUMENTATION_OUTPUT, "", filename, null).openOutputStream();
+    }
+
+    private InputStream getResource(String name) throws IOException {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if (loader == null) {
+            loader = Stylesheets.class.getClassLoader();
+        }
+        InputStream stream = loader.getResourceAsStream(name);
+        if (stream != null) {
+            return stream;
+        }
+
+        Module module = Stylesheets.class.getModule();
+        if (module != null) {
+            stream = module.getResourceAsStream(name);
+            if (stream != null) {
+                return stream;
+            }
+        }
+
+        throw new IllegalArgumentException("No such resource: " + name);
+    }
+
     String selectStylesheet(String javaVersion) {
-        if (javaVersion.matches("^1\\.[56]\\D.*")) {
-            return JAVA6_STYLESHEET;
+        if (javaVersion.matches("^(11)(\\.)?.*")) {
+            return JAVA11_STYLESHEET;
         }
-        if (javaVersion.matches("^1\\.[78]\\D.*")) {
-            return JAVA8_STYLESHEET;
-        }
-        if (javaVersion.matches("^(9|10)(\\.)?.*")) {
-            return JAVA9_STYLESHEET;
-        }
-        errorReporter.printWarning("Unrecognized Java version " + javaVersion + ", using Java 9 stylesheet");
-        // TODO: review this when Java 11 becomes available and/or make more configurable!
-        return JAVA9_STYLESHEET;
+        errorReporter.print(Diagnostic.Kind.WARNING, "Unrecognized Java version " + javaVersion + ", using Java 11 stylesheet");
+        return JAVA11_STYLESHEET;
     }
 }

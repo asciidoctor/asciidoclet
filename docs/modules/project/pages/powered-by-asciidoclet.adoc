@@ -16,8 +16,8 @@
 |https://github.com/johncarl81/parceler[johncarl81/parceler]
 |https://oss.sonatype.org/service/local/repositories/releases/archive/org/parceler/parceler-api/1.1.10/parceler-api-1.1.10-javadoc.jar/!/index.html[JavaDoc jar]
 
-|http://github.com/JGrenier/asciidoclet-sample[asciidoclet-sample]
-|http://github.com/JGrenier/asciidoclet-sample[JGrenier/asciidoclet-sample]
+|https://github.com/JGrenier/asciidoclet-sample[asciidoclet-sample]
+|https://github.com/JGrenier/asciidoclet-sample[JGrenier/asciidoclet-sample]
 |Not available
 
 |https://consensusj.github.io/consensusj[ConsensusJ]
