@@ -1,0 +1,41 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - LICENCE
+      - NOTICE
+      - README.adoc
+      - docs/**
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - LICENCE
+      - NOTICE
+      - README.adoc
+      - docs/**
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        java-version:
+          - 11
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'maven'
+          cache-dependency-path: 'pom.xml'
+      - name: Build & Test
+        run: mvn -B clean verify
