@@ -26,6 +26,7 @@ import org.asciidoctor.extension.RubyExtensionRegistry;
 import org.asciidoctor.jruby.AsciidoctorJRuby;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -172,14 +173,15 @@ class AsciidoctorConverter {
      * end line (e.g., `"\n "`), which gets left behind by the Javadoc
      * processor.
      *
-     * @param input AsciiDoc source
+     * @param input  AsciiDoc source
+     * @param inline true to set doc_type to inline, null otherwise
      * @return content rendered by Asciidoctor
      */
     private String convert(String input, boolean inline) {
         if (input.trim().isEmpty()) {
             return "";
         }
-        options.setDocType(inline ? INLINE_DOCTYPE : null);
+        options.setDocType(inline ? INLINE_DOCTYPE : "");
         return asciidoctor.convert(cleanJavadocInput(input), options);
     }
 
