@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class AsciidoctorConverterTest {
 
-    private static final String LINEBREAK = "\n";
+    private static final String LINEBREAK = "\r?\n";
 
     private AsciidoctorConverter converter;
     private StubReporter reporter = new StubReporter();
@@ -41,13 +41,13 @@ public class AsciidoctorConverterTest {
     @Test
     public void testAtLiteralRender() {
         String actual = converter.convert("{@literal @}Test");
-        assertThat(actual).isEqualTo(MARKER + "<p>{@literal @}Test</p>" + LINEBREAK);
+        assertThat(actual).matches(MARKER + "<p>\\{@literal @}Test</p>" + LINEBREAK);
     }
 
     @Test
     public void testTagRender() {
         String actual = converter.convert("input\n@tagName tagText");
-        assertThat(actual).isEqualTo(MARKER + "<p>input</p>" + LINEBREAK + "@tagName tagText" + LINEBREAK);
+        assertThat(actual).matches(MARKER + "<p>input</p>" + LINEBREAK + "@tagName tagText" + LINEBREAK);
     }
 
     @Test
@@ -61,17 +61,17 @@ public class AsciidoctorConverterTest {
     @Test
     public void testComment() {
         assertThat(converter.convert("comment\n"))
-                .isEqualTo(MARKER + "<p>comment</p>" + LINEBREAK);
+                .matches(MARKER + "<p>comment</p>" + LINEBREAK);
     }
 
     @Test
     public void testParameterWithoutTypeTag() {
         assertThat(converter.convert("comment\n@param p description"))
-                .isEqualTo(MARKER + "<p>comment</p>" + LINEBREAK + "@param p description" + LINEBREAK);
+                .matches(MARKER + "<p>comment</p>" + LINEBREAK + "@param p description" + LINEBREAK);
         assertThat(converter.convert("comment\n@param p"))
-                .isEqualTo(MARKER + "<p>comment</p>" + LINEBREAK + "@param p" + LINEBREAK);
+                .matches(MARKER + "<p>comment</p>" + LINEBREAK + "@param p" + LINEBREAK);
         assertThat(converter.convert("comment\n@param"))
-                .isEqualTo(MARKER + "<p>comment</p>" + LINEBREAK + "@param " + LINEBREAK);
+                .matches(MARKER + "<p>comment</p>" + LINEBREAK + "@param " + LINEBREAK);
     }
 
     @Test
@@ -85,6 +85,6 @@ public class AsciidoctorConverterTest {
         String sourceText = commentText + "\n@param " + param1Text + "\n@param " + param2Text;
 
         assertThat(converter.convert(sourceText))
-                .isEqualTo(MARKER + "<p>comment</p>" + LINEBREAK + "@param <T>" + LINEBREAK + "@param <X> description" + LINEBREAK);
+                .matches(MARKER + "<p>comment</p>" + LINEBREAK + "@param <T>" + LINEBREAK + "@param <X> description" + LINEBREAK);
     }
 }
