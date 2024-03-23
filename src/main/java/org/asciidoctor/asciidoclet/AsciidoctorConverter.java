@@ -16,15 +16,19 @@
 package org.asciidoctor.asciidoclet;
 
 import jdk.javadoc.doclet.Reporter;
-import org.asciidoctor.*;
+import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.Attributes;
+import org.asciidoctor.AttributesBuilder;
+import org.asciidoctor.Options;
+import org.asciidoctor.OptionsBuilder;
+import org.asciidoctor.SafeMode;
 import org.asciidoctor.extension.RubyExtensionRegistry;
+import org.asciidoctor.jruby.AsciidoctorJRuby;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.asciidoctor.Asciidoctor.Factory.create;
 
 /**
  * Doclet converter using and configuring AsciidoctorJ.
@@ -36,7 +40,7 @@ class AsciidoctorConverter {
     static final String MARKER = " \t \t";
 
     private static AttributesBuilder defaultAttributes() {
-        return AttributesBuilder.attributes()
+        return Attributes.builder()
                 .attribute("at", "&#64;")
                 .attribute("slash", "/")
                 .attribute("icons", null)
@@ -51,7 +55,7 @@ class AsciidoctorConverter {
     }
 
     private static OptionsBuilder defaultOptions() {
-        return OptionsBuilder.options()
+        return Options.builder()
                 .safe(SafeMode.SAFE)
                 .backend("html5");
     }
@@ -64,7 +68,14 @@ class AsciidoctorConverter {
     private final Options options;
 
     AsciidoctorConverter(DocletOptions docletOptions, Reporter reporter) {
-        this(docletOptions, reporter, OutputTemplates.create(reporter), create(docletOptions.gemPath()));
+        this(docletOptions, reporter, OutputTemplates.create(reporter), createAsciidoctorInstance(docletOptions.gemPath()));
+    }
+
+    private static Asciidoctor createAsciidoctorInstance(String gemPath) {
+        if (gemPath != null) {
+            return AsciidoctorJRuby.Factory.create(gemPath);
+        }
+        return Asciidoctor.Factory.create();
     }
 
     /**
@@ -169,7 +180,7 @@ class AsciidoctorConverter {
             return "";
         }
         options.setDocType(inline ? INLINE_DOCTYPE : null);
-        return asciidoctor.render(cleanJavadocInput(input), options);
+        return asciidoctor.convert(cleanJavadocInput(input), options);
     }
 
     static String cleanJavadocInput(String input) {

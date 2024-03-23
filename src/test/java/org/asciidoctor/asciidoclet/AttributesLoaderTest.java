@@ -16,6 +16,7 @@
 package org.asciidoctor.asciidoclet;
 
 import org.asciidoctor.Asciidoctor;
+import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
