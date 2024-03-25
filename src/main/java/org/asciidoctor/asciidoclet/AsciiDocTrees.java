@@ -153,6 +153,11 @@ class AsciiDocTrees extends DocTrees {
     }
 
     @Override
+    public TypeMirror getType(DocTreePath path) {
+        return null;
+    }
+
+    @Override
     public List<DocTree> getFirstSentence(List<? extends DocTree> list) {
         return docTrees.getFirstSentence(list);
     }

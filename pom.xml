@@ -77,6 +77,8 @@
                         <arg>jdk.compiler/com.sun.tools.javac.tree=asciidoclet</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.compiler/com.sun.tools.javac.model=asciidoclet</arg>
+                        <arg>--add-opens</arg>
+                        <arg>jdk.compiler/com.sun.tools.javac.api=asciidoclet</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -104,47 +106,7 @@
                 </executions>
             </plugin>
             <!-- tag::pom_include[] -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.6.3</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <source>11</source>
-                    <additionalJOptions>
-                        <additionalJOption>--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</additionalJOption>
-                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
-                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet</additionalJOption>
-                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
-                    </additionalJOptions>
-                    <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
-                    <docletArtifact>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>${project.artifactId}</artifactId>
-                        <version>${project.version}</version>
-                    </docletArtifact>
-                    <additionalOptions>  <!--1-->
-                        --base-dir ${project.basedir}
-                        --attribute "project_name=${project.name}"
-                        --attribute "project_version=${project.version}"
-                        --attribute "project_desc=${project.description}"
-                    </additionalOptions>
-                    <linksource>true</linksource>
-                    <overview>src/main/java/overview.adoc</overview> <!--2-->
-                </configuration>
-            </plugin>
+
             <!-- end::pom_include[] -->
             <plugin>
                 <groupId>com.mycila</groupId>
