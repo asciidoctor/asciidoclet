@@ -132,7 +132,7 @@ public class AttributesLoaderTest {
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = loader.load();
-
+        
         assertEquals(attrs.get("foo"), "BAR");
         assertEquals(attrs.get("foo2"), "BAR-TWO");
         assertEquals(attrs.get("override"), "OVERRIDE");
@@ -153,9 +153,9 @@ public class AttributesLoaderTest {
 
         Map<String, Object> attrs = loader.load();
 
-        assertEquals(attrs.get("foo"), "BAR");
-        assertEquals(attrs.get("foo2"), "BAR-TWO");
-        assertEquals(attrs.get("override"), "OVERRIDE");
+        assertEquals("BAR", attrs.get("foo"));
+        assertEquals("BAR-TWO", attrs.get("foo2"));
+        assertEquals("OVERRIDE", attrs.get("override"));
         assertTrue(attrs.containsKey("not"));
         reporter.assertNoMoreInteractions();
     }

@@ -43,7 +43,8 @@
         <dependency>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj</artifactId>
-            <version>1.5.8.1</version>
+            <version>2.5.11</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -66,9 +67,11 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.12.1</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>17</source>
+                    <target>17</target>
                     <compilerArgs>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.javadoc/jdk.javadoc.internal.api=asciidoclet</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</arg>
                         <arg>--add-exports</arg>
@@ -77,6 +80,14 @@
                         <arg>jdk.compiler/com.sun.tools.javac.tree=asciidoclet</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.compiler/com.sun.tools.javac.model=asciidoclet</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.compiler/com.sun.tools.javac.util=asciidoclet</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg>
+                        <arg>jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -86,6 +97,9 @@
                 <version>3.2.5</version>
                 <configuration>
                     <argLine>
+                        --add-exports jdk.compiler/com.sun.tools.javac.parser=asciidoclet
+                        --add-exports jdk.compiler/com.sun.tools.javac.util=asciidoclet
+                        --add-opens jdk.compiler/com.sun.tools.javac.parser=asciidoclet
                         --add-exports jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet
                     </argLine>
                 </configuration>
@@ -117,16 +131,28 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>11</source>
+                    <source>17</source>
                     <additionalJOptions>
+                        <additionalJOption>--add-exports=jdk.javadoc/jdk.javadoc.internal.api=asciidoclet</additionalJOption>
                         <additionalJOption>--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</additionalJOption>
+                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.api=asciidoclet</additionalJOption>
                         <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
                         <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet</additionalJOption>
                         <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>--add-opens=jdk.compiler/com.sun.tools.javac.api=asciidoclet</additionalJOption>
+                        <additionalJOption>--add-opens=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
+                        <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.util=asciidoclet</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=asciidoclet</additionalJOption>
+                        <additionalJOption>-J--add-opens=jdk.javadoc/jdk.javadoc.internal.api=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-opens=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
+
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=asciidoclet</additionalJOption>
+                        <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</additionalJOption>
                         <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
                     </additionalJOptions>
                     <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>

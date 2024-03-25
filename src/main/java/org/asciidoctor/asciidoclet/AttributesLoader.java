@@ -20,6 +20,7 @@ import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
 import org.asciidoctor.OptionsBuilder;
 import org.asciidoctor.SafeMode;
+import org.asciidoctor.jruby.internal.IOUtils;
 
 import javax.tools.Diagnostic;
 import java.io.File;
@@ -88,7 +89,7 @@ class AttributesLoader {
         if (docletOptions.baseDir().isPresent()) {
             options.baseDir(docletOptions.baseDir().get());
         }
-        Map<String, Object> parsed = asciidoctor.readDocumentStructure(in, options.get().map()).getHeader().getAttributes();
+        Map<String, Object> parsed = asciidoctor.load(IOUtils.readFull(in), options.get().map()).getAttributes();
         // workaround for https://github.com/asciidoctor/asciidoctorj/pull/169
         return new HashMap<>(parsed);
     }

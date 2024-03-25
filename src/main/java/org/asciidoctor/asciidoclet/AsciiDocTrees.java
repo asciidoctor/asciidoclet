@@ -87,20 +87,23 @@ class AsciiDocTrees extends DocTrees {
     public DocCommentTree getDocCommentTree(TreePath path) {
         // First we convert the asciidoctor to HTML inside the AST.
         JCTree.JCCompilationUnit cu = (JCTree.JCCompilationUnit) path.getCompilationUnit();
-        LazyDocCommentTableProcessor.processComments(cu.docComments, this::convertToAsciidoctor);
+        return LazyDocCommentTableProcessor.processComments(cu.getTree(), cu.docComments, this::convertToAsciidoctor).getCommentTree(cu.getTree());
 
         // Then we allow the normal javadoc parsing to continue on the asciidoctor result.
-        return docTrees.getDocCommentTree(path);
+        //return docTrees.getDocCommentTree(path);
     }
 
     private Tokens.Comment convertToAsciidoctor(Tokens.Comment comment) {
-        String javadoc = comment.getText();
-        String asciidoc = converter.convert(javadoc);
+        String asciidoc = convertJavadocStringToAsciidoctorString(comment.getText());
         AsciidocComment result = new AsciidocComment(asciidoc, comment);
-        System.err.println("");
         return result;
     }
-
+    
+    private String convertJavadocStringToAsciidoctorString(String javadocString) {
+      return converter.convert(javadocString);
+    }
+    
+    
     @Override
     public DocCommentTree getDocCommentTree(Element e) {
         TreePath path = getPath(e);
@@ -151,7 +154,12 @@ class AsciiDocTrees extends DocTrees {
     public Element getElement(DocTreePath path) {
         return docTrees.getElement(path);
     }
-
+    
+    @Override
+    public TypeMirror getType(DocTreePath path) {
+        return null;
+    }
+    
     @Override
     public List<DocTree> getFirstSentence(List<? extends DocTree> list) {
         return docTrees.getFirstSentence(list);

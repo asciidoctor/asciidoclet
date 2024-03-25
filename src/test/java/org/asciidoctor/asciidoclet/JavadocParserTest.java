@@ -22,6 +22,18 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+/*
+                        <!-- additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.parser=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-opens=java.base/sun.nio.ch=ALL-UNNAMED</additionalJOption>
+                        <additionalJOption>-J--add-opens=java.base/java.io=ALL-UNNAMED</additionalJOption -->
+
+ */
 public class JavadocParserTest {
 
     @Test

@@ -20,6 +20,7 @@ import org.asciidoctor.*;
 import org.asciidoctor.extension.RubyExtensionRegistry;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,7 +65,7 @@ class AsciidoctorConverter {
     private final Options options;
 
     AsciidoctorConverter(DocletOptions docletOptions, Reporter reporter) {
-        this(docletOptions, reporter, OutputTemplates.create(reporter), create(docletOptions.gemPath()));
+        this(docletOptions, reporter, OutputTemplates.create(reporter), create());
     }
 
     /**
@@ -168,8 +169,22 @@ class AsciidoctorConverter {
         if (input.trim().isEmpty()) {
             return "";
         }
-        options.setDocType(inline ? INLINE_DOCTYPE : null);
-        return asciidoctor.render(cleanJavadocInput(input), options);
+        // Setting doctype to null results in an NPE from asciidoctor.
+        // the default value from the command line is "article".
+        // https://docs.asciidoctor.org/asciidoctor/latest/cli/man1/asciidoctor/#options
+        // In general, in order to respect original doctype, we should do the following.
+        // options.setDocType(inline ?
+        //    INLINE_DOCTYPE :
+        //    options.map().containsKey(Options.DOCTYPE) ?
+        //        Objects.toString(options.map().get(Options.DOCTYPE)) :
+        //        "article");
+        // However, this fix breaks AsciidoctorConverterTest#testParameterWithoutTypeTag.
+        // For now, I simply set it to "article", always.
+        options.setDocType(inline ?
+            INLINE_DOCTYPE :
+            "article");
+        
+        return asciidoctor.convert(cleanJavadocInput(input), options);
     }
 
     static String cleanJavadocInput(String input) {
