@@ -30,11 +30,17 @@ class LazyDocCommentTableProcessor {
     static void processComments(DocCommentTable table, Function<Comment, Comment> mapper) {
         // Use heckin' raw-types because LazyDocCommentTable.Entry has private access, so we
         // cannot statically express its type here.
+        // TODO refactor to not access map after catch
         Map map;
         Function<Object, Object> converter;
         try {
             Field tableField = LazyDocCommentTable.class.getDeclaredField("table");
             tableField.setAccessible(true);
+            if (!(table instanceof LazyDocCommentTable)) {
+                // passes once with project description
+                System.out.println("ABORTING: " + table);
+                return;
+            }
             map = (Map) tableField.get(table);
 
             Class<?> entryClass = Class.forName("com.sun.tools.javac.parser.LazyDocCommentTable$Entry");
