@@ -87,10 +87,9 @@ class AsciiDocTrees extends DocTrees {
     public DocCommentTree getDocCommentTree(TreePath path) {
         // First we convert the asciidoctor to HTML inside the AST.
         JCTree.JCCompilationUnit cu = (JCTree.JCCompilationUnit) path.getCompilationUnit();
-        return LazyDocCommentTableProcessor.processComments(cu.getTree(), cu.docComments, this::convertToAsciidoctor).getCommentTree(cu.getTree());
-
+        LazyDocCommentTableProcessor.processComments(cu.getTree(), cu.docComments, this::convertToAsciidoctor);
         // Then we allow the normal javadoc parsing to continue on the asciidoctor result.
-        //return docTrees.getDocCommentTree(path);
+        return docTrees.getDocCommentTree(path);
     }
 
     private Tokens.Comment convertToAsciidoctor(Tokens.Comment comment) {

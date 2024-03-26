@@ -18,19 +18,23 @@ package org.asciidoctor.asciidoclet;
 import jdk.javadoc.doclet.Reporter;
 import org.asciidoctor.Asciidoctor;
 import org.asciidoctor.Attributes;
+import org.asciidoctor.Options;
 import org.asciidoctor.OptionsBuilder;
 import org.asciidoctor.SafeMode;
 import org.asciidoctor.jruby.internal.IOUtils;
 
 import javax.tools.Diagnostic;
 import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.Set;
 
 class AttributesLoader {
@@ -83,15 +87,23 @@ class AttributesLoader {
     }
 
     private Map<String, Object> parseAttributes(Reader in, Map<String, Object> existingAttrs) {
-        OptionsBuilder options = OptionsBuilder.options()
+        OptionsBuilder options = Options.builder()
                 .safe(SafeMode.SAFE)
-                .attributes(existingAttrs);
+                .attributes(existingAttrs)
+                .parseHeaderOnly(true);
         if (docletOptions.baseDir().isPresent()) {
             options.baseDir(docletOptions.baseDir().get());
         }
-        Map<String, Object> parsed = asciidoctor.load(IOUtils.readFull(in), options.get().map()).getAttributes();
-        // workaround for https://github.com/asciidoctor/asciidoctorj/pull/169
-        return new HashMap<>(parsed);
+
+        final String content = read(in);
+        final Map<String, Object> parsed = asciidoctor.load(content, options.build()).getAttributes();
+        return parsed;
+    }
+
+    public static String read(Reader reader) {
+        try (Scanner scanner = new Scanner(reader).useDelimiter("\\A")){
+            return scanner.next();
+        }
     }
 
     private Set<String> getUnsetAttributes(List<String> args) {

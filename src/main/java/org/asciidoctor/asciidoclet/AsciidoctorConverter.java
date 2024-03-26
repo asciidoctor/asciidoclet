@@ -16,16 +16,20 @@
 package org.asciidoctor.asciidoclet;
 
 import jdk.javadoc.doclet.Reporter;
-import org.asciidoctor.*;
+import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.Attributes;
+import org.asciidoctor.AttributesBuilder;
+import org.asciidoctor.Options;
+import org.asciidoctor.OptionsBuilder;
+import org.asciidoctor.SafeMode;
 import org.asciidoctor.extension.RubyExtensionRegistry;
+import org.asciidoctor.jruby.AsciidoctorJRuby;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.asciidoctor.Asciidoctor.Factory.create;
 
 /**
  * Doclet converter using and configuring AsciidoctorJ.
@@ -37,7 +41,7 @@ class AsciidoctorConverter {
     static final String MARKER = " \t \t";
 
     private static AttributesBuilder defaultAttributes() {
-        return AttributesBuilder.attributes()
+        return Attributes.builder()
                 .attribute("at", "&#64;")
                 .attribute("slash", "/")
                 .attribute("icons", null)
@@ -52,7 +56,7 @@ class AsciidoctorConverter {
     }
 
     private static OptionsBuilder defaultOptions() {
-        return OptionsBuilder.options()
+        return Options.builder()
                 .safe(SafeMode.SAFE)
                 .backend("html5");
     }
@@ -65,7 +69,14 @@ class AsciidoctorConverter {
     private final Options options;
 
     AsciidoctorConverter(DocletOptions docletOptions, Reporter reporter) {
-        this(docletOptions, reporter, OutputTemplates.create(reporter), create());
+        this(docletOptions, reporter, OutputTemplates.create(reporter), createAsciidoctorInstance(docletOptions.gemPath()));
+    }
+
+    private static Asciidoctor createAsciidoctorInstance(String gemPath) {
+        if (gemPath != null) {
+            return AsciidoctorJRuby.Factory.create(gemPath);
+        }
+        return Asciidoctor.Factory.create();
     }
 
     /**
@@ -162,7 +173,8 @@ class AsciidoctorConverter {
      * end line (e.g., `"\n "`), which gets left behind by the Javadoc
      * processor.
      *
-     * @param input AsciiDoc source
+     * @param input  AsciiDoc source
+     * @param inline true to set doc_type to inline, null otherwise
      * @return content rendered by Asciidoctor
      */
     private String convert(String input, boolean inline) {
@@ -182,7 +194,7 @@ class AsciidoctorConverter {
         // For now, I simply set it to "article", always.
         options.setDocType(inline ?
             INLINE_DOCTYPE :
-            "article");
+            "article"); // upstream sets this to "".
         
         return asciidoctor.convert(cleanJavadocInput(input), options);
     }

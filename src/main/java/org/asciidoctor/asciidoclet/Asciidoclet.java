@@ -178,7 +178,10 @@ public class Asciidoclet implements Doclet {
     private DocletOptions docletOptions;
     private Stylesheets stylesheets;
     private Reporter reporter;
-
+    
+    /**
+     * Creates a new {@link Asciidoclet} object.
+     */
     public Asciidoclet() {
         standardDoclet = new StandardDoclet();
     }

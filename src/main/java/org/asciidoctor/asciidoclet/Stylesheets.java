@@ -41,7 +41,12 @@ public class Stylesheets {
     Stylesheets(Reporter errorReporter) {
         this.errorReporter = errorReporter;
     }
-
+    
+    /**
+     * Copies an {@link DocletEnvironment} to this object.
+     * @param environment An environment to be copied to this object.
+     * @return `true` if successfully copied. `false` otherwise.
+     */
     public boolean copy(DocletEnvironment environment) {
         String stylesheet = selectStylesheet(System.getProperty("java.version"));
         JavaFileManager fm = environment.getJavaFileManager();
