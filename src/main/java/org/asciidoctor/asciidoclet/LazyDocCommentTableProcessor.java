@@ -16,8 +16,6 @@
 package org.asciidoctor.asciidoclet;
 
 import com.sun.tools.javac.parser.LazyDocCommentTable;
-import com.sun.tools.javac.parser.ParserFactory;
-import com.sun.tools.javac.parser.Tokens;
 import com.sun.tools.javac.parser.Tokens.Comment;
 import com.sun.tools.javac.tree.DCTree;
 import com.sun.tools.javac.tree.DocCommentTable;
@@ -26,16 +24,17 @@ import com.sun.tools.javac.tree.JCTree;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 class LazyDocCommentTableProcessor {
 
     @SuppressWarnings("unchecked")
     static DocCommentTable processComments(JCTree jcTree, DocCommentTable table, Function<Comment, Comment> commentMapper) {
-        if (false && table instanceof LazyDocCommentTable) {
+        if (table instanceof LazyDocCommentTable) {
             // Use heckin' raw-types because LazyDocCommentTable.Entry has private access, so we
             // cannot statically express its type here.
-            System.err.println("THEN:" + LazyDocCommentTableProcessor.class + ":processComments:" + System.identityHashCode(table));
+            //System.err.println("THEN:" + LazyDocCommentTableProcessor.class + ":processComments:" + System.identityHashCode(table));
             Map map;
             Function<Object, Object> converter;
             try {
@@ -69,7 +68,9 @@ class LazyDocCommentTableProcessor {
             map.replaceAll((tree, entry) -> converter.apply(entry));
             return table;
         } else {
-            System.err.println("ELSE:" + LazyDocCommentTableProcessor.class + ":processComments:" + System.identityHashCode(table));
+            // TODO: This path is exercised only for `overview.adoc` as far as I know now.
+            //       However, the caller of this method should discard this rendered this result.
+            //       A strange thing here is that the `overview.adoc` is still rendered...
             DocCommentTable t = new DocCommentTable() {
                 @Override
                 public boolean hasComment(JCTree tree) {
@@ -93,6 +94,8 @@ class LazyDocCommentTableProcessor {
                 @Override
                 public DCTree.DCDocComment getCommentTree(JCTree tree) {
                     System.err.println(this + ":getCommentTree:" + System.identityHashCode(tree));
+                    System.err.println("---:table.getCommentTree(jcTree):---" + Objects.toString(table.getCommentTree(jcTree)).replaceAll("\n", " "));
+                    System.err.println("---:table.getCommentTree(tree):---" + Objects.toString(table.getCommentTree(tree)).replaceAll("\n", " "));
                     return table.getCommentTree(jcTree);
                 }
 
