@@ -29,9 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AttributesLoaderTest {
 
@@ -48,7 +46,7 @@ public class AttributesLoaderTest {
 
         Map<String, Object> attrs = loader.load();
 
-        assertTrue(attrs.isEmpty());
+        assertThat(attrs).isEmpty();
         reporter.assertNoMoreInteractions();
     }
 
@@ -60,11 +58,13 @@ public class AttributesLoaderTest {
 
         Map<String, Object> attrs = loader.load();
 
-        assertEquals(attrs.get("foo"), "bar");
-        assertEquals(attrs.get("foo2"), "foo-two");
-        assertEquals(attrs.get("override"), "override@");
-        assertFalse(attrs.containsKey("not"));
-        assertTrue(attrs.containsKey("not!"));
+        assertThat(attrs)
+                .containsEntry("foo", "bar")
+                .containsEntry("foo2", "foo-two")
+                .containsEntry("override", "override@")
+                .containsKey("not!");
+        assertThat(attrs)
+                .doesNotContainKey("not");
         reporter.assertNoMoreInteractions();
     }
 
@@ -77,11 +77,13 @@ public class AttributesLoaderTest {
 
         Map<String, Object> attrs = loader.load();
 
-        assertEquals(attrs.get("foo"), "bar");
-        assertEquals(attrs.get("foo2"), "foo two");
-        assertEquals(attrs.get("override"), "override@");
-        assertFalse(attrs.containsKey("not"));
-        assertTrue(attrs.containsKey("not!"));
+        assertThat(attrs)
+                .containsEntry("foo", "bar")
+                .containsEntry("foo2", "foo two")
+                .containsEntry("override", "override@")
+                .containsKey("not!");
+        assertThat(attrs)
+                .doesNotContainKey("not");
         reporter.assertNoMoreInteractions();
     }
 
@@ -95,10 +97,11 @@ public class AttributesLoaderTest {
 
         Map<String, Object> attrs = loader.load();
 
-        assertEquals(attrs.get("foo"), "BAR");
-        assertEquals(attrs.get("foo2"), "BAR-TWO");
-        assertEquals(attrs.get("override"), "OVERRIDE");
-        assertTrue(attrs.containsKey("not"));
+        assertThat(attrs)
+                .containsEntry("foo", "BAR")
+                .containsEntry("foo2", "BAR-TWO")
+                .containsEntry("override", "OVERRIDE")
+                .containsKey("not");
         reporter.assertNoMoreInteractions();
     }
 
@@ -113,11 +116,13 @@ public class AttributesLoaderTest {
 
         Map<String, Object> attrs = new HashMap<>(loader.load());
 
-        assertEquals(attrs.get("foo"), "bar");
-        assertEquals(attrs.get("foo2"), "bar-TWO");
-        assertEquals(attrs.get("override"), "OVERRIDE");
-        assertFalse(attrs.containsKey("not"));
-        assertTrue(attrs.containsKey("not!"));
+        assertThat(attrs)
+                .containsEntry("foo", "bar")
+                .containsEntry("foo2", "bar-TWO")
+                .containsEntry("override", "OVERRIDE")
+                .containsKey("not!");
+        assertThat(attrs)
+                .doesNotContainKey("not");
         reporter.assertNoMoreInteractions();
     }
 
@@ -132,11 +137,13 @@ public class AttributesLoaderTest {
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = loader.load();
-        
-        assertEquals(attrs.get("foo"), "BAR");
-        assertEquals(attrs.get("foo2"), "BAR-TWO");
-        assertEquals(attrs.get("override"), "OVERRIDE");
-        assertTrue(attrs.containsKey("not"));
+
+        assertThat(attrs)
+                .containsEntry("foo", "BAR")
+                .containsEntry("foo2", "BAR-TWO")
+                .containsEntry("override", "OVERRIDE")
+                .containsKey("not");
+
         reporter.assertNoMoreInteractions();
     }
 
@@ -153,10 +160,12 @@ public class AttributesLoaderTest {
 
         Map<String, Object> attrs = loader.load();
 
-        assertEquals("BAR", attrs.get("foo"));
-        assertEquals("BAR-TWO", attrs.get("foo2"));
-        assertEquals("OVERRIDE", attrs.get("override"));
-        assertTrue(attrs.containsKey("not"));
+        assertThat(attrs)
+                .containsEntry("foo", "BAR")
+                .containsEntry("foo2", "BAR-TWO")
+                .containsEntry("override", "OVERRIDE")
+                .containsKey("not");
+
         reporter.assertNoMoreInteractions();
     }
 

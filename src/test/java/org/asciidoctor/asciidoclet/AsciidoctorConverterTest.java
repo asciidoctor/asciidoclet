@@ -27,7 +27,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class AsciidoctorConverterTest {
 
-    // Asciidoctorj < v2.5.12 used OS linebreaks instead of simply \n
     private static final String LINEBREAK = "\r?\n";
 
     private AsciidoctorConverter converter;
@@ -57,6 +56,12 @@ public class AsciidoctorConverterTest {
         assertEquals("/*\ntest\n*/", AsciidoctorConverter.cleanJavadocInput("/*\ntest\n*\\/"));
         assertEquals("&#64;", AsciidoctorConverter.cleanJavadocInput("{at}"));
         assertEquals("/", AsciidoctorConverter.cleanJavadocInput("{slash}"));
+    }
+
+    @Test
+    public void testComment() {
+        assertThat(converter.convert("comment\n"))
+                .matches(MARKER + "<p>comment</p>" + LINEBREAK);
     }
 
     @Test

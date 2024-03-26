@@ -141,18 +141,11 @@
                         <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet</additionalJOption>
                         <additionalJOption>--add-opens=jdk.compiler/com.sun.tools.javac.api=asciidoclet</additionalJOption>
                         <additionalJOption>--add-opens=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
-                        <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.util=asciidoclet</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=asciidoclet</additionalJOption>
                         <additionalJOption>-J--add-opens=jdk.javadoc/jdk.javadoc.internal.api=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>-J--add-opens=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
                         <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
-
-                        <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=asciidoclet</additionalJOption>
-                        <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
-                        <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</additionalJOption>
                         <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
                     </additionalJOptions>
                     <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
