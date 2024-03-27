@@ -156,7 +156,7 @@ class AsciiDocTrees extends DocTrees {
     
 //    @Override
     public TypeMirror getType(DocTreePath path) {
-        return null;
+        return docTrees.getType(path);
     }
     
     @Override
