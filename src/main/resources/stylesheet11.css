@@ -174,7 +174,7 @@ sup {
     height:2.8em;
     padding-top:10px;
     overflow:hidden;
-    font-size:12px;
+    font-size:12px; 
 }
 .bottomNav {
     margin-top:10px;
@@ -401,7 +401,7 @@ ul.blockList li.blockList, ul.blockListLast li.blockList {
 }
 ul.blockList ul.blockList li.blockList, ul.blockList ul.blockListLast li.blockList {
     padding:0px 20px 5px 10px;
-    border:1px solid #ededed;
+    border:1px solid #ededed; 
     background-color:#f8f8f8;
 }
 ul.blockList ul.blockList ul.blockList li.blockList, ul.blockList ul.blockList ul.blockListLast li.blockList {
@@ -431,9 +431,9 @@ table tr td dl, table tr td dl dt, table tr td dl dd {
 .requiresSummary, .packagesSummary, .providesSummary, .usesSummary {
     width:100%;
     border-spacing:0;
-    border-left:1px solid #EEE;
-    border-right:1px solid #EEE;
-    border-bottom:1px solid #EEE;
+    border-left:1px solid #EEE; 
+    border-right:1px solid #EEE; 
+    border-bottom:1px solid #EEE; 
 }
 .overviewSummary, .memberSummary, .requiresSummary, .packagesSummary, .providesSummary, .usesSummary  {
     padding:0px;
@@ -540,7 +540,7 @@ table tr td dl, table tr td dl dt, table tr td dl dd {
     display:none;
     width:5px;
     margin-right:3px;
-    position:relative;
+    position:relative; 
     float:left;
     background-color:#F8981D;
 }
@@ -608,9 +608,9 @@ td.colSecond a:link, td.colSecond a:visited,
 th.colFirst a:link, th.colFirst a:visited,
 th.colSecond a:link, th.colSecond a:visited,
 th.colConstructorName a:link, th.colConstructorName a:visited,
-th.colDeprecatedItemName a:link, th.colDeprecatedItemName a:visited,
-.constantValuesContainer td a:link, .constantValuesContainer td a:visited,
-.allClassesContainer td a:link, .allClassesContainer td a:visited,
+th.colDeprecatedItemName a:link, th.colDeprecatedItemName a:visited, 
+.constantValuesContainer td a:link, .constantValuesContainer td a:visited, 
+.allClassesContainer td a:link, .allClassesContainer td a:visited, 
 .allPackagesContainer td a:link, .allPackagesContainer td a:visited {
     font-weight:bold;
 }
@@ -697,12 +697,12 @@ div.contentContainer ul.blockList li.blockList h2 {
  * Styles for IFRAME.
  */
 .mainContainer {
-    margin:0 auto;
-    padding:0;
-    height:100%;
-    width:100%;
-    position:fixed;
-    top:0;
+    margin:0 auto; 
+    padding:0; 
+    height:100%; 
+    width:100%; 
+    position:fixed; 
+    top:0; 
     left:0;
 }
 .leftContainer {
