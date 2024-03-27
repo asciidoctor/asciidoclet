@@ -1,11 +1,10 @@
 package org.asciidoctor.asciidoclet;
 
+import com.sun.tools.javac.parser.LazyDocCommentTable;
 import com.sun.tools.javac.parser.ParserFactory;
-import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.parser.Tokens.Comment;
 import com.sun.tools.javac.util.Context;
 import org.junit.Test;
-import com.sun.tools.javac.parser.LazyDocCommentTable;
-import com.sun.tools.javac.parser.Tokens.Comment;
 
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
@@ -17,18 +16,11 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Function;
 
-public class LazyDocCommentTableProcessorDebug {
+public class LazyDocCommentTableProcessorTest {
   @Test
   public void testProcessComments() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-    LazyDocCommentTableProcessor.processComments(createJcTree(), createLazyDocCommentTable(), commentMapper());
-  }
-  
-  private Function<String, String> stringMapper() {
-    return s -> s;
-  }
-  
-  private JCTree createJcTree() {
-    return null;
+    // Just make sure the processComments method returns normally for now.
+    LazyDocCommentTableProcessor.processComments(createLazyDocCommentTable(), commentMapper());
   }
   
   private LazyDocCommentTable createLazyDocCommentTable() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {

@@ -17,20 +17,17 @@ package org.asciidoctor.asciidoclet;
 
 import com.sun.tools.javac.parser.LazyDocCommentTable;
 import com.sun.tools.javac.parser.Tokens.Comment;
-import com.sun.tools.javac.tree.DCTree;
 import com.sun.tools.javac.tree.DocCommentTable;
-import com.sun.tools.javac.tree.JCTree;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 class LazyDocCommentTableProcessor {
 
     @SuppressWarnings("unchecked")
-    static DocCommentTable processComments(JCTree jcTree, DocCommentTable table, Function<Comment, Comment> commentMapper) {
+    static void processComments(DocCommentTable table, Function<Comment, Comment> commentMapper) {
         if (table instanceof LazyDocCommentTable) {
             // Use heckin' raw-types because LazyDocCommentTable.Entry has private access, so we
             // cannot statically express its type here.
@@ -66,46 +63,11 @@ class LazyDocCommentTableProcessor {
                 throw new RuntimeException(e);
             }
             map.replaceAll((tree, entry) -> converter.apply(entry));
-            return table;
         } else {
             // TODO: This path is exercised only for `overview.adoc` as far as I know now.
             //       However, the caller of this method should discard this rendered this result.
             //       A strange thing here is that the `overview.adoc` is still rendered...
-            DocCommentTable t = new DocCommentTable() {
-                @Override
-                public boolean hasComment(JCTree tree) {
-                    System.err.println(this + ":hasComment:" + System.identityHashCode(tree));
-                    return table.hasComment(tree);
-                }
-
-                @Override
-                public Comment getComment(JCTree tree) {
-                    System.err.println(this + ":getComment:" + System.identityHashCode(tree));
-                    return hasComment(tree) ? table.getComment(tree) : null;
-                }
-
-                @Override
-                public String getCommentText(JCTree tree) {
-                    System.err.println(this + ":getCommentText:" + System.identityHashCode(tree));
-                    Comment ret = getComment(tree);
-                    return ret == null ? "HELLO, WORLD" : ret.getText();
-                }
-
-                @Override
-                public DCTree.DCDocComment getCommentTree(JCTree tree) {
-                    System.err.println(this + ":getCommentTree:" + System.identityHashCode(tree));
-                    System.err.println("---:table.getCommentTree(jcTree):---" + Objects.toString(table.getCommentTree(jcTree)).replaceAll("\n", " "));
-                    System.err.println("---:table.getCommentTree(tree):---" + Objects.toString(table.getCommentTree(tree)).replaceAll("\n", " "));
-                    return table.getCommentTree(jcTree);
-                }
-
-                @Override
-                public void putComment(JCTree tree, Comment c) {
-                    System.err.println(this + ":putComment:" + System.identityHashCode(tree));
-                    table.putComment(tree, c);
-                }
-            };
-            return t;
+            System.err.println("A non-LazyDocCommentTable instance is passed. Ignoring.");
         }
     }
 }
