@@ -154,9 +154,13 @@ class AsciiDocTrees extends DocTrees {
         return docTrees.getElement(path);
     }
     
-//    @Override
+    // Not giving @Override in order to make this class compilable under all of JDK 11, 17, 21.
     public TypeMirror getType(DocTreePath path) {
-        return docTrees.getType(path);
+        // In order to make this method compilable with JDK11, which doesn't define DocTrees#getType method,
+        // currently just returning `null`.
+        // Another dirty but safer thought is to resort to reflection.
+        // Look up "getType(DocTreePath)" method in this.docTrees field's class and use it if any, otherwise return null.
+        return null;
     }
     
     @Override
