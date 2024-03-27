@@ -52,7 +52,6 @@ public class Stylesheets {
      */
     public boolean copy(DocletEnvironment environment) {
         String stylesheet = selectStylesheet(System.getProperty("java.version"));
-        errorReporter.print(Diagnostic.Kind.WARNING, "stylesheet=<"+ stylesheet + ">");
         JavaFileManager fm = environment.getJavaFileManager();
         try (InputStream stylesheetIn = getResource(stylesheet);
              InputStream coderayStylesheetIn = getResource(CODERAY_STYLESHEET);
