@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * A module-info for `asciidoclet`.
+ */
 module asciidoclet {
     requires java.base;
+    requires jdk.compiler;
     requires jdk.javadoc;
-    requires asciidoctorj.api;
     requires asciidoctorj;
+    requires asciidoctorj.api;
     exports org.asciidoctor.asciidoclet;
 }

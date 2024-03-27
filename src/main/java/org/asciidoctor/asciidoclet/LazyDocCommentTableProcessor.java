@@ -27,39 +27,47 @@ import java.util.function.Function;
 class LazyDocCommentTableProcessor {
 
     @SuppressWarnings("unchecked")
-    static void processComments(DocCommentTable table, Function<Comment, Comment> mapper) {
-        // Use heckin' raw-types because LazyDocCommentTable.Entry has private access, so we
-        // cannot statically express its type here.
-        Map map;
-        Function<Object, Object> converter;
-        try {
-            Field tableField = LazyDocCommentTable.class.getDeclaredField("table");
-            tableField.setAccessible(true);
-            map = (Map) tableField.get(table);
-
-            Class<?> entryClass = Class.forName("com.sun.tools.javac.parser.LazyDocCommentTable$Entry");
-            Constructor<?> ctor = entryClass.getDeclaredConstructor(Comment.class);
-            ctor.setAccessible(true);
-            Field commentField = entryClass.getDeclaredField("comment");
-            commentField.setAccessible(true);
-            Function<Object, Comment> fieldGetter = entry -> {
-                try {
-                    return (Comment) commentField.get(entry);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            };
-            Function<Comment, Object> instantiator = comment -> {
-                try {
-                    return ctor.newInstance(comment);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            };
-            converter = fieldGetter.andThen(mapper).andThen(instantiator);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    static void processComments(DocCommentTable table, Function<Comment, Comment> commentMapper) {
+        if (table instanceof LazyDocCommentTable) {
+            // Use heckin' raw-types because LazyDocCommentTable.Entry has private access, so we
+            // cannot statically express its type here.
+            //System.err.println("THEN:" + LazyDocCommentTableProcessor.class + ":processComments:" + System.identityHashCode(table));
+            Map map;
+            Function<Object, Object> converter;
+            try {
+                Field tableField = LazyDocCommentTable.class.getDeclaredField("table");
+                tableField.setAccessible(true);
+                map = (Map) tableField.get(table);
+                
+                Class<?> entryClass = Class.forName("com.sun.tools.javac.parser.LazyDocCommentTable$Entry");
+                Constructor<?> ctor = entryClass.getDeclaredConstructor(Comment.class);
+                ctor.setAccessible(true);
+                Field commentField = entryClass.getDeclaredField("comment");
+                commentField.setAccessible(true);
+                Function<Object, Comment> fieldGetter = entry -> {
+                    try {
+                        return (Comment) commentField.get(entry);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                };
+                Function<Comment, Object> instantiator = comment -> {
+                    try {
+                        return ctor.newInstance(comment);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                };
+                converter = fieldGetter.andThen(commentMapper).andThen(instantiator);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            map.replaceAll((tree, entry) -> converter.apply(entry));
+        } else {
+            // TODO: This path is exercised only for `overview.adoc` as far as I know now.
+            //       However, the caller of this method should discard this rendered this result.
+            //       A strange thing here is that the `overview.adoc` is still rendered...
+            System.err.println("A non-LazyDocCommentTable instance is passed. Ignoring.");
         }
-        map.replaceAll((jcTree, entry) -> converter.apply(entry));
     }
 }

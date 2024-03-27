@@ -19,20 +19,66 @@ import jdk.javadoc.doclet.Doclet;
 
 import java.util.List;
 
+/**
+ * An `enum` to define options supported by AsciiDoclet.
+ */
+// TODO: ideally, the `options.adoc` should be generated from comments in this file.
 public enum AsciidocletOptions implements Doclet.Option {
+    /**
+     * Check Doclet Options documentation.
+     */
     ENCODING("encoding"),
+    /**
+     * Check Doclet Options documentation.
+     */
     OVERVIEW("overview"),
+    /**
+     * Check Doclet Options documentation.
+     */
     BASEDIR("base-dir"),
+    /**
+     * Check Doclet Options documentation.
+     */
     STYLESHEET("stylesheetfile"),
+    /**
+     * Check Doclet Options documentation.
+     */
     ATTRIBUTE("a"),
+    /**
+     * Check Doclet Options documentation.
+     */
     ATTRIBUTE_LONG("attribute"),
+    /**
+     * Check Doclet Options documentation.
+     */
     INCLUDE_FILTER("asciidoclet-include"),
+    /**
+     * Check Doclet Options documentation.
+     */
     EXCLUDE_FILTER("asciidoclet-exclude"),
+    /**
+     * Check Doclet Options documentation.
+     */
     ATTRIBUTES_FILE("attributes-file"),
+    /**
+     * Check Doclet Options documentation.
+     */
     GEM_PATH("gem-path"),
+    /**
+     * Check Doclet Options documentation.
+     */
     REQUIRE("r"),
+    /**
+     * Check Doclet Options documentation.
+     */
     REQUIRE_LONG("require");
-
+    /**
+     * Check Doclet Options documentation.
+     */
+    
+    /**
+     * Check Doclet Options documentation.
+     */
     private final String name;
 
     AsciidocletOptions(String name) {

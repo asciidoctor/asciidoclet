@@ -23,6 +23,9 @@ import javax.tools.JavaFileManager;
 import javax.tools.StandardJavaFileManager;
 import java.io.IOException;
 
+/**
+ * An operating environment defined for AsciiDoclet.
+ */
 public class AsciidoctorFilteredEnvironment
         extends DocEnvImpl
         implements DocletEnvironment, AutoCloseable {

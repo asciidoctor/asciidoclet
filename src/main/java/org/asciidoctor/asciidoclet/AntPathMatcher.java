@@ -53,7 +53,16 @@ public class AntPathMatcher {
         this.matchStart = matchStart;
         this.trimTokens = trimTokens;
     }
-
+    
+    /**
+     * Checks if a `path` matches with a given `pattern`.
+     * Is this method really necessary?
+     *
+     * @param pattern A pattern to be checked with a `path`.
+     * @param path A path to be checked
+     * @return `true` if `path` matches `pattern`. `false`, otherwise.
+     */
+    
     public boolean isMatch(final String pattern, final String path) {
         if (pattern.isEmpty()) {
             return path.isEmpty();
@@ -120,38 +129,68 @@ public class AntPathMatcher {
         }
         return pathChar == patternChar;
     }
-
+    
+    /**
+     * A builder class for `AndPathMatcher`.
+     * Is this class really necessary?
+     * // A comment to suppress warnings during JavaDoc generation by AsciiDoclet.
+     */
     public static final class Builder {
 
         private char pathSeparator = '/';
         private boolean ignoreCase = false;
         private boolean matchStart = false;
         private boolean trimTokens = false;
-
+        
+        /**
+         * Creates {@link Builder} object.
+         */
         public Builder() {
 
         }
-
+        
+        /**
+         * Sets `pathSeparator` to this object.
+         *
+         * @param pathSeparator `pathSeparator` to be set.
+         * @return returns this object.
+         */
         public Builder withPathSeparator(final char pathSeparator) {
             this.pathSeparator = pathSeparator;
             return this;
         }
-
+        
+        /**
+         * Sets `ignoreCase` to this object to `true`.
+         * @return returns this object.
+         */
         public Builder withIgnoreCase() {
             this.ignoreCase = true;
             return this;
         }
-
+        
+        /**
+         * Sets `matchStart` to this object to `true`.
+         * @return returns this object.
+         */
         public Builder withMatchStart() {
             this.matchStart = true;
             return this;
         }
-
+        
+        /**
+         * Sets `trimTokens` to this object to `true`.
+         * @return returns this object.
+         */
         public Builder withTrimTokens() {
             this.trimTokens = true;
             return this;
         }
-
+        
+        /**
+         * Creates and returns {@link AntPathMatcher} object.
+         * @return A built {@link AntPathMatcher} object.
+         */
         public AntPathMatcher build() {
             return new AntPathMatcher(pathSeparator, ignoreCase, matchStart, trimTokens);
         }
