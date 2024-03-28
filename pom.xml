@@ -4,7 +4,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.dakusui</groupId>
+    <groupId>org.asciidoctor</groupId>
     <artifactId>asciidoclet</artifactId>
     <packaging>jar</packaging>
     <version>2.0.0-SNAPSHOT</version>
