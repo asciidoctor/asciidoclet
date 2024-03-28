@@ -26,7 +26,7 @@ import java.util.function.Function;
 
 class LazyDocCommentTableProcessor {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     static void processComments(DocCommentTable table, Function<Comment, Comment> commentMapper) {
         if (table instanceof LazyDocCommentTable) {
             // Use heckin' raw-types because LazyDocCommentTable.Entry has private access, so we
@@ -64,9 +64,7 @@ class LazyDocCommentTableProcessor {
             }
             map.replaceAll((tree, entry) -> converter.apply(entry));
         } else {
-            // TODO: This path is exercised only for `overview.adoc` as far as I know now.
-            //       However, the caller of this method should discard this rendered this result.
-            //       A strange thing here is that the `overview.adoc` is still rendered...
+            // TODO: This path is exercised only for `default constructors` as far as I know now.
             System.err.println("A non-LazyDocCommentTable instance is passed. Ignoring.");
         }
     }
