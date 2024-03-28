@@ -75,10 +75,6 @@ public enum AsciidocletOptions implements Doclet.Option {
     /**
      * Check Doclet Options documentation.
      */
-    
-    /**
-     * Check Doclet Options documentation.
-     */
     private final String name;
 
     AsciidocletOptions(String name) {
