@@ -41,13 +41,20 @@ public class StylesheetsTest {
     }
     
     @Test
-    public void java17ShouldSelectStylesheet11() {
+    public void unknownNewJavaShouldSelectLatestStylesheet() {
         assertEquals(String.format(JAVA_STYLESHEET_FORMAT, 17), stylesheets.selectStylesheet("42.3.0_12"));
         reporter.assertNoMoreInteractions();
     }
     @Test
-    public void unknownJavaShouldSelectLatestStylesheetAndWarn() {
-        assertEquals(JAVA11_STYLESHEET, stylesheets.selectStylesheet("10"));
+    public void unknownOldJavaShouldSelectJava11StylesheetAndWarn() {
+        assertEquals(String.format(JAVA_STYLESHEET_FORMAT, 11), stylesheets.selectStylesheet("9.9.9"));
         assertEquals(reporter.pullCall().get(0), Diagnostic.Kind.WARNING);
+        reporter.assertNoMoreInteractions();
+    }
+
+    @Test
+    public void java17ShouldSelectStylesheet17() {
+        assertEquals(String.format(JAVA_STYLESHEET_FORMAT, 17), stylesheets.selectStylesheet("17"));
+        reporter.assertNoMoreInteractions();
     }
 }
