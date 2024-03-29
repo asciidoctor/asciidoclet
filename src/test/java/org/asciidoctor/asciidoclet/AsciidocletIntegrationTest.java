@@ -22,39 +22,47 @@ import java.lang.reflect.Method;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
 public class AsciidocletIntegrationTest {
-
+    
     /**
      * Running this test needs the following JVM argument:
      * --add-exports jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet
      */
-    // @Test
+    @Test
     public void testJavadocIntegration() throws Exception {
         Method execute = Class.forName("jdk.javadoc.internal.tool.Main").getMethod("execute", String[].class);
         execute.setAccessible(true);
         String outputDirectory = "target/javadoc-output";
         deleteRecursively(outputDirectory);
         int result = (int) execute.invoke(null, (Object) new String[]{
-                "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet",
-                "--module-path", classpath(),
-                "-doclet", "org.asciidoctor.asciidoclet.Asciidoclet",
-                "--source-path", "src/main/java",
-                "-d", outputDirectory,
-                "-Xdoclint:all,-html,-accessibility", // TODO We should ideally generate valid HTML5.
-                "-overview", "src/main/java/overview.adoc",
-                "--base-dir", ".",
-                "org.asciidoctor.asciidoclet",
+            // module jdk.compiler does not "opens com.sun.tools.javac.api"
+            "--add-opens=jdk.compiler/com.sun.tools.javac.api=asciidoclet",
+            "--add-opens=jdk.compiler/com.sun.tools.javac.parser=asciidoclet",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.util=asciidoclet",
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet",
+            "--module-path", modulepath(),
+            "-doclet", "org.asciidoctor.asciidoclet.Asciidoclet",
+            "--source-path", "src/main/java",
+            "-d", outputDirectory,
+            "-Xdoclint:all,-html,-accessibility", // TODO We should ideally generate valid HTML5.
+            "-overview", "src/main/java/overview.adoc",
+            "--base-dir", ".",
+            "org.asciidoctor.asciidoclet",
         });
         assertEquals(0, result);
     }
-
+    
     private void deleteRecursively(String outputDirectory) throws IOException {
         Path outputPath = Paths.get(outputDirectory);
         if (Files.exists(outputPath)) {
@@ -64,7 +72,7 @@ public class AsciidocletIntegrationTest {
                     Files.deleteIfExists(file);
                     return FileVisitResult.CONTINUE;
                 }
-
+                
                 @Override
                 public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                     Files.deleteIfExists(dir);
@@ -73,10 +81,15 @@ public class AsciidocletIntegrationTest {
             });
         }
     }
-
+    
     private String classpath() {
         return Arrays.stream(System.getProperty("java.class.path").split(":"))
-                .filter(s -> !s.contains("ideaIU")) // Filter out Intellij jar files.
-                .collect(Collectors.joining(":"));
+            .filter(s -> !s.contains("ideaIU")) // Filter out Intellij jar files.
+            .collect(Collectors.joining(":"));
+    }
+    private String modulepath() {
+        return Arrays.stream(System.getProperty("jdk.module.path").split(":"))
+            .filter(s -> !s.contains("ideaIU")) // Filter out Intellij jar files.
+            .collect(Collectors.joining(":"));
     }
 }

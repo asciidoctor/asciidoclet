@@ -23,4 +23,6 @@ module asciidoclet {
     requires asciidoctorj;
     requires asciidoctorj.api;
     exports org.asciidoctor.asciidoclet;
+    //opens com.sun.tools.javac.tree;
+    //opens com.sun.tools.javac.model;
 }
