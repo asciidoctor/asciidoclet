@@ -24,14 +24,17 @@ import javax.tools.JavaFileManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Responsible for copying the appropriate stylesheet to the javadoc
  * output directory.
  */
 public class Stylesheets {
-
-    static final String JAVA11_STYLESHEET = "stylesheet11.css";
+    
+    static final String JAVA_STYLESHEET_FORMAT = "stylesheet%s.css";
+    static final String JAVA11_STYLESHEET = String.format(JAVA_STYLESHEET_FORMAT, "11");
 
     private static final String CODERAY_STYLESHEET = "coderay-asciidoctor.css";
     private static final String OUTPUT_STYLESHEET = "stylesheet.css";
@@ -41,7 +44,12 @@ public class Stylesheets {
     Stylesheets(Reporter errorReporter) {
         this.errorReporter = errorReporter;
     }
-
+    
+    /**
+     * Copies an {@link DocletEnvironment} to this object.
+     * @param environment An environment to be copied to this object.
+     * @return `true` if successfully copied. `false` otherwise.
+     */
     public boolean copy(DocletEnvironment environment) {
         String stylesheet = selectStylesheet(System.getProperty("java.version"));
         JavaFileManager fm = environment.getJavaFileManager();
@@ -84,10 +92,26 @@ public class Stylesheets {
     }
 
     String selectStylesheet(String javaVersion) {
-        if (javaVersion.matches("^(11)(\\.)?.*")) {
-            return JAVA11_STYLESHEET;
+        String ret;
+        Matcher m = Pattern.compile("^([0-9]+)(\\.)?.*").matcher(javaVersion);
+        if (m.matches()) {
+            int selectedJavaMajorVersion = 11;
+            // It is safe to do parseInt since it is already ensured an integer parsable string by the regex
+            int javaMajorVersionAsInt = Integer.parseInt(m.group(1));
+            // In what version of Java, the stylesheet design was changed? 12, 13, 14?
+            // The threshold 17 should be changed based on it.
+            // Also, the filename stylesheet17.css should also be updated accordingly.
+            if (11 <= javaMajorVersionAsInt  && javaMajorVersionAsInt < 17 )
+                selectedJavaMajorVersion = 11;
+            else if (17 <= javaMajorVersionAsInt)
+                selectedJavaMajorVersion = 17;
+            else
+                errorReporter.print(Diagnostic.Kind.WARNING, "Unrecognized Java version " + javaVersion + ", using Java " + selectedJavaMajorVersion + " stylesheet");
+            ret = String.format(JAVA_STYLESHEET_FORMAT, selectedJavaMajorVersion);
+        } else {
+           ret = JAVA11_STYLESHEET;
+           errorReporter.print(Diagnostic.Kind.WARNING, "Unrecognizable Java version " + javaVersion + ", using Java 11 stylesheet");
         }
-        errorReporter.print(Diagnostic.Kind.WARNING, "Unrecognized Java version " + javaVersion + ", using Java 11 stylesheet");
-        return JAVA11_STYLESHEET;
+        return ret;
     }
 }

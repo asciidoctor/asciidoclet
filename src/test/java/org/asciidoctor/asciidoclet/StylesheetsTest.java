@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import javax.tools.Diagnostic;
 
-import static org.asciidoctor.asciidoclet.Stylesheets.JAVA11_STYLESHEET;
+import static org.asciidoctor.asciidoclet.Stylesheets.*;
 import static org.junit.Assert.assertEquals;
 
 public class StylesheetsTest {
@@ -39,10 +39,22 @@ public class StylesheetsTest {
         assertEquals(JAVA11_STYLESHEET, stylesheets.selectStylesheet("11"));
         reporter.assertNoMoreInteractions();
     }
+    
+    @Test
+    public void unknownNewJavaShouldSelectLatestStylesheet() {
+        assertEquals(String.format(JAVA_STYLESHEET_FORMAT, 17), stylesheets.selectStylesheet("42.3.0_12"));
+        reporter.assertNoMoreInteractions();
+    }
+    @Test
+    public void unknownOldJavaShouldSelectJava11StylesheetAndWarn() {
+        assertEquals(String.format(JAVA_STYLESHEET_FORMAT, 11), stylesheets.selectStylesheet("9.9.9"));
+        assertEquals(reporter.pullCall().get(0), Diagnostic.Kind.WARNING);
+        reporter.assertNoMoreInteractions();
+    }
 
     @Test
-    public void unknownJavaShouldSelectLatestStylesheetAndWarn() {
-        assertEquals(JAVA11_STYLESHEET, stylesheets.selectStylesheet("42.3.0_12"));
-        assertEquals(reporter.pullCall().get(0), Diagnostic.Kind.WARNING);
+    public void java17ShouldSelectStylesheet17() {
+        assertEquals(String.format(JAVA_STYLESHEET_FORMAT, 17), stylesheets.selectStylesheet("17"));
+        reporter.assertNoMoreInteractions();
     }
 }

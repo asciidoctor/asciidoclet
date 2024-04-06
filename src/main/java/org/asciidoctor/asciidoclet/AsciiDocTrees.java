@@ -49,6 +49,7 @@ import javax.tools.StandardJavaFileManager;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.text.BreakIterator;
 import java.util.List;
 
@@ -88,19 +89,21 @@ class AsciiDocTrees extends DocTrees {
         // First we convert the asciidoctor to HTML inside the AST.
         JCTree.JCCompilationUnit cu = (JCTree.JCCompilationUnit) path.getCompilationUnit();
         LazyDocCommentTableProcessor.processComments(cu.docComments, this::convertToAsciidoctor);
-
         // Then we allow the normal javadoc parsing to continue on the asciidoctor result.
         return docTrees.getDocCommentTree(path);
     }
 
     private Tokens.Comment convertToAsciidoctor(Tokens.Comment comment) {
-        String javadoc = comment.getText();
-        String asciidoc = converter.convert(javadoc);
+        String asciidoc = convertJavadocStringToAsciidoctorString(comment.getText());
         AsciidocComment result = new AsciidocComment(asciidoc, comment);
-        System.err.println("");
         return result;
     }
-
+    
+    private String convertJavadocStringToAsciidoctorString(String javadocString) {
+      return converter.convert(javadocString);
+    }
+    
+    
     @Override
     public DocCommentTree getDocCommentTree(Element e) {
         TreePath path = getPath(e);
@@ -151,7 +154,19 @@ class AsciiDocTrees extends DocTrees {
     public Element getElement(DocTreePath path) {
         return docTrees.getElement(path);
     }
-
+    
+    // Not giving @Override in order to make this class compilable under all of JDK 11, 17, 21.
+    public TypeMirror getType(DocTreePath path) {
+        // In order to make this method compilable with JDK11, which doesn't define DocTrees#getType method,
+        // and make this method work with JDK 17 and later, invoke the DocTrees#getType(DocTreePath) method reflectively.
+        // Once we decide to stop supporting JDK 11, just call getType directly.
+      try {
+        return (TypeMirror) DocTrees.class.getMethod("getType", DocTreePath.class).invoke(docTrees, path);
+      } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    
     @Override
     public List<DocTree> getFirstSentence(List<? extends DocTree> list) {
         return docTrees.getFirstSentence(list);

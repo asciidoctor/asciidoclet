@@ -181,7 +181,21 @@ class AsciidoctorConverter {
         if (input.trim().isEmpty()) {
             return "";
         }
-        options.setDocType(inline ? INLINE_DOCTYPE : "");
+        // Setting doctype to null results in an NPE from asciidoctor.
+        // the default value from the command line is "article".
+        // https://docs.asciidoctor.org/asciidoctor/latest/cli/man1/asciidoctor/#options
+        // In general, in order to respect original doctype, we should do the following.
+        // options.setDocType(inline ?
+        //    INLINE_DOCTYPE :
+        //    options.map().containsKey(Options.DOCTYPE) ?
+        //        (String)options.map().get(Options.DOCTYPE) :
+        //        "article");
+        // However, this fix breaks AsciidoctorConverterTest#testParameterWithoutTypeTag.
+        // For now, I simply set it to "article", always.
+        options.setDocType(inline ?
+            INLINE_DOCTYPE :
+            "article"); // upstream sets this to "".
+        
         return asciidoctor.convert(cleanJavadocInput(input), options);
     }
 
