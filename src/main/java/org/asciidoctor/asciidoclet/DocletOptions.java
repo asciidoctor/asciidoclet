@@ -44,6 +44,7 @@ public class DocletOptions {
     
     /**
      * Creates an {@link DocletOptions} object with a given {@link Reporter} object.
+     *
      * @param reporter A {@link Reporter} object with which a new object is created.
      */
     public DocletOptions(Reporter reporter) {

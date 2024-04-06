@@ -32,7 +32,7 @@ public class AsciidocletIntegrationTest {
      * Running this test needs the following JVM argument:
      * --add-exports jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet
      */
-    // @Test
+    //@Test
     public void testJavadocIntegration() throws Exception {
         Method execute = Class.forName("jdk.javadoc.internal.tool.Main").getMethod("execute", String[].class);
         execute.setAccessible(true);

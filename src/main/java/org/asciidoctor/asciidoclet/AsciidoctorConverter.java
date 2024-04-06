@@ -188,7 +188,7 @@ class AsciidoctorConverter {
         // options.setDocType(inline ?
         //    INLINE_DOCTYPE :
         //    options.map().containsKey(Options.DOCTYPE) ?
-        //        Objects.toString(options.map().get(Options.DOCTYPE)) :
+        //        (String)options.map().get(Options.DOCTYPE) :
         //        "article");
         // However, this fix breaks AsciidoctorConverterTest#testParameterWithoutTypeTag.
         // For now, I simply set it to "article", always.

@@ -28,6 +28,7 @@ class LazyDocCommentTableProcessor {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     static void processComments(DocCommentTable table, Function<Comment, Comment> commentMapper) {
+        // table can be non-LazyDocCommentTable instance only for `default constructors` as far as I know now.
         if (table instanceof LazyDocCommentTable) {
             // Use heckin' raw-types because LazyDocCommentTable.Entry has private access, so we
             // cannot statically express its type here.
@@ -63,9 +64,6 @@ class LazyDocCommentTableProcessor {
                 throw new RuntimeException(e);
             }
             map.replaceAll((tree, entry) -> converter.apply(entry));
-        } else {
-            // TODO: This path is exercised only for `default constructors` as far as I know now.
-            System.err.println("A non-LazyDocCommentTable instance is passed. Ignoring.");
         }
     }
 }

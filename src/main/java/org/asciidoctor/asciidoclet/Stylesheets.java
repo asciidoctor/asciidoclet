@@ -92,7 +92,7 @@ public class Stylesheets {
     }
 
     String selectStylesheet(String javaVersion) {
-      String ret;
+        String ret;
         Matcher m = Pattern.compile("^([0-9]+)(\\.)?.*").matcher(javaVersion);
         if (m.matches()) {
             int selectedJavaMajorVersion = 11;
