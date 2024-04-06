@@ -865,3 +865,9 @@ table.striped > tbody > tr > th {
     }
 }
 
+ul.sub-nav-list-small {
+    display: none;
+}
+button#navbar-toggle-button {
+    display:none;
+}
