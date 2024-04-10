@@ -25,9 +25,9 @@
     </licenses>
 
     <scm>
-        <url>scm:git:https://github.com/asciidoctor/asciidoclet</url>
-        <connection>scm:git:https://github.com/asciidoctor/asciidoclet.git</connection>
-        <developerConnection>scm:git:https://github.com/asciidoctor/asciidoclet.git</developerConnection>
+        <url>scm:git:https://github.com/abelsromero/asciidoclet.git</url>
+        <connection>scm:git:https://github.com/abelsromero/asciidoclet.git</connection>
+        <developerConnection>scm:git:https://github.com/abelsromero/asciidoclet.git</developerConnection>
     </scm>
 
     <properties>
