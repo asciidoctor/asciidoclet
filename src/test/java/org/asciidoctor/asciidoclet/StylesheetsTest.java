@@ -15,46 +15,48 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.tools.Diagnostic;
 
-import static org.asciidoctor.asciidoclet.Stylesheets.*;
-import static org.junit.Assert.assertEquals;
+import static org.asciidoctor.asciidoclet.Stylesheets.JAVA11_STYLESHEET;
+import static org.asciidoctor.asciidoclet.Stylesheets.JAVA_STYLESHEET_FORMAT;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class StylesheetsTest {
+class StylesheetsTest {
 
     private Stylesheets stylesheets;
     private StubReporter reporter;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         reporter = new StubReporter();
         stylesheets = new Stylesheets(reporter);
     }
 
     @Test
-    public void java11ShouldSelectStylesheet11() {
-        assertEquals(JAVA11_STYLESHEET, stylesheets.selectStylesheet("11"));
-        reporter.assertNoMoreInteractions();
-    }
-    
-    @Test
-    public void unknownNewJavaShouldSelectLatestStylesheet() {
-        assertEquals(String.format(JAVA_STYLESHEET_FORMAT, 17), stylesheets.selectStylesheet("42.3.0_12"));
-        reporter.assertNoMoreInteractions();
-    }
-    @Test
-    public void unknownOldJavaShouldSelectJava11StylesheetAndWarn() {
-        assertEquals(String.format(JAVA_STYLESHEET_FORMAT, 11), stylesheets.selectStylesheet("9.9.9"));
-        assertEquals(reporter.pullCall().get(0), Diagnostic.Kind.WARNING);
+    void java11ShouldSelectStylesheet11() {
+        assertThat(stylesheets.selectStylesheet("11")).isEqualTo(JAVA11_STYLESHEET);
         reporter.assertNoMoreInteractions();
     }
 
     @Test
-    public void java17ShouldSelectStylesheet17() {
-        assertEquals(String.format(JAVA_STYLESHEET_FORMAT, 17), stylesheets.selectStylesheet("17"));
+    void unknownNewJavaShouldSelectLatestStylesheet() {
+        assertThat(stylesheets.selectStylesheet("42.3.0_12")).isEqualTo(String.format(JAVA_STYLESHEET_FORMAT, 17));
+        reporter.assertNoMoreInteractions();
+    }
+
+    @Test
+    void unknownOldJavaShouldSelectJava11StylesheetAndWarn() {
+        assertThat(stylesheets.selectStylesheet("9.9.9")).isEqualTo(String.format(JAVA_STYLESHEET_FORMAT, 11));
+        assertThat(reporter.pullCall()).first().isEqualTo(Diagnostic.Kind.WARNING);
+        reporter.assertNoMoreInteractions();
+    }
+
+    @Test
+    void java17ShouldSelectStylesheet17() {
+        assertThat(stylesheets.selectStylesheet("17")).isEqualTo(String.format(JAVA_STYLESHEET_FORMAT, 17));
         reporter.assertNoMoreInteractions();
     }
 }

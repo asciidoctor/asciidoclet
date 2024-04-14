@@ -15,57 +15,56 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.asciidoctor.asciidoclet.AsciidoctorConverter.MARKER;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author John Ericksen
  */
-public class AsciidoctorConverterTest {
+class AsciidoctorConverterTest {
 
     private static final String LINEBREAK = "\r?\n";
 
     private AsciidoctorConverter converter;
     private StubReporter reporter = new StubReporter();
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         DocletOptions options = new DocletOptions(reporter);
         converter = new AsciidoctorConverter(options, reporter);
     }
 
     @Test
-    public void testAtLiteralRender() {
+    void testAtLiteralRender() {
         String actual = converter.convert("{@literal @}Test");
         assertThat(actual).matches(MARKER + "<p>\\{@literal @}Test</p>" + LINEBREAK);
     }
 
     @Test
-    public void testTagRender() {
+    void testTagRender() {
         String actual = converter.convert("input\n@tagName tagText");
         assertThat(actual).matches(MARKER + "<p>input</p>" + LINEBREAK + "@tagName tagText" + LINEBREAK);
     }
 
     @Test
-    public void testCleanInput() {
-        assertEquals("test1\ntest2", AsciidoctorConverter.cleanJavadocInput("  test1\n test2\n"));
-        assertEquals("/*\ntest\n*/", AsciidoctorConverter.cleanJavadocInput("/*\ntest\n*\\/"));
-        assertEquals("&#64;", AsciidoctorConverter.cleanJavadocInput("{at}"));
-        assertEquals("/", AsciidoctorConverter.cleanJavadocInput("{slash}"));
+    void testCleanInput() {
+        assertThat(AsciidoctorConverter.cleanJavadocInput("  test1\n test2\n")).isEqualTo("test1\ntest2");
+        assertThat(AsciidoctorConverter.cleanJavadocInput("/*\ntest\n*\\/")).isEqualTo("/*\ntest\n*/");
+        assertThat(AsciidoctorConverter.cleanJavadocInput("{at}")).isEqualTo("&#64;");
+        assertThat(AsciidoctorConverter.cleanJavadocInput("{slash}")).isEqualTo("/");
     }
 
     @Test
-    public void testComment() {
+    void testComment() {
         assertThat(converter.convert("comment\n"))
                 .matches(MARKER + "<p>comment</p>" + LINEBREAK);
     }
 
     @Test
-    public void testParameterWithoutTypeTag() {
+    void testParameterWithoutTypeTag() {
         assertThat(converter.convert("comment\n@param p description"))
                 .matches(MARKER + "<p>comment</p>" + LINEBREAK + "@param p description" + LINEBREAK);
         assertThat(converter.convert("comment\n@param p"))
@@ -75,7 +74,7 @@ public class AsciidoctorConverterTest {
     }
 
     @Test
-    public void testParamTagWithTypeParameter() {
+    void testParamTagWithTypeParameter() {
         String commentText = "comment";
         String param1Name = "T";
         String param1Text = "<" + param1Name + ">";

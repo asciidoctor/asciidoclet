@@ -16,14 +16,14 @@
 package org.asciidoctor.asciidoclet;
 
 import org.asciidoctor.Asciidoctor;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
@@ -31,16 +31,20 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AttributesLoaderTest {
+class AttributesLoaderTest {
 
     private final Asciidoctor asciidoctor = Asciidoctor.Factory.create();
     private final StubReporter reporter = new StubReporter();
 
-    @Rule
-    public final TemporaryFolder tmpDir = new TemporaryFolder();
+    private Path tmpDir;
+
+    @BeforeEach
+    void before(@TempDir Path tmpDir) {
+        this.tmpDir = tmpDir;
+    }
 
     @Test
-    public void testNoAttributes() {
+    void testNoAttributes() {
         DocletOptions options = new DocletOptions(reporter);
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
@@ -51,7 +55,7 @@ public class AttributesLoaderTest {
     }
 
     @Test
-    public void testOnlyCommandLineAttributes() {
+    void testOnlyCommandLineAttributes() {
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ATTRIBUTE, List.of("foo=bar, foo2=foo-two, not!, override=override@"));
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
@@ -69,7 +73,7 @@ public class AttributesLoaderTest {
     }
 
     @Test
-    public void testOnlyCommandLineAttributesMulti() {
+    void testOnlyCommandLineAttributesMulti() {
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ATTRIBUTE, List.of(
                 "foo=bar", "foo2=foo two", "not!", "override=override@"));
@@ -88,11 +92,11 @@ public class AttributesLoaderTest {
     }
 
     @Test
-    public void testOnlyAttributesFile() throws IOException {
-        File attrsFile = createTempFile("attrs.adoc", ATTRS);
+    void testOnlyAttributesFile() throws IOException {
+        Path attrsFile = createTempFile("attrs.adoc", ATTRS);
 
         DocletOptions options = new DocletOptions(reporter);
-        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.getAbsolutePath()));
+        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.toAbsolutePath().toString()));
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = loader.load();
@@ -106,12 +110,12 @@ public class AttributesLoaderTest {
     }
 
     @Test
-    public void testCommandLineAndAttributesFile() throws IOException {
-        File attrsFile = createTempFile("attrs.adoc", ATTRS);
+    void testCommandLineAndAttributesFile() throws IOException {
+        Path attrsFile = createTempFile("attrs.adoc", ATTRS);
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ATTRIBUTE, List.of("foo=bar, not!, override=override@"));
-        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.getAbsolutePath()));
+        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.toAbsolutePath().toString()));
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = new HashMap<>(loader.load());
@@ -127,13 +131,13 @@ public class AttributesLoaderTest {
     }
 
     @Test
-    public void testAttributesFileIncludeFromBaseDir() throws IOException {
-        File attrsFile = createTempFile("attrs.adoc", "include::attrs-include.adoc[]");
+    void testAttributesFileIncludeFromBaseDir() throws IOException {
+        Path attrsFile = createTempFile("attrs.adoc", "include::attrs-include.adoc[]");
         createTempFile("attrs-include.adoc", ATTRS);
 
         DocletOptions options = new DocletOptions(reporter);
-        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.getAbsolutePath()));
-        options.collect(AsciidocletOptions.BASEDIR, List.of(attrsFile.getParentFile().getAbsolutePath()));
+        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.toAbsolutePath().toString()));
+        options.collect(AsciidocletOptions.BASEDIR, List.of(attrsFile.getParent().toAbsolutePath().toString()));
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
         Map<String, Object> attrs = loader.load();
@@ -148,13 +152,13 @@ public class AttributesLoaderTest {
     }
 
     @Test
-    public void testAttributesFileIncludeFromOtherDir() throws IOException {
-        File attrsFile = createTempFile("attrs.adoc", "include::{includedir}/attrs-include.adoc[]");
+    void testAttributesFileIncludeFromOtherDir() throws IOException {
+        Path attrsFile = createTempFile("attrs.adoc", "include::{includedir}/attrs-include.adoc[]");
         createTempFile("foo", "attrs-include.adoc", ATTRS);
 
         DocletOptions options = new DocletOptions(reporter);
-        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.getAbsolutePath()));
-        options.collect(AsciidocletOptions.BASEDIR, List.of(attrsFile.getParentFile().getAbsolutePath()));
+        options.collect(AsciidocletOptions.ATTRIBUTES_FILE, List.of(attrsFile.toAbsolutePath().toString()));
+        options.collect(AsciidocletOptions.BASEDIR, List.of(attrsFile.getParent().toAbsolutePath().toString()));
         options.collect(AsciidocletOptions.ATTRIBUTE, List.of("includedir=foo"));
         AttributesLoader loader = new AttributesLoader(asciidoctor, options, reporter);
 
@@ -169,22 +173,20 @@ public class AttributesLoaderTest {
         reporter.assertNoMoreInteractions();
     }
 
-    private File createTempFile(String name, String content) throws IOException {
-        File file = tmpDir.newFile(name);
-        writeFile(content, file);
-        return file;
+    private Path createTempFile(String name, String content) throws IOException {
+        return writeFile(content, tmpDir.resolve(name));
     }
 
-    private File createTempFile(String dir, String name, String content) throws IOException {
-        File directory = tmpDir.newFolder(dir);
-        File file = new File(directory, name);
-        writeFile(content, file);
-        return file;
+    private Path createTempFile(String dir, String name, String content) throws IOException {
+        Path directory = tmpDir.resolve(dir);
+        Files.createDirectories(directory);
+        return writeFile(content, directory.resolve(name));
     }
 
-    private void writeFile(String content, File file) throws IOException {
+    private Path writeFile(String content, Path file) throws IOException {
         byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-        Files.write(file.toPath(), bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+        Files.write(file, bytes, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+        return file;
     }
 
     static final String ATTRS =

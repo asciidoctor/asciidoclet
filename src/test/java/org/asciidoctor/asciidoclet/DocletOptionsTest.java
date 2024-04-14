@@ -16,105 +16,105 @@
 package org.asciidoctor.asciidoclet;
 
 import jdk.javadoc.doclet.Reporter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class DocletOptionsTest {
+class DocletOptionsTest {
 
     private Reporter reporter;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         reporter = new StubReporter();
     }
 
     @Test
-    public void testGetBaseDir() {
-        assertFalse(new DocletOptions(reporter).baseDir().isPresent());
+    void testGetBaseDir() {
+        assertThat(new DocletOptions(reporter).baseDir()).isNotPresent();
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.BASEDIR, List.of("test"));
         options.validateOptions();
-        assertEquals("test", options.baseDir().get().getName());
+
+        assertThat(options.baseDir().get().getName()).isEqualTo("test");
     }
 
     @Test
-    public void testAttributes() {
+    void testAttributes() {
         final String attribute = "attribute-key=attribute-value";
-        assertFalse(new DocletOptions(reporter).baseDir().isPresent());
+        assertThat(new DocletOptions(reporter).baseDir()).isNotPresent();
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ATTRIBUTE, List.of(attribute));
         options.validateOptions();
-        assertEquals(1, options.attributes().size());
-        assertEquals(attribute, options.attributes().get(0));
 
+        assertThat(options.attributes()).hasSize(1);
+        assertThat(options.attributes()).first().isEqualTo(attribute);
     }
 
     @Test
-    public void testAttributesLong() {
+    void testAttributesLong() {
         final String attribute = "attribute-key=attribute-value";
-        assertFalse(new DocletOptions(reporter).baseDir().isPresent());
+        assertThat(new DocletOptions(reporter).baseDir()).isNotPresent();
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ATTRIBUTE_LONG, List.of(attribute));
         options.validateOptions();
-        assertEquals(1, options.attributes().size());
-        assertEquals(attribute, options.attributes().get(0));
+
+        assertThat(options.attributes()).hasSize(1);
+        assertThat(options.attributes()).first().isEqualTo(attribute);
     }
 
     @Test
-    public void testEncoding() {
-        assertEquals(Charset.defaultCharset(), new DocletOptions(reporter).encoding());
+    void testEncoding() {
+        assertThat(new DocletOptions(reporter).encoding()).isEqualTo(Charset.defaultCharset());
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ENCODING, List.of("UTF-8"));
         options.validateOptions();
-        assertEquals(StandardCharsets.UTF_8, options.encoding());
+        assertThat(options.encoding()).isEqualTo(StandardCharsets.UTF_8);
 
         options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ENCODING, List.of("US-ASCII"));
         options.validateOptions();
-        assertEquals(StandardCharsets.US_ASCII, options.encoding());
+        assertThat(options.encoding()).isEqualTo(StandardCharsets.US_ASCII);
 
         options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ENCODING, List.of("ISO-8859-1"));
         options.validateOptions();
-        assertEquals(StandardCharsets.ISO_8859_1, options.encoding());
+        assertThat(options.encoding()).isEqualTo(StandardCharsets.ISO_8859_1);
     }
 
     @Test
-    public void testStylesheetFile() {
-        assertFalse(new DocletOptions(reporter).stylesheet().isPresent());
+    void testStylesheetFile() {
+        assertThat(new DocletOptions(reporter).stylesheet()).isNotPresent();
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.STYLESHEET, List.of("foo.css"));
         options.validateOptions();
-        assertEquals("foo.css", options.stylesheet().get().getName());
+        assertThat(options.stylesheet().get().getName()).isEqualTo("foo.css");
     }
 
     @Test
-    public void testRequires() {
-        assertTrue(new DocletOptions(reporter).requires().isEmpty());
+    void testRequires() {
+        assertThat(new DocletOptions(reporter).requires()).isEmpty();
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.REQUIRE, List.of("foo", "bar"));
         options.validateOptions();
-        assertEquals(options.requires(), List.of("foo", "bar"));
+        assertThat(options.requires()).containsExactlyInAnyOrder("foo", "bar");
 
         options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.REQUIRE, List.of("a", "diagrams/awesome"));
         options.collect(AsciidocletOptions.REQUIRE_LONG, List.of("bar"));
         options.collect(AsciidocletOptions.REQUIRE_LONG, List.of("baz,noddy"));
         options.validateOptions();
-        assertEquals(options.requires(), List.of("a", "diagrams/awesome", "bar", "baz", "noddy"));
+        assertThat(options.requires()).containsExactlyInAnyOrder("a", "diagrams/awesome", "bar", "baz", "noddy");
     }
 }

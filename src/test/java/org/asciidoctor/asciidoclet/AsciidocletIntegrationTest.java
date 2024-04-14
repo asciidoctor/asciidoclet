@@ -15,16 +15,18 @@
  */
 package org.asciidoctor.asciidoclet;
 
-import org.junit.Test;
-
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AsciidocletIntegrationTest {
 
@@ -33,7 +35,7 @@ public class AsciidocletIntegrationTest {
      * --add-exports jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet
      */
     //@Test
-    public void testJavadocIntegration() throws Exception {
+    void testJavadocIntegration() throws Exception {
         Method execute = Class.forName("jdk.javadoc.internal.tool.Main").getMethod("execute", String[].class);
         execute.setAccessible(true);
         String outputDirectory = "target/javadoc-output";
@@ -52,7 +54,7 @@ public class AsciidocletIntegrationTest {
                 "--base-dir", ".",
                 "org.asciidoctor.asciidoclet",
         });
-        assertEquals(0, result);
+        assertThat(result).isEqualTo(0);
     }
 
     private void deleteRecursively(String outputDirectory) throws IOException {
