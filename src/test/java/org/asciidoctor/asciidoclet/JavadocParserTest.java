@@ -16,61 +16,69 @@
 package org.asciidoctor.asciidoclet;
 
 import org.asciidoctor.asciidoclet.JavadocParser.Tag;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.junit.Assert.assertEquals;
-
-public class JavadocParserTest {
+class JavadocParserTest {
 
     @Test
-    public void parsePlainBody() {
+    void parsePlainBody() {
         JavadocParser parser = JavadocParser.parse("plain body");
-        assertEquals(parser.getCommentBody(), "plain body");
+        assertThat(parser.getCommentBody()).isEqualTo("plain body");
     }
 
     @Test
-    public void parsePlainBodyAndTag() {
+    void parsePlainBodyAndTag() {
         JavadocParser parser = JavadocParser.parse("plain body\n@see OtherPlace");
-        assertEquals("plain body", parser.getCommentBody());
-        assertEquals(List.of(new Tag("@see", "OtherPlace")), parser.tags());
+        assertThat(parser.getCommentBody()).isEqualTo("plain body");
+        assertThat(parser.tags())
+                .usingRecursiveFieldByFieldElementComparator()
+                .contains(new Tag("@see", "OtherPlace"));
     }
 
     @Test
-    public void parseTag() {
+    void parseTag() {
         JavadocParser parser = JavadocParser.parse("@see Other");
-        assertEquals("", parser.getCommentBody());
-        assertEquals(List.of(new Tag("@see", "Other")), parser.tags());
+        assertThat(parser.getCommentBody()).isEqualTo("");
+        assertThat(parser.tags())
+                .usingRecursiveFieldByFieldElementComparator()
+                .contains(new Tag("@see", "Other"));
     }
 
     @Test
-    public void parseTagWithNewLine() {
+    void parseTagWithNewLine() {
         JavadocParser parser = JavadocParser.parse("@see Other\n place");
-        assertEquals("", parser.getCommentBody());
-        assertEquals(List.of(new Tag("@see", "Other\n place")), parser.tags());
+        assertThat(parser.getCommentBody()).isEqualTo("");
+        assertThat(parser.tags())
+                .usingRecursiveFieldByFieldElementComparator()
+                .contains(new Tag("@see", "Other\n place"));
     }
 
     @Test
-    public void parseMultipleTags() {
+    void parseMultipleTags() {
         JavadocParser parser = JavadocParser.parse("@see Other\n@throws Exception");
-        assertEquals("", parser.getCommentBody());
-        assertEquals(List.of(new Tag("@see", "Other"), new Tag("@throws", "Exception")), parser.tags());
+        assertThat(parser.getCommentBody()).isEqualTo("");
+        assertThat(parser.tags())
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyInAnyOrder(new Tag("@see", "Other"), new Tag("@throws", "Exception"));
     }
 
     @Test
-    public void parseMultipleMultiLineTags() {
+    void parseMultipleMultiLineTags() {
         JavadocParser parser = JavadocParser.parse("@see Other\n place\nnearby\n@throws Exception\non error");
-        assertEquals("", parser.getCommentBody());
-        assertEquals(List.of(
-                new Tag("@see", "Other\n place\nnearby"),
-                new Tag("@throws", "Exception\non error")), parser.tags());
+        assertThat(parser.getCommentBody()).isEqualTo("");
+        assertThat(parser.tags())
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsExactlyInAnyOrder(new Tag("@see", "Other\n place\nnearby"), new Tag("@throws", "Exception\non error"));
     }
 
     @Test
-    public void parseWithBlockInBody() {
+    void parseWithBlockInBody() {
         JavadocParser parser = JavadocParser.parse("Body\n--\n@see bla\n--\n@see foo");
-        assertEquals("Body\n--\n@see bla\n--", parser.getCommentBody());
-        assertEquals(List.of(new Tag("@see", "foo")), parser.tags());
+        assertThat(parser.getCommentBody()).isEqualTo("Body\n--\n@see bla\n--");
+        assertThat(parser.tags())
+                .usingRecursiveFieldByFieldElementComparator()
+                .contains(new Tag("@see", "foo"));
     }
 }

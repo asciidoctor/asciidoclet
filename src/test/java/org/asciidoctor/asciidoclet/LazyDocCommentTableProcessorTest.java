@@ -4,7 +4,7 @@ import com.sun.tools.javac.parser.LazyDocCommentTable;
 import com.sun.tools.javac.parser.ParserFactory;
 import com.sun.tools.javac.parser.Tokens.Comment;
 import com.sun.tools.javac.util.Context;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
@@ -16,9 +16,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Function;
 
-public class LazyDocCommentTableProcessorTest {
+class LazyDocCommentTableProcessorTest {
+
     @Test
-    public void testProcessComments() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    void testProcessComments() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         // Just make sure the processComments method returns normally for now.
         LazyDocCommentTableProcessor.processComments(createLazyDocCommentTable(), commentMapper());
     }

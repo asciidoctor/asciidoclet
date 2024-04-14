@@ -17,6 +17,7 @@ package org.asciidoctor.asciidoclet;
 
 import com.sun.source.util.DocTreePath;
 import jdk.javadoc.doclet.Reporter;
+import org.assertj.core.api.Assertions;
 
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
@@ -24,9 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.fail;
-
-public class StubReporter implements Reporter {
+class StubReporter implements Reporter {
 
     private List<List<Object>> calls = new ArrayList<>();
 
@@ -48,7 +47,7 @@ public class StubReporter implements Reporter {
     void assertNoMoreInteractions() {
         if (!calls.isEmpty()) {
             String callsString = calls.stream().map(Object::toString).collect(Collectors.joining("\n\t", "\n\t", ""));
-            fail("Expected to not have any print calls, but got the following: " + callsString);
+            Assertions.fail("Expected to not have any print calls, but got the following: " + callsString);
         }
     }
 
