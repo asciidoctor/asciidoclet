@@ -18,10 +18,14 @@ package org.asciidoctor.asciidoclet;
 import jdk.javadoc.doclet.Reporter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,23 +76,27 @@ class DocletOptionsTest {
     }
 
     @Test
-    void testEncoding() {
-        assertThat(new DocletOptions(reporter).encoding()).isEqualTo(Charset.defaultCharset());
-
+    void testDefaultEncoding() {
         DocletOptions options = new DocletOptions(reporter);
-        options.collect(AsciidocletOptions.ENCODING, List.of("UTF-8"));
-        options.validateOptions();
-        assertThat(options.encoding()).isEqualTo(StandardCharsets.UTF_8);
 
-        options = new DocletOptions(reporter);
-        options.collect(AsciidocletOptions.ENCODING, List.of("US-ASCII"));
-        options.validateOptions();
-        assertThat(options.encoding()).isEqualTo(StandardCharsets.US_ASCII);
+        assertThat(options.encoding()).isEqualTo(Charset.defaultCharset());
+    }
 
-        options = new DocletOptions(reporter);
-        options.collect(AsciidocletOptions.ENCODING, List.of("ISO-8859-1"));
+    @ParameterizedTest
+    @MethodSource("encodingsProvider")
+    void testEncoding(String encoding, Charset expected) {
+        DocletOptions options = new DocletOptions(reporter);
+        options.collect(AsciidocletOptions.ENCODING, List.of(encoding));
         options.validateOptions();
-        assertThat(options.encoding()).isEqualTo(StandardCharsets.ISO_8859_1);
+        assertThat(options.encoding()).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> encodingsProvider() {
+        return Stream.of(
+                Arguments.of("UTF-8", StandardCharsets.UTF_8),
+                Arguments.of("US-ASCII", StandardCharsets.US_ASCII),
+                Arguments.of("ISO-8859-1", StandardCharsets.ISO_8859_1)
+        );
     }
 
     @Test
