@@ -35,6 +35,7 @@
         <currentYear>${maven.build.timestamp}</currentYear>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <integration-tests.path>src/it/java-11</integration-tests.path>
     </properties>
 
     <dependencies>
@@ -230,7 +231,7 @@
                         <include>src/**/*.java</include>
                     </includes>
                     <excludes>
-                        <exclude>src/it/**/*.*</exclude>
+                        <exclude>${integration-tests.path}/**/*.*</exclude>
                     </excludes>
                     <properties>
                         <startYear>2013</startYear>
@@ -245,6 +246,15 @@
     </build>
 
     <profiles>
+        <profile>
+            <id>java-17</id>
+            <properties>
+                <integration-tests.path>src/it/java-17</integration-tests.path>
+            </properties>
+            <activation>
+                <jdk>17</jdk>
+            </activation>
+        </profile>
         <profile>
             <!--
               To release, define environment variables:
@@ -301,7 +311,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-invoker-plugin</artifactId>
                         <configuration>
-                            <projectsDirectory>src/it</projectsDirectory>
+                            <projectsDirectory>${integration-tests.path}</projectsDirectory>
                             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                             <pomIncludes>
                                 <pomInclude>*/pom.xml</pomInclude>
