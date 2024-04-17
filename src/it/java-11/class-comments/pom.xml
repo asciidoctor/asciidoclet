@@ -32,7 +32,6 @@
 							<groupId>org.asciidoctor</groupId>
 							<artifactId>asciidoclet</artifactId>
 							<version>@project.version@</version>
-							<classifier>shaded</classifier>
 						</docletArtifact>
 					</docletArtifacts>
 					<overview>src/main/java/overview.adoc</overview>
