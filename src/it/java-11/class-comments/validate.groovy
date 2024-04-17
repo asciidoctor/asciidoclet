@@ -27,7 +27,7 @@ def expectMethodArgument2 = Html.dd(Html.code('needle') + " - it stings")
 assertStringContains(javadocContent, expectMethodArgument1)
 assertStringContains(javadocContent, expectMethodArgument2)
 
-def expectMethodReturn = Html.dt(Html.span("Returns:", "returnLabel")) + "\n" + Html.dd('true if lucky')
+def expectMethodReturn = Html.dt(Html.span("Returns:", "returnLabel")) + System.lineSeparator() + Html.dd('true if lucky')
 
 assertStringContains(javadocContent, expectMethodReturn)
 
