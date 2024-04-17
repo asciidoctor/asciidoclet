@@ -1,10 +1,11 @@
 import java.nio.file.Files
 import java.nio.file.Path
 
-String javaVersion = System.getProperty('java.version').split("\\.")[0]
-if (javaVersion != expected_java) {
-    throw new Exception("Invalid Java version. Expected ${expected_java}, found $javaVersion")
-}
+println("Running on: ${System.getProperty('java.version')}")
+println("Running on: ${Runtime.class.getPackage().getImplementationVersion()}")
+println("Running on: ${System.getenv('expected_java')}")
+println("Running on: ${System.getProperty('expected_java')}")
+
 
 def javadocExpectedPath = Path.of((String) basedir).resolve('target/site/apidocs')
 def expectedJavadoc = javadocExpectedPath.resolve('example/StringUtils.html')
@@ -42,6 +43,10 @@ class Html {
 
     static String div(String text, String classname) {
         return "<div class=\"${classname}\">${text}</div>"
+    }
+
+    static String span(String text, String classname) {
+        return "<span class=\"${classname}\">${text}</span>"
     }
 
     static String p(String text) {

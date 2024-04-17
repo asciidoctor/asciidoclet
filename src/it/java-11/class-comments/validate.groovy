@@ -1,6 +1,10 @@
 import java.nio.file.Files
 import java.nio.file.Path
 
+String javaVersion = System.getProperty('java.version').split("\\.")[0]
+if (javaVersion != expected_java) {
+    throw new Exception("Invalid Java version. Expected ${expected_java}, found $javaVersion")
+}
 
 def javadocExpectedPath = Path.of((String) basedir).resolve('target/site/apidocs')
 def expectedJavadoc = javadocExpectedPath.resolve('example/StringUtils.html')

@@ -24,8 +24,12 @@
 						<additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
 						<additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
 						<additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
+
+<!--						<additionalJOption>&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.api=asciidoclet</additionalJOption>-->
 						<additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</additionalJOption>
+<!--						<additionalJOption>&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>-->
 						<additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+
 						<additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
 					</additionalJOptions>
 					<doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
