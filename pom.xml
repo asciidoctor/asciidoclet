@@ -35,6 +35,8 @@
         <currentYear>${maven.build.timestamp}</currentYear>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <integration-tests.path>src/it/java-11</integration-tests.path>
+        <expected.java>11</expected.java>
     </properties>
 
     <dependencies>
@@ -230,7 +232,7 @@
                         <include>src/**/*.java</include>
                     </includes>
                     <excludes>
-                        <exclude>src/it/**/*.*</exclude>
+                        <exclude>${integration-tests.path}/**/*.*</exclude>
                     </excludes>
                     <properties>
                         <startYear>2013</startYear>
@@ -245,6 +247,27 @@
     </build>
 
     <profiles>
+        <!-- Both use the same java-17 folder -->
+        <profile>
+            <id>java-17</id>
+            <activation>
+                <jdk>17</jdk>
+            </activation>
+            <properties>
+                <integration-tests.path>src/it/java-17</integration-tests.path>
+                <expected.java>17</expected.java>
+            </properties>
+        </profile>
+        <profile>
+            <id>java-21</id>
+            <activation>
+                <jdk>21</jdk>
+            </activation>
+            <properties>
+                <integration-tests.path>src/it/java-17</integration-tests.path>
+                <expected.java>21</expected.java>
+            </properties>
+        </profile>
         <profile>
             <!--
               To release, define environment variables:
@@ -301,7 +324,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-invoker-plugin</artifactId>
                         <configuration>
-                            <projectsDirectory>src/it</projectsDirectory>
+                            <projectsDirectory>${integration-tests.path}</projectsDirectory>
                             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                             <pomIncludes>
                                 <pomInclude>*/pom.xml</pomInclude>
@@ -316,6 +339,9 @@
                                 <goal>clean</goal>
                                 <goal>process-sources</goal>
                             </goals>
+                            <scriptVariables>
+                                <expected_java>${expected.java}</expected_java>
+                            </scriptVariables>
                         </configuration>
                         <executions>
                             <execution>

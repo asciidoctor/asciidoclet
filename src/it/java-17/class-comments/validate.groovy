@@ -1,6 +1,10 @@
 import java.nio.file.Files
 import java.nio.file.Path
 
+String javaVersion = System.getProperty('java.version').split("\\.")[0]
+if (javaVersion != expected_java) {
+    throw new Exception("Invalid Java version. Expected ${expected_java}, found $javaVersion")
+}
 
 def javadocExpectedPath = Path.of((String) basedir).resolve('target/site/apidocs')
 def expectedJavadoc = javadocExpectedPath.resolve('example/StringUtils.html')
@@ -23,7 +27,7 @@ def expectMethodArgument2 = Html.dd(Html.code('needle') + " - it stings")
 assertStringContains(javadocContent, expectMethodArgument1)
 assertStringContains(javadocContent, expectMethodArgument2)
 
-def expectMethodReturn = Html.dt(Html.span("Returns:", "returnLabel")) + "\n" + Html.dd('true if lucky')
+def expectMethodReturn = Html.dt("Returns:") + System.lineSeparator() + Html.dd('true if lucky')
 
 assertStringContains(javadocContent, expectMethodReturn)
 
@@ -38,10 +42,6 @@ class Html {
 
     static String div(String text, String classname) {
         return "<div class=\"${classname}\">${text}</div>"
-    }
-
-    static String span(String text, String classname) {
-        return "<span class=\"${classname}\">${text}</span>"
     }
 
     static String p(String text) {

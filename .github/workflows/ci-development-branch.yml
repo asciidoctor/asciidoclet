@@ -20,6 +20,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-latest
@@ -27,6 +28,8 @@ jobs:
           - macos-latest
         java-version:
           - 11
+          - 17
+          - 21
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -38,4 +41,4 @@ jobs:
           cache: 'maven'
           cache-dependency-path: 'pom.xml'
       - name: Build & Test
-        run: mvn -B clean verify
+        run: mvn -B clean verify -Prun-its
