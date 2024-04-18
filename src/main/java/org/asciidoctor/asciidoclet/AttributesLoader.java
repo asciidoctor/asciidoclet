@@ -21,15 +21,11 @@ import org.asciidoctor.Attributes;
 import org.asciidoctor.Options;
 import org.asciidoctor.OptionsBuilder;
 import org.asciidoctor.SafeMode;
-import org.asciidoctor.jruby.internal.IOUtils;
 
 import javax.tools.Diagnostic;
 import java.io.File;
-import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -41,12 +37,12 @@ class AttributesLoader {
 
     private final Asciidoctor asciidoctor;
     private final DocletOptions docletOptions;
-    private final Reporter errorReporter;
+    private final Reporter reporter;
 
-    AttributesLoader(Asciidoctor asciidoctor, DocletOptions docletOptions, Reporter errorReporter) {
+    AttributesLoader(Asciidoctor asciidoctor, DocletOptions docletOptions, Reporter reporter) {
         this.asciidoctor = asciidoctor;
         this.docletOptions = docletOptions;
-        this.errorReporter = errorReporter;
+        this.reporter = reporter;
     }
 
     Map<String, Object> load() {
@@ -80,7 +76,7 @@ class AttributesLoader {
             try (Reader reader = Files.newBufferedReader(attrsFile.get().toPath(), docletOptions.encoding())) {
                 return parseAttributes(reader, cmdlineAttrs);
             } catch (Exception e) {
-                errorReporter.print(Diagnostic.Kind.WARNING, "Cannot read attributes file: " + e);
+                reporter.print(Diagnostic.Kind.WARNING, "Cannot read attributes file: " + e);
             }
         }
         return cmdlineAttrs;
@@ -95,13 +91,11 @@ class AttributesLoader {
             options.baseDir(docletOptions.baseDir().get());
         }
 
-        final String content = read(in);
-        final Map<String, Object> parsed = asciidoctor.load(content, options.build()).getAttributes();
-        return parsed;
+        return asciidoctor.load(read(in), options.build()).getAttributes();
     }
 
     public static String read(Reader reader) {
-        try (Scanner scanner = new Scanner(reader).useDelimiter("\\A")){
+        try (Scanner scanner = new Scanner(reader).useDelimiter("\\A")) {
             return scanner.next();
         }
     }

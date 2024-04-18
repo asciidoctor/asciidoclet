@@ -21,7 +21,6 @@ import jdk.javadoc.internal.tool.DocEnvImpl;
 
 import javax.tools.JavaFileManager;
 import javax.tools.StandardJavaFileManager;
-import java.io.IOException;
 
 /**
  * An operating environment defined for AsciiDoclet.
@@ -30,13 +29,11 @@ public class AsciidoctorFilteredEnvironment
         extends DocEnvImpl
         implements DocletEnvironment, AutoCloseable {
 
-    private final AsciidoctorConverter converter;
     private final StandardJavaFileManager fileManager;
     private final AsciiDocTrees asciiDocTrees;
 
     AsciidoctorFilteredEnvironment(DocletEnvironment environment, AsciidoctorConverter converter) {
         super(((DocEnvImpl) environment).toolEnv, ((DocEnvImpl) environment).etable);
-        this.converter = converter;
         this.fileManager = new AsciidoctorFileManager(converter, (StandardJavaFileManager) environment.getJavaFileManager());
         this.asciiDocTrees = new AsciiDocTrees(converter, fileManager, environment.getDocTrees());
     }
@@ -52,7 +49,6 @@ public class AsciidoctorFilteredEnvironment
     }
 
     @Override
-    public void close() throws IOException {
-        converter.cleanup();
+    public void close() {
     }
 }
