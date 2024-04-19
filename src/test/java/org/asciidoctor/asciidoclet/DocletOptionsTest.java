@@ -44,7 +44,7 @@ class DocletOptionsTest {
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.BASEDIR, List.of("test"));
-        options.validateOptions();
+        options.validate();
 
         assertThat(options.baseDir().get().getName()).isEqualTo("test");
     }
@@ -56,7 +56,7 @@ class DocletOptionsTest {
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ATTRIBUTE, List.of(attribute));
-        options.validateOptions();
+        options.validate();
 
         assertThat(options.attributes()).hasSize(1);
         assertThat(options.attributes()).first().isEqualTo(attribute);
@@ -69,7 +69,7 @@ class DocletOptionsTest {
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ATTRIBUTE_LONG, List.of(attribute));
-        options.validateOptions();
+        options.validate();
 
         assertThat(options.attributes()).hasSize(1);
         assertThat(options.attributes()).first().isEqualTo(attribute);
@@ -87,7 +87,7 @@ class DocletOptionsTest {
     void testEncoding(String encoding, Charset expected) {
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.ENCODING, List.of(encoding));
-        options.validateOptions();
+        options.validate();
         assertThat(options.encoding()).isEqualTo(expected);
     }
 
@@ -105,7 +105,7 @@ class DocletOptionsTest {
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.STYLESHEET, List.of("foo.css"));
-        options.validateOptions();
+        options.validate();
         assertThat(options.stylesheet().get().getName()).isEqualTo("foo.css");
     }
 
@@ -115,14 +115,14 @@ class DocletOptionsTest {
 
         DocletOptions options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.REQUIRE, List.of("foo", "bar"));
-        options.validateOptions();
+        options.validate();
         assertThat(options.requires()).containsExactlyInAnyOrder("foo", "bar");
 
         options = new DocletOptions(reporter);
         options.collect(AsciidocletOptions.REQUIRE, List.of("a", "diagrams/awesome"));
         options.collect(AsciidocletOptions.REQUIRE_LONG, List.of("bar"));
         options.collect(AsciidocletOptions.REQUIRE_LONG, List.of("baz,noddy"));
-        options.validateOptions();
+        options.validate();
         assertThat(options.requires()).containsExactlyInAnyOrder("a", "diagrams/awesome", "bar", "baz", "noddy");
     }
 }

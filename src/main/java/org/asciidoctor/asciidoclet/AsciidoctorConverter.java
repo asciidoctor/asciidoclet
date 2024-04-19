@@ -17,17 +17,9 @@ package org.asciidoctor.asciidoclet;
 
 import jdk.javadoc.doclet.Reporter;
 import org.asciidoctor.Asciidoctor;
-import org.asciidoctor.Attributes;
-import org.asciidoctor.AttributesBuilder;
 import org.asciidoctor.Options;
-import org.asciidoctor.OptionsBuilder;
-import org.asciidoctor.SafeMode;
-import org.asciidoctor.extension.RubyExtensionRegistry;
 import org.asciidoctor.jruby.AsciidoctorJRuby;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,36 +32,20 @@ class AsciidoctorConverter {
 
     static final String MARKER = " \t \t";
 
-    private static AttributesBuilder defaultAttributes() {
-        return Attributes.builder()
-                .attribute("at", "&#64;")
-                .attribute("slash", "/")
-                .attribute("icons", null)
-                .attribute("idprefix", "")
-                .attribute("idseparator", "-")
-                .attribute("javadoc", "")
-                .attribute("showtitle", true)
-                .attribute("source-highlighter", "coderay")
-                .attribute("coderay-css", "class")
-                .attribute("env-asciidoclet")
-                .attribute("env", "asciidoclet");
-    }
-
-    private static OptionsBuilder defaultOptions() {
-        return Options.builder()
-                .safe(SafeMode.SAFE)
-                .backend("html5");
-    }
-
     private static final Pattern TYPE_PARAM = Pattern.compile("\\s*<(\\w+)>(.*)");
     private static final String INLINE_DOCTYPE = "inline";
 
+    private final DocletOptions docletOptions;
+    private final Reporter reporter;
+
     private final Asciidoctor asciidoctor;
-    private final Optional<OutputTemplates> templates;
-    private final Options options;
+    private final OutputTemplates templates;
 
     AsciidoctorConverter(DocletOptions docletOptions, Reporter reporter) {
-        this(docletOptions, reporter, OutputTemplates.create(reporter), createAsciidoctorInstance(docletOptions.gemPath()));
+        this.asciidoctor = createAsciidoctorInstance(docletOptions.gemPath());
+        this.reporter = reporter;
+        this.templates = OutputTemplates.create(reporter);
+        this.docletOptions = docletOptions;
     }
 
     private static Asciidoctor createAsciidoctorInstance(String gemPath) {
@@ -77,37 +53,6 @@ class AsciidoctorConverter {
             return AsciidoctorJRuby.Factory.create(gemPath);
         }
         return Asciidoctor.Factory.create();
-    }
-
-    /**
-     * Constructor used directly for testing purposes only.
-     */
-    AsciidoctorConverter(DocletOptions docletOptions, Reporter errorReporter, Optional<OutputTemplates> templates, Asciidoctor asciidoctor) {
-        this.asciidoctor = asciidoctor;
-        this.templates = templates;
-        this.options = buildOptions(docletOptions, errorReporter);
-    }
-
-    private Options buildOptions(DocletOptions docletOptions, Reporter errorReporter) {
-        final OptionsBuilder opts = defaultOptions();
-        if (docletOptions.baseDir().isPresent()) {
-            opts.baseDir(docletOptions.baseDir().get());
-        }
-        templates.ifPresent(outputTemplates -> opts.templateDir(outputTemplates.templateDir().toFile()));
-        opts.attributes(buildAttributes(docletOptions, errorReporter));
-        if (docletOptions.requires().size() > 0) {
-            RubyExtensionRegistry rubyExtensionRegistry = asciidoctor.rubyExtensionRegistry();
-            for (String require : docletOptions.requires()) {
-                rubyExtensionRegistry.requireLibrary(require);
-            }
-        }
-        return opts.get();
-    }
-
-    private Attributes buildAttributes(DocletOptions docletOptions, Reporter errorReporter) {
-        return defaultAttributes()
-                .attributes(new AttributesLoader(asciidoctor, docletOptions, errorReporter).load())
-                .get();
     }
 
     /**
@@ -130,12 +75,6 @@ class AsciidoctorConverter {
             buffer.append(System.lineSeparator());
         }
         return buffer.toString();
-    }
-
-    void cleanup() throws IOException {
-        if (templates.isPresent()) {
-            templates.get().delete();
-        }
     }
 
     /**
@@ -181,21 +120,17 @@ class AsciidoctorConverter {
         if (input.trim().isEmpty()) {
             return "";
         }
+        Options options = new AsciidoctorOptionsFactory(asciidoctor, reporter)
+                .create(docletOptions, templates);
         // Setting doctype to null results in an NPE from asciidoctor.
         // the default value from the command line is "article".
         // https://docs.asciidoctor.org/asciidoctor/latest/cli/man1/asciidoctor/#options
-        // In general, in order to respect original doctype, we should do the following.
-        // options.setDocType(inline ?
-        //    INLINE_DOCTYPE :
-        //    options.map().containsKey(Options.DOCTYPE) ?
-        //        (String)options.map().get(Options.DOCTYPE) :
-        //        "article");
-        // However, this fix breaks AsciidoctorConverterTest#testParameterWithoutTypeTag.
-        // For now, I simply set it to "article", always.
         options.setDocType(inline ?
-            INLINE_DOCTYPE :
-            "article"); // upstream sets this to "".
-        
+                INLINE_DOCTYPE :
+                options.map().containsKey(Options.DOCTYPE) ?
+                        (String) options.map().get(Options.DOCTYPE) :
+                        "article");
+
         return asciidoctor.convert(cleanJavadocInput(input), options);
     }
 

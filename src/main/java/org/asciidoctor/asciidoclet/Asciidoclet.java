@@ -21,8 +21,6 @@ import jdk.javadoc.doclet.Reporter;
 import jdk.javadoc.doclet.StandardDoclet;
 
 import javax.lang.model.SourceVersion;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
@@ -213,13 +211,11 @@ public class Asciidoclet implements Doclet {
 
     @Override
     public boolean run(DocletEnvironment environment) {
-        docletOptions.validateOptions();
+        docletOptions.validate();
         AsciidoctorConverter converter = new AsciidoctorConverter(docletOptions, reporter);
         boolean result;
         try (AsciidoctorFilteredEnvironment env = new AsciidoctorFilteredEnvironment(environment, converter)) {
             result = standardDoclet.run(env);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
         }
         return result && postProcess(environment);
     }

@@ -89,7 +89,7 @@ public class DocletOptions {
                 .filter(s -> !s.isEmpty());
     }
 
-    void validateOptions() {
+    void validate() {
         if (baseDir().isEmpty()) {
             printWarning(AsciidocletOptions.BASEDIR + " must be present for includes or file reference features to work properly");
         }

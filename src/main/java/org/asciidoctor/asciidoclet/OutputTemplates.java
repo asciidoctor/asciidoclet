@@ -24,7 +24,6 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 
 /**
  * Sets up a temporary directory containing output templates for use by Asciidoctor.
@@ -39,32 +38,32 @@ class OutputTemplates {
         this.templateDir = templateDir;
     }
 
-    static Optional<OutputTemplates> create(Reporter errorReporter) {
-        Path dir = prepareTemplateDir(errorReporter);
-        return Optional.ofNullable(dir).map(OutputTemplates::new);
+    static OutputTemplates create(Reporter reporter) {
+        final Path dir = prepareTemplateDir(reporter);
+        return dir != null ? new OutputTemplates(dir) : null;
     }
 
     Path templateDir() {
         return templateDir;
     }
 
-    void delete() throws IOException {
-        for (String templateName : TEMPLATE_NAMES) {
-            Files.deleteIfExists(templateDir.resolve(templateName));
-        }
-        Files.delete(templateDir);
-    }
-
-    private static Path prepareTemplateDir(Reporter errorReporter) {
+    /**
+     * Creates and returns a directory in OS's temps path holding Asciidoctor
+     * templates during conversion.
+     *
+     * @param reporter doclet {@link Reporter}.
+     * @return Path to templates, or null if it could not be created.
+     */
+    private static Path prepareTemplateDir(Reporter reporter) {
         // copy our template resources to the templateDir so Asciidoctor can use them.
         try {
-            Path templateDir = Files.createTempDirectory("asciidoclet");
+            final Path templateDir = Files.createTempDirectory("asciidoclet");
             for (String templateName : TEMPLATE_NAMES) {
                 prepareTemplate(templateDir, templateName);
             }
             return templateDir;
         } catch (IOException e) {
-            errorReporter.print(Diagnostic.Kind.WARNING, "Failed to prepare templates: " + e.getLocalizedMessage());
+            reporter.print(Diagnostic.Kind.WARNING, "Failed to prepare templates: " + e.getLocalizedMessage());
             return null;
         }
     }
@@ -80,14 +79,15 @@ class OutputTemplates {
      */
     private static void prepareTemplate(Path templateDir, String template) throws IOException {
         final String templatePath = "templates/" + template;
-        InputStream input = ModuleLayer.boot().findModule("asciidoclet")
+        final InputStream input = ModuleLayer.boot()
+                .findModule("asciidoclet")
                 .map(module -> getResourceAsStream(module, templatePath))
                 .orElseGet(() -> OutputTemplates.class.getClassLoader().getResourceAsStream(templatePath));
 
         if (input == null) {
             throw new IOException("Could not find template " + template);
         }
-        Path path = templateDir.resolve(template);
+        final Path path = templateDir.resolve(template);
         try (OutputStream output = Files.newOutputStream(path)) {
             input.transferTo(output);
         } finally {
