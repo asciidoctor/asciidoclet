@@ -8,9 +8,12 @@ ifdef::site-gen-antora[xref:options.adoc[]]
 ifndef::site-gen-antora[<<doclet-options>> below]
 for supported options.
 
+NOTE: Asciidoclet must use some internal Java components.
+That requires the use of `exports` and `open` configurations.
+
 == Maven
 
-Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
+Asciidoclet may be used via a `maven-javadoc-plugin` doclet for the supported Java versions
 
 [source,xml,subs="attributes+"]
 .Java 11
@@ -21,11 +24,53 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
     <version>{maven-javadoc-plugin-version}</version>
     <configuration>
         <source>11</source>
+        <additionalJOptions>
+            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
+        </additionalJOptions>
         <doclet>{doclet-class}</doclet>
         <docletArtifact>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoclet</artifactId>
-            <version>${asciidoclet.version}</version>
+            <version>{asciidoclet-version}</version>
+        </docletArtifact>
+        <overview>src/main/java/overview.adoc</overview>
+        <additionalparam>
+          --base-dir ${project.basedir}
+          --attribute "name=${project.name}"
+          --attribute "version=${project.version}"
+          --attribute "title-link=https://example.com[${project.name} ${project.version}]"
+        </additionalparam>
+    </configuration>
+</plugin>
+----
+
+[source,xml,subs="attributes+"]
+.Java 17+
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>{maven-javadoc-plugin-version}</version>
+    <configuration>
+        <source>17</source>
+        <additionalJOptions>
+            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
+        </additionalJOptions>
+        <doclet>{doclet-class}</doclet>
+        <docletArtifact>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoclet</artifactId>
+            <version>{asciidoclet-version}</version>
         </docletArtifact>
         <overview>src/main/java/overview.adoc</overview>
         <additionalparam>
