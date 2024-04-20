@@ -168,35 +168,3 @@ ifdef::site-gen-antora[See xref:options.adoc[].]
 ifndef::site-gen-antora[See <<doclet-options>> below.]
 <2> Gradle's `javadoc` task does not allow multiple occurrences of the same option.
 Multiple attributes can be specified in a single string, separated by commas.
-
-== Ant
-// Some of us still use Ant, alright?!
-Asciidoclet may be used via a doclet element in Ant's `javadoc` task:
-
-[source,xml]
-----
-<javadoc destdir="target/javadoc"
-         sourcepath="src"
-         overview="src/overview.adoc">
-  <doclet name="org.asciidoctor.asciidoclet.Asciidoclet" pathref="asciidoclet.classpath"> <!--1-->
-    <param name="--base-dir" value="${basedir}"/>
-    <param name="--attribute" value="name=${ant.project.name}"/>
-    <param name="--attribute" value="version=${version}"/>
-    <param name="--attribute" value="title-link=https://example.com[${ant.project.name} ${version}]"/>
-  </doclet>
-</javadoc>
-----
-
-<1> Assumes a path reference has been defined for Asciidoclet and its dependencies, e.g.
-using https://ant.apache.org/ivy/[Ivy^] or similar.
-
-// tag::warning-message[]
-[WARNING]
-====
-Currently, there is an intermittent benign warning message that is emitted during a run of Asciidoclet stating the following:
-
-  WARN: tilt autoloading 'tilt/haml' in a non thread-safe way; explicit require 'tilt/haml' suggested.
-
-Unfortunately, until the underlying library removes this warning message, it will be logged during the build.
-====
-// end::warning-message[]
