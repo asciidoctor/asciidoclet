@@ -88,7 +88,12 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet for the supported Ja
 Asciidoclet may be used via a doclet in the `Javadoc` task:
 
 [source,groovy]
+.Java 17+
 ----
+plugins {
+    id 'java'
+}
+
 configurations {
     asciidoclet
 }
@@ -98,14 +103,24 @@ dependencies {
 }
 
 javadoc {
-    options.docletpath = configurations.asciidoclet.files.asType(List)
-    options.doclet = 'org.asciidoctor.asciidoclet.Asciidoclet'
-    options.overview = "src/main/java/overview.adoc"
-    options.addStringOption "-base-dir", "${projectDir}" // <1>
-    options.addStringOption "-attribute", // <2>
-            "name=${project.name}," +
-            "version=${project.version}," +
-            "title-link=https://example.com[${project.name} ${project.version}]"
+    options {
+        docletpath = configurations.asciidoclet.files.asType(List)
+        doclet = 'org.asciidoctor.asciidoclet.Asciidoclet'
+        overview = "src/main/java/overview.adoc"
+        addStringOption "-base-dir", "${projectDir}" // <1>
+        addStringOption \
+            "-attribute", // <2>
+                "name=${project.name}," +
+                "version=${project.version}," +
+                "title-link=https://example.com[${project.name} ${project.version}]"
+        jFlags \
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+            "--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+            "--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED"
+    }
 }
 ----
 <1> Option names passed to Gradle's `javadoc` task must omit the leading "-", so here "-base-dir" means "--base-dir".
