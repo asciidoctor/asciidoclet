@@ -1,3 +1,4 @@
+[#_projects_powered_by_asciidoclet]
 = Projects Powered by Asciidoclet
 
 [cols="2,3,4"]
