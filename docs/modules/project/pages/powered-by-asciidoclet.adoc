@@ -28,6 +28,10 @@
 |https://github.com/chrisvest/stormpot[stormpot]
 |http://chrisvest.github.io/stormpot/site/apidocs/stormpot/package-summary.html[JavaDoc]
 
+|https://valid8j.github.io/valid8j/[Stormpot]
+|https://github.com/valid8j/valid8j[valid8j]
+|https://valid8j.github.io/valid8j/apidocs/overview-summary.html[JavaDoc]
+
 |===
 
 TIP: Have a cool Asciidoclet-powered project? Edit this file and send us a pull request.
