@@ -294,7 +294,7 @@ If you have questions or would like to help develop this project, please join th
 ifndef::env-site[]
 == Powered by Asciidoclet
 
-We have a <<src/docs/asciidoc/asciidoclet-powered.adoc#,Powered by Asciidoclet>> page.
+We have a <<docs/modules/project/pages/powered-by-asciidoclet.adoc#_projects_powered_by_asciidoclet,Powered by Asciidoclet>> page.
 If you have an example of nifty JavaDoc powered by Asciidoclet, please send us a pull request.
 endif::[]
 

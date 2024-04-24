@@ -1,3 +1,4 @@
+[#_projects_powered_by_asciidoclet]
 = Projects Powered by Asciidoclet
 
 [cols="2,3,4"]
@@ -27,6 +28,10 @@
 |https://chrisvest.github.io/stormpot/[Stormpot]
 |https://github.com/chrisvest/stormpot[stormpot]
 |http://chrisvest.github.io/stormpot/site/apidocs/stormpot/package-summary.html[JavaDoc]
+
+|https://valid8j.github.io/valid8j/[Stormpot]
+|https://github.com/valid8j/valid8j[valid8j]
+|https://valid8j.github.io/valid8j/apidocs/overview-summary.html[JavaDoc]
 
 |===
 
