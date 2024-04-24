@@ -149,23 +149,15 @@
                     <target>11</target>
                     <compilerArgs>
                         <arg>--add-exports</arg>
-                        <arg>jdk.javadoc/jdk.javadoc.internal.api=asciidoclet</arg>
-                        <arg>--add-exports</arg>
-                        <arg>jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</arg>
+                        <arg>jdk.compiler/com.sun.tools.javac.model=asciidoclet</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.compiler/com.sun.tools.javac.parser=asciidoclet</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.compiler/com.sun.tools.javac.tree=asciidoclet</arg>
                         <arg>--add-exports</arg>
-                        <arg>jdk.compiler/com.sun.tools.javac.model=asciidoclet</arg>
+                        <arg>jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet</arg>
                         <arg>--add-exports</arg>
                         <arg>jdk.compiler/com.sun.tools.javac.util=asciidoclet</arg>
-                        <arg>--add-exports</arg>
-                        <arg>jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-                        <arg>--add-exports</arg>
-                        <arg>jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-                        <arg>--add-exports</arg>
-                        <arg>jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -177,7 +169,6 @@
                         --add-exports jdk.compiler/com.sun.tools.javac.parser=asciidoclet
                         --add-exports jdk.compiler/com.sun.tools.javac.util=asciidoclet
                         --add-opens jdk.compiler/com.sun.tools.javac.parser=asciidoclet
-                        --add-exports jdk.javadoc/jdk.javadoc.internal.tool=asciidoclet
                     </argLine>
                 </configuration>
             </plugin>

@@ -2,7 +2,7 @@
 :url-asciidoctor-attributes: https://asciidoctor.org/docs/user-manual/#attributes
 
 --base-dir <dir>::
-Sets the base directory that will be used to resolve relative path names in Asciidoc `include::` directives.
+Sets the base directory that will be used to resolve relative path names in AsciiDoc `include::` directives.
 This should be set to the project's root directory.
 
 -a, --attribute "name[=value], ..."::
@@ -21,10 +21,10 @@ Attributes use the same syntax as Asciidoctor command-line attributes:
 --
 +
 The document attribute `javadoc` is set automatically by the doclet.
-This can be used for conditionally selecting content when using the same Asciidoc file for Javadoc and other documentation.
+This can be used for conditionally selecting content when using the same AsciiDoc file for Javadoc and other documentation.
 
 --attributes-file <file>::
-Reads {url-asciidoctor-attributes}[document attributes^] from an Asciidoc file.
+Reads {url-asciidoctor-attributes}[document attributes^] from an AsciiDoc file.
 The attributes will be expanded in Javadoc comments.
 +
 If `<file>` is a relative path name, it is assumed to be relative to the `--base-dir` directory.
@@ -42,13 +42,13 @@ Sets the `GEM_PATH` for Asciidoctor's JRuby runtime.
 This option is only needed when using the `--require` option to load additional gems on the `GEM_PATH`.
 
 -overview <file>::
-Overview documentation can be generated from an Asciidoc file using the standard `-overview` option.
+Overview documentation can be generated from an AsciiDoc file using the standard `-overview` option.
 Files matching [x-]`*.adoc`, [x-]`*.ad`, [x-]`*.asciidoc` or [x-]`*.txt` are processed by Asciidoclet.
 Other files are assumed to be HTML and will be processed by the standard doclet.
 
 --asciidoclet-include <filter>::
 --asciidoclet-exclude <filter>::
-Explicitly include or exclude classes from being processed as Asciidoc comments by ant-style path matching (see https://github.com/azagniotov/ant-style-path-matcher[ant-style-path-matcher]).
+Explicitly include or exclude classes from being processed as AsciiDoc comments by ant-style path matching (see https://github.com/azagniotov/ant-style-path-matcher[ant-style-path-matcher]).
 +
 If `--asciidoclet-include` is specified, only classes and packages matching the include filter are processed.
 Likewise, if `--include` is unspecified, all classes are processed.
@@ -57,4 +57,4 @@ If `--asciidoclet-exclude` is specified, classes matching the filter are not pro
 Both `--asciidoclet-include` and `--asciidoclet-exclude` can be mixed.
 In addition, classes excluded with `--asciidoclet-exclude` or not matching a specified `--asciidoclet-include` may be included by annotating the class level javadoc with `@asciidoclet`.
 Doing so allows writing one class at a time while respecting refactors.
-This feature allows the migration of documentation from HTML to Asciidoc in a piecemeal way.
+This feature allows the migration of documentation from HTML to AsciiDoc in a piecemeal way.

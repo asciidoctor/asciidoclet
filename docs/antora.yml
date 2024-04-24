@@ -1,9 +1,9 @@
 name: asciidoclet
 title: Asciidoclet
-version: '1.5.6'
+version: '2.0'
 asciidoc:
   attributes:
-    asciidoclet-version: 1.5.6
+    asciidoclet-version: 2.0.0
     asciidoclet-src-ref: https://github.com/asciidoctor/asciidoclet
     asciidoclet-javadoc-ref: https://www.javadoc.io/doc/org.asciidoctor/asciidoclet/{asciidoclet-version}
     asciidoclet-release-ref: https://asciidoctor.org/news/2014/09/09/asciidoclet-1.5.0-released/

@@ -9,6 +9,11 @@ import org.asciidoctor.OptionsBuilder;
 import org.asciidoctor.SafeMode;
 import org.asciidoctor.extension.RubyExtensionRegistry;
 
+/**
+ * Asciidoctor Options Factory.
+ *
+ * @since 2.0.0
+ */
 class AsciidoctorOptionsFactory {
 
     private static final String DEFAULT_BACKEND = "html5";

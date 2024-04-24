@@ -1,29 +1,36 @@
 = Usage
+:asciidoclet-class: org.asciidoctor.asciidoclet.Asciidoclet
+:maven-javadoc-plugin-version: 3.6.3
 
-Run Javadoc with the `org.asciidoctor.Asciidoclet` doclet class.
-Some examples for common build systems are shown below.
+Run Javadoc with the `{asciidoclet-class}` doclet class as shown in the examples below.
 See
 ifdef::site-gen-antora[xref:options.adoc[]]
-ifndef::site-gen-antora[<<doclet-options>> below ]
+ifndef::site-gen-antora[<<doclet-options>> below]
 for supported options.
+
+NOTE: Asciidoclet must use some Java runtime internals.
+That requires the use of `exports` and `open` configurations depending on the Java version in use.
 
 == Maven
 
-Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
+Asciidoclet may be used via a `maven-javadoc-plugin` for the supported Java versions.
+Pay special attention to `<additionalJOptions>` to configure access to Java internals.
 
-[source,xml]
+== Java 11 example
+
+[source,xml,subs="attributes+"]
 ----
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-javadoc-plugin</artifactId>
-    <version>3.6.3</version>
+    <version>{maven-javadoc-plugin-version}</version>
     <configuration>
         <source>11</source>
-        <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
+        <doclet>{asciidoclet-class}</doclet>
         <docletArtifact>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoclet</artifactId>
-            <version>${asciidoclet.version}</version>
+            <version>{asciidoclet-version}</version>
         </docletArtifact>
         <overview>src/main/java/overview.adoc</overview>
         <additionalparam>
@@ -32,6 +39,46 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
           --attribute "version=${project.version}"
           --attribute "title-link=https://example.com[${project.name} ${project.version}]"
         </additionalparam>
+        <additionalJOptions>
+            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
+        </additionalJOptions>
+    </configuration>
+</plugin>
+----
+
+== Java 17+ example
+
+[source,xml,subs="attributes+"]
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>{maven-javadoc-plugin-version}</version>
+    <configuration>
+        <source>17</source>
+        <doclet>{asciidoclet-class}</doclet>
+        <docletArtifact>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoclet</artifactId>
+            <version>{asciidoclet-version}</version>
+        </docletArtifact>
+        <overview>src/main/java/overview.adoc</overview>
+        <additionalparam>
+          --base-dir ${project.basedir}
+          --attribute "name=${project.name}"
+          --attribute "version=${project.version}"
+          --attribute "title-link=https://example.com[${project.name} ${project.version}]"
+        </additionalparam>
+        <additionalJOptions>
+            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption>
+            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption>
+        </additionalJOptions>
     </configuration>
 </plugin>
 ----
@@ -39,26 +86,38 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
 == Gradle
 
 Asciidoclet may be used via a doclet in the `Javadoc` task:
+Pay special attention to `jFlags` to configure access to Java internals.
 
-[source,groovy]
+== Java 11 example
+
+[source,groovy,subs="attributes+"]
 ----
+plugins {
+    id 'java'
+}
+
 configurations {
     asciidoclet
 }
 
 dependencies {
-    asciidoclet 'org.asciidoctor:asciidoclet:1.+'
+    asciidoclet 'org.asciidoctor:asciidoclet:{asciidoclet-version}'
 }
 
 javadoc {
-    options.docletpath = configurations.asciidoclet.files.asType(List)
-    options.doclet = 'org.asciidoctor.Asciidoclet'
-    options.overview = "src/main/java/overview.adoc"
-    options.addStringOption "-base-dir", "${projectDir}" // <1>
-    options.addStringOption "-attribute", // <2>
-            "name=${project.name}," +
-            "version=${project.version}," +
-            "title-link=https://example.com[${project.name} ${project.version}]")
+    options {
+        docletpath = configurations.asciidoclet.files.asType(List)
+        doclet = '{asciidoclet-class}'
+        overview = "src/main/java/overview.adoc"
+        addStringOption "-base-dir", "${projectDir}" // <1>
+        addStringOption \
+            "-attribute", // <2>
+                "name=${project.name}," +
+                "version=${project.version}," +
+                "title-link=https://example.com[${project.name} ${project.version}]"
+        jFlags \
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED"
+    }
 }
 ----
 <1> Option names passed to Gradle's `javadoc` task must omit the leading "-", so here "-base-dir" means "--base-dir".
@@ -67,34 +126,45 @@ ifndef::site-gen-antora[See <<doclet-options>> below.]
 <2> Gradle's `javadoc` task does not allow multiple occurrences of the same option.
 Multiple attributes can be specified in a single string, separated by commas.
 
-== Ant
-// Some of us still use Ant, alright?!
-Asciidoclet may be used via a doclet element in Ant's `javadoc` task:
+== Java 17+ example
 
-[source,xml]
+[source,groovy,subs="attributes+"]
 ----
-<javadoc destdir="target/javadoc"
-         sourcepath="src"
-         overview="src/overview.adoc">
-  <doclet name="org.asciidoctor.Asciidoclet" pathref="asciidoclet.classpath"> <!--1-->
-    <param name="--base-dir" value="${basedir}"/>
-    <param name="--attribute" value="name=${ant.project.name}"/>
-    <param name="--attribute" value="version=${version}"/>
-    <param name="--attribute" value="title-link=https://example.com[${ant.project.name} ${version}]"/>
-  </doclet>
-</javadoc>
+plugins {
+    id 'java'
+}
+
+configurations {
+    asciidoclet
+}
+
+dependencies {
+    asciidoclet 'org.asciidoctor:asciidoclet:{asciidoclet-version}'
+}
+
+javadoc {
+    options {
+        docletpath = configurations.asciidoclet.files.asType(List)
+        doclet = '{asciidoclet-class}'
+        overview = "src/main/java/overview.adoc"
+        addStringOption "-base-dir", "${projectDir}" // <1>
+        addStringOption \
+            "-attribute", // <2>
+                "name=${project.name}," +
+                "version=${project.version}," +
+                "title-link=https://example.com[${project.name} ${project.version}]"
+        jFlags \
+            "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+            "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+            "--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+            "--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED"
+    }
+}
 ----
-
-<1> Assumes a path reference has been defined for Asciidoclet and its dependencies, e.g.
-using https://ant.apache.org/ivy/[Ivy^] or similar.
-
-// tag::warning-message[]
-[WARNING]
-====
-Currently, there is an intermittent benign warning message that is emitted during a run of Asciidoclet stating the following:
-
-  WARN: tilt autoloading 'tilt/haml' in a non thread-safe way; explicit require 'tilt/haml' suggested.
-
-Unfortunately, until the underlying library removes this warning message, it will be logged during the build.
-====
-// end::warning-message[]
+<1> Option names passed to Gradle's `javadoc` task must omit the leading "-", so here "-base-dir" means "--base-dir".
+ifdef::site-gen-antora[See xref:options.adoc[].]
+ifndef::site-gen-antora[See <<doclet-options>> below.]
+<2> Gradle's `javadoc` task does not allow multiple occurrences of the same option.
+Multiple attributes can be specified in a single string, separated by commas.
