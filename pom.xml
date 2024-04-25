@@ -17,6 +17,19 @@
         <url>https://asciidoctor.org/</url>
     </organization>
 
+    <developers>
+        <developer>
+            <id>johncarl81</id>
+            <name>John Ericksen</name>
+            <email>johncarl81@gmail.com</email>
+            <url>https://johncarl81.github.io/</url>
+            <roles>
+                <role>Project Lead</role>
+            </roles>
+            <timezone>UTC-6</timezone>
+        </developer>
+    </developers>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
