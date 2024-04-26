@@ -109,7 +109,7 @@ javadoc {
         docletpath = configurations.asciidoclet.files.asType(List)
         doclet = '{asciidoclet-class}'
         overview = "src/main/java/overview.adoc"
-        addStringOption "-base-dir", "${projectDir}" // <1>
+        addStringOption "-base-dir", "$\{projectDir}" // <1>
         addStringOption \
             "-attribute", // <2>
                 "name=${project.name}," +
@@ -147,7 +147,7 @@ javadoc {
         docletpath = configurations.asciidoclet.files.asType(List)
         doclet = '{asciidoclet-class}'
         overview = "src/main/java/overview.adoc"
-        addStringOption "-base-dir", "${projectDir}" // <1>
+        addStringOption "-base-dir", "$\{projectDir}" // <1>
         addStringOption \
             "-attribute", // <2>
                 "name=${project.name}," +
