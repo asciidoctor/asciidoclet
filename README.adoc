@@ -169,9 +169,9 @@ dependencies {
 tasks.withType<Javadoc>().configureEach { // process *all* javadoc configurations, not just the one for main
   options {
     doclet("org.asciidoctor.asciidoclet.Asciidoclet")
+    docletpath(*asciiDoclet.get().files.toTypedArray())
     overview("README.adoc") // you can also point this to the traditional overview like in the groovy example
     jFlags(
-      docletpath(*asciiDoclet.get().files.toTypedArray())
       "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED",
       "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
       "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
