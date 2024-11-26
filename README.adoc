@@ -163,12 +163,11 @@ dependencies {
 }
 
 tasks.withType<Javadoc>().configureEach { // process *all* javadoc configurations, not just the one for main
-  dependsOn(tasks.classes) // optional: for annotation preprocessor generated code
   options {
-    docletpath(*asciiDoclet.map { it.files.toTypedArray() }.get())
     doclet("org.asciidoctor.asciidoclet.Asciidoclet")
     overview("README.adoc")
     jFlags(
+      docletpath(*asciiDoclet.get().files.toTypedArray())
       "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED",
       "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
       "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
