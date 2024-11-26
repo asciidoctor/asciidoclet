@@ -125,8 +125,12 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
     <configuration>
         <source>11</source>
         <additionalJOptions>
-            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption> // <1>
-            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption> // <2>
+            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption><!-- 1 -->
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption><!-- 1 -->
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption><!-- 1 -->
+            <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</additionalJOption><!-- 1 -->
+            <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption><!-- 1 -->
+            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption><!-- 2 -->
         </additionalJOptions>
         <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
         <docletArtifact>
@@ -165,7 +169,7 @@ dependencies {
 tasks.withType<Javadoc>().configureEach { // process *all* javadoc configurations, not just the one for main
   options {
     doclet("org.asciidoctor.asciidoclet.Asciidoclet")
-    overview("README.adoc")
+    overview("README.adoc") // you can also point this to the traditional overview like in the groovy example
     jFlags(
       docletpath(*asciiDoclet.get().files.toTypedArray())
       "--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED",
