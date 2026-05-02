@@ -49,11 +49,8 @@ class AttributesLoader {
         List<String> attributeArgs = docletOptions.attributes();
         Set<String> unset = getUnsetAttributes(attributeArgs);
 
-        // Parse command-line attrs first, if any
-        Map<String, Object> cmdlineAttrs = parseCmdLineAttributes(attributeArgs);
-
         // Parse the attributes file, passing in any command-line attrs already set
-        Map<String, Object> attrs = parseAttributesFile(docletOptions.attributesFile(), cmdlineAttrs);
+        var attrs = parseAttributesFile(docletOptions.attributesFile(), Attributes.builder().arguments(attributeArgs.toArray(new String[0])).build());
 
         // Remove any attributes that were set in the file but removed by the -attributes option
         attrs.keySet().removeAll(unset);
@@ -67,11 +64,7 @@ class AttributesLoader {
         return attrs;
     }
 
-    private Map<String, Object> parseCmdLineAttributes(List<String> attributeArgs) {
-        return new Attributes(attributeArgs.toArray(new String[0])).map();
-    }
-
-    private Map<String, Object> parseAttributesFile(Optional<File> attrsFile, Map<String, Object> cmdlineAttrs) {
+    private Map<String, Object> parseAttributesFile(Optional<File> attrsFile, Attributes cmdlineAttrs) {
         if (attrsFile.isPresent()) {
             try (Reader reader = Files.newBufferedReader(attrsFile.get().toPath(), docletOptions.encoding())) {
                 return parseAttributes(reader, cmdlineAttrs);
@@ -79,10 +72,10 @@ class AttributesLoader {
                 reporter.print(Diagnostic.Kind.WARNING, "Cannot read attributes file: " + e);
             }
         }
-        return cmdlineAttrs;
+        return cmdlineAttrs.map();
     }
 
-    private Map<String, Object> parseAttributes(Reader in, Map<String, Object> existingAttrs) {
+    private Map<String, Object> parseAttributes(Reader in, Attributes existingAttrs) {
         OptionsBuilder options = Options.builder()
                 .safe(SafeMode.SAFE)
                 .attributes(existingAttrs)

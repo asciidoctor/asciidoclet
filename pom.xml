@@ -4,7 +4,7 @@
 
     <groupId>org.asciidoctor</groupId>
     <artifactId>asciidoclet</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>AsciiDoc Javadoc Doclet</name>
@@ -49,14 +49,14 @@
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <integration-tests.path>src/it/java-11</integration-tests.path>
-        <expected.java>11</expected.java>
+        <expected.java>25</expected.java>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj</artifactId>
-            <version>2.5.12</version>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -71,13 +71,13 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.25.3</version>
+            <version>3.27.7</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.11.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -87,7 +87,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>5.10.2</version>
+                <version>6.0.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -100,17 +100,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.13.0</version>
+                    <version>3.15.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.1.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.3.1</version>
                     <configuration>
                         <mavenExecutorId>forked-path</mavenExecutorId>
                     </configuration>
@@ -118,37 +118,37 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.4.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.6.3</version>
+                    <version>3.12.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.2.5</version>
+                    <version>3.5.5</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>3.2.2</version>
+                    <version>3.2.8</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-invoker-plugin</artifactId>
-                    <version>3.6.1</version>
+                    <version>3.10.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -158,8 +158,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>25</source>
+                    <target>25</target>
                     <compilerArgs>
                         <arg>--add-exports</arg>
                         <arg>jdk.compiler/com.sun.tools.javac.model=asciidoclet</arg>
@@ -206,6 +206,7 @@
                         <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
                         <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.tree=asciidoclet</additionalJOption>
                         <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.model=asciidoclet</additionalJOption>
+                        <additionalJOption>--add-exports=jdk.compiler/com.sun.tools.javac.util=asciidoclet</additionalJOption>
                         <additionalJOption>--add-opens=jdk.compiler/com.sun.tools.javac.api=asciidoclet</additionalJOption>
                         <additionalJOption>--add-opens=jdk.compiler/com.sun.tools.javac.parser=asciidoclet</additionalJOption>
                         <additionalJOption>-J--add-opens=jdk.javadoc/jdk.javadoc.internal.api=ALL-UNNAMED</additionalJOption>
@@ -221,21 +222,25 @@
                         <artifactId>${project.artifactId}</artifactId>
                         <version>${project.version}</version>
                     </docletArtifact>
-                    <additionalOptions>  <!--1-->
+                    <additionalOptions> <!--1-->
                         --base-dir ${project.basedir}
                         --attribute "project_name=${project.name}"
                         --attribute "project_version=${project.version}"
                         --attribute "project_desc=${project.description}"
                     </additionalOptions>
                     <linksource>true</linksource>
-                    <overview>src/main/java/overview.adoc</overview> <!--2-->
+                    <!--2-->
+                    <!--
+                    TODO: fix this!
+                    <overview>src/main/java/overview.adoc</overview>
+                    -->
                 </configuration>
             </plugin>
             <!-- end::pom_include[] -->
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>4.3</version>
+                <version>5.0.0</version>
                 <configuration>
                     <header>NOTICE</header>
                     <includes>
@@ -269,13 +274,13 @@
             </properties>
         </profile>
         <profile>
-            <id>java-21</id>
+            <id>java-25</id>
             <activation>
-                <jdk>21</jdk>
+                <jdk>25</jdk>
             </activation>
             <properties>
                 <integration-tests.path>src/it/java-17</integration-tests.path>
-                <expected.java>21</expected.java>
+                <expected.java>25</expected.java>
             </properties>
         </profile>
         <profile>

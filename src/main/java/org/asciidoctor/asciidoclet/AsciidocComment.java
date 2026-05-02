@@ -16,6 +16,7 @@
 package org.asciidoctor.asciidoclet;
 
 import com.sun.tools.javac.parser.Tokens;
+import com.sun.tools.javac.util.JCDiagnostic;
 
 class AsciidocComment implements Tokens.Comment {
 
@@ -25,6 +26,17 @@ class AsciidocComment implements Tokens.Comment {
     AsciidocComment(String asciidoc, Tokens.Comment comment) {
         this.asciidoc = asciidoc;
         this.comment = comment;
+    }
+
+    @Override
+    public Tokens.Comment stripIndent() {
+        // TODO: implement this
+        return this;
+    }
+
+    @Override
+    public JCDiagnostic.DiagnosticPosition getPos() {
+        return comment.getPos();
     }
 
     @Override

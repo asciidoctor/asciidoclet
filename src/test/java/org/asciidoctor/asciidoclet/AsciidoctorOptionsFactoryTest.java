@@ -83,7 +83,7 @@ class AsciidoctorOptionsFactoryTest {
         Map<String, Object> optionsMap = options.map();
         assertContainsDefaultOptions(optionsMap, 4);
         assertThat(optionsMap)
-                .containsEntry("base_dir", baseDir.getAbsolutePath());
+                .containsEntry("base_dir", baseDir.toString());
 
         Map<String, Object> attributes = (Map<String, Object>) optionsMap.get("attributes");
         assertContainsDefaultAttributes(attributes, 11);

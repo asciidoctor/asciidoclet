@@ -47,23 +47,26 @@ class AsciidoctorOptionsFactory {
             opts.baseDir(docletOptions.baseDir().get());
         }
         if (templates != null) {
-            opts.templateDir(templates.templateDir().toFile());
+            opts.templateDirs(templates.templateDir().toFile());
         }
 
         opts.attributes(buildAttributes(docletOptions));
-        if (docletOptions.requires().size() > 0) {
+        if (!docletOptions.requires().isEmpty()) {
             RubyExtensionRegistry rubyExtensionRegistry = asciidoctor.rubyExtensionRegistry();
             for (String require : docletOptions.requires()) {
                 rubyExtensionRegistry.requireLibrary(require);
             }
         }
-        return opts.get();
+        return opts.build();
     }
 
     private Attributes buildAttributes(DocletOptions docletOptions) {
-        return defaultAttributes()
-                .attributes(new AttributesLoader(asciidoctor, docletOptions, reporter).load())
-                .get();
+        var attributes = defaultAttributes()
+                .build();
+
+        attributes.setAttributes(new AttributesLoader(asciidoctor, docletOptions, reporter).load());
+
+        return attributes;
     }
 
     private static OptionsBuilder defaultOptions() {

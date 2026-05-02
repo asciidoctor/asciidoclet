@@ -17,7 +17,7 @@ ifdef::env-github[]
 :badges:
 :!toc-title:
 endif::[]
-:release-version: 1.5.6
+:release-version: 3.0.0
 // Refs
 :asciidoclet-src-ref: https://github.com/asciidoctor/asciidoclet
 :asciidoclet-javadoc-ref: https://oss.sonatype.org/service/local/repositories/releases/archive/org/asciidoctor/asciidoclet/1.5.2/asciidoclet-1.5.2-javadoc.jar/!/index.html
@@ -48,7 +48,7 @@ Asciidoclet incorporates an AsciiDoc converter (Asciidoctor via the {asciidoctor
 
 Here's an example of a class with traditional Javadoc.
 
-[source]
+[source,java]
 .A Java class with traditional Javadoc
 ----
 /**
@@ -76,7 +76,7 @@ public class Asciidoclet extends Doclet {
 
 This is the same class with Asciidoclet.
 
-[source]
+[source,java]
 .A Java class with Asciidoclet Javadoc
 ----
 /**
@@ -112,6 +112,7 @@ Run Javadoc with the `org.asciidoctor.asciidoctlet.Asciidoclet` doclet class.
 Some examples for common build systems are shown below.
 See <<doclet-options>> for supported options.
 
+// tag::maven[]
 === Maven
 
 Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
@@ -123,14 +124,14 @@ Asciidoclet may be used via a `maven-javadoc-plugin` doclet:
     <artifactId>maven-javadoc-plugin</artifactId>
     <version>3.6.3</version>
     <configuration>
-        <source>11</source>
+        <source>25</source>
         <additionalJOptions>
-            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption><!-- 1 -->
-            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption><!-- 1 -->
-            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption><!-- 1 -->
-            <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</additionalJOption><!-- 1 -->
-            <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption><!-- 1 -->
-            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption><!-- 2 -->
+            <additionalJOption>-J--add-exports=jdk.javadoc/jdk.javadoc.internal.tool=ALL-UNNAMED</additionalJOption><!--1-->
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</additionalJOption><!--1-->
+            <additionalJOption>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption><!--1-->
+            <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</additionalJOption><!--1-->
+            <additionalJOption>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</additionalJOption><!--1-->
+            <additionalJOption>-Xdoclint:all,-html,-accessibility</additionalJOption><!--2-->
         </additionalJOptions>
         <doclet>org.asciidoctor.asciidoclet.Asciidoclet</doclet>
         <docletArtifact>
@@ -153,6 +154,7 @@ This incantation makes that access possible on moduler JDKs.
 <2> Asciidoctor may generate HTML that produces doclint errors, which can cause the build to fail.
 To work around that, we have to disable these doclint categories.
 
+// tag::gradle[]
 === Gradle
 
 Asciidoclet may be used via a doclet in the `Javadoc` task:
@@ -212,7 +214,7 @@ javadoc {
     options.addStringOption "-attribute", // <2>
             "name=${project.name}," +
             "version=${project.version}," +
-            "title-link=https://example.com[${project.name} ${project.version}]")
+            "title-link=https://example.com[${project.name} ${project.version}]"
 }
 ----
 <1> Option names passed to Gradle's `javadoc` task must omit the leading "-", so here "-base-dir" means "--base-dir".
@@ -220,6 +222,7 @@ See <<doclet-options>> below.
 <2> Gradle's `javadoc` task does not allow multiple occurrences of the same option.
 Multiple attributes can be specified in a single string, separated by commas.
 
+// tag::ant[]
 === Ant
 // Some of us still use Ant, alright?!
 Asciidoclet may be used via a doclet element in Ant's `javadoc` task:
@@ -241,8 +244,8 @@ Asciidoclet may be used via a doclet element in Ant's `javadoc` task:
 <1> Assumes a path reference has been defined for Asciidoclet and its dependencies, e.g.
 using https://ant.apache.org/ivy/[Ivy] or similar.
 
-=== Doclet Options
 // tag::doclet-options[]
+=== Doclet Options
 
 --base-dir <dir>::
 Sets the base directory that will be used to resolve relative path names in AsciiDoc `include::` directives.
