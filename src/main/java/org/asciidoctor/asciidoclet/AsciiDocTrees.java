@@ -42,6 +42,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ErrorType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
@@ -115,9 +116,10 @@ class AsciiDocTrees extends DocTrees {
     @Override
     public DocCommentTree getDocCommentTree(FileObject fileObject) {
         // Empty names are used for built-in headers and footers, which need no asciidoctor processing anyway.
-        if (!fileObject.getName().isEmpty() && !(fileObject instanceof AsciidocFileView)) {
+        if (!(fileObject instanceof AsciidocFileView)) {
             return docTrees.getDocCommentTree(new AsciidocFileView(converter, fileObject));
         }
+        System.out.println("++++++++++++++++++++++ DEBUG: " + fileObject.getName());
         return docTrees.getDocCommentTree(fileObject);
     }
 
@@ -280,5 +282,10 @@ class AsciiDocTrees extends DocTrees {
     @Override
     public TypeMirror getLub(CatchTree tree) {
         return docTrees.getLub(tree);
+    }
+
+    @Override
+    public Elements.DocCommentKind getDocCommentKind(TreePath treePath) {
+        return Elements.DocCommentKind.TRADITIONAL;
     }
 }

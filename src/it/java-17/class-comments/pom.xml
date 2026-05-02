@@ -36,7 +36,9 @@
 							<version>@project.version@</version>
 						</docletArtifact>
 					</docletArtifacts>
+					<!--
 					<overview>src/main/java/overview.adoc</overview>
+					-->
 					<additionalOptions>
 						--base-dir ${project.basedir}
 						--attribute "project_name=${project.name}"
