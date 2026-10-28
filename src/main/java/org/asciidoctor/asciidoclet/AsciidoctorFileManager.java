@@ -199,6 +199,9 @@ class AsciidoctorFileManager implements StandardJavaFileManager {
 
     @SuppressWarnings("unchecked")
     private <T extends FileObject> T wrap(T fo) {
+        if (fo == null) {
+            return null;
+        }
         return (T) new AsciidocFileView(converter, fo);
     }
 
